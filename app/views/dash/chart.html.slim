@@ -1,10 +1,10 @@
 javascript:
-  $(function(){setup(#{{Market.first.tickers.map{|t| [t.created_at.to_i*1000, t.highest_bid_usd.to_f]}.to_json}},
-                     #{{Market.first.tickers.map{|t| [t.created_at.to_i*1000, t.lowest_ask_usd.to_f]}.to_json}})})
+  $(function(){setup(#{{@data.to_json}})})
+
 div
   | Chart
-  - Market.all.each do |market|
+  - @data.each do |market|
     p
-      | #{market.name} count #{market.tickers.count}
+      | #{market.first} count #{market[1].size}
 
 div#chart

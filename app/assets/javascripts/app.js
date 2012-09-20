@@ -1,7 +1,5 @@
-function setup(d1, d2) {
+function setup(data) {
   console.log('setup')
-  console.log(d1)
-  console.log(d2)
 
   var options = {
     series: {
@@ -13,8 +11,14 @@ function setup(d1, d2) {
              tickSize: [1, "hour"]}
   };
 
-  $.plot($("#chart"), [
-      { label: "d1",  data: d1},
-      { label: "d2",  data: d2}
-  ], options);
+  var dset = []
+  for(var datum in data) {
+    dset.push({label: data[datum][0]+" bid",
+               data: data[datum][1]})
+    dset.push({label: data[datum][0]+" ask",
+               data: data[datum][2]})
+  }
+
+  console.log(dset)
+  $.plot($("#chart"), dset, options);
 }
