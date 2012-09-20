@@ -1,6 +1,6 @@
 javascript:
-  $(function(){setup(#{{Market.first.tickers.map{|t| t.highest_bid_usd.to_f}.to_json}},
-                     #{{Market.first.tickers.map{|t| t.lowest_ask_usd.to_f}.to_json}})})
+  $(function(){setup(#{{Market.first.tickers.map{|t| [t.created_at.to_i*1000, t.highest_bid_usd.to_f]}.to_json}},
+                     #{{Market.first.tickers.map{|t| [t.created_at.to_i*1000, t.lowest_ask_usd.to_f]}.to_json}})})
 div
   | Chart
   - Market.all.each do |market|
