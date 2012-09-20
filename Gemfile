@@ -6,6 +6,7 @@ gem 'faraday'
 gem 'jquery-rails'
 gem 'jbuilder'
 gem 'pry-rails'
+gem 'slim'
 
 
 group :assets do

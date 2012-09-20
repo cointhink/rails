@@ -16,6 +16,7 @@ namespace :btc do
     data = JSON.parse(Faraday.get('https://www.bitstamp.net/api/ticker/').body)
     attrs = {:highest_bid_usd => data["bid"],
              :lowest_ask_usd => data["ask"]}
+    market.tickers.create(attrs)
     puts "#{market.name} #{attrs}"
   end
 end

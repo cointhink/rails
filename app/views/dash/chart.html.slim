@@ -1,0 +1,5 @@
+div
+  | Chart
+  - Market.all.each do |market|
+    p
+      | #{market.name} count #{market.tickers.count}
