@@ -12,4 +12,8 @@ class Market < ActiveRecord::Base
     last = balances.btc.last
     last ? last.amount : 0
   end
+
+  def last_ticker
+    tickers.last
+  end
 end

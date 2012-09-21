@@ -9,3 +9,10 @@ ul
     li #{market.name} | $#{market.usd_balance} | #{market.btc_balance} BTC
 
 div#chart
+
+div
+  - if @last_mtgox.highest_bid_usd > @last_bitstamp.lowest_ask_usd
+    | Buy at Bitstamp for $#{@last_bitstamp.lowest_ask_usd} and sell at Mtgox for $#{@last_mtgox.highest_bid_usd}
+
+  - if @last_bitstamp.highest_bid_usd > @last_mtgox.lowest_ask_usd
+    | Buy at Mtgox for $#{@last_mtgox.lowest_ask_usd} and sell at Bitstamp for $#{@last_bitstamp.highest_bid_usd}
