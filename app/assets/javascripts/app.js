@@ -13,10 +13,10 @@ function setup(data) {
 
   var dset = []
   for(var datum in data) {
-    dset.push({label: data[datum][0]+" bid",
-               data: data[datum][1]})
     dset.push({label: data[datum][0]+" ask",
                data: data[datum][2]})
+    dset.push({label: data[datum][0]+" bid",
+               data: data[datum][1]})
   }
 
   console.log(dset)
