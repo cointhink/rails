@@ -7,7 +7,7 @@ function setup(data) {
         points: { show: true },
     },
     xaxis: { mode: 'time',
-             timeformat: "%m/%d %M:%H",
+             timeformat: "%m/%d %I%p",
              tickSize: [1, "hour"]}
   };
 
