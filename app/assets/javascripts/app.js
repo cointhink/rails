@@ -28,7 +28,7 @@ function setup(data) {
     var other_point = data[1][2][mdata]
     var diff = point[1]-other_point[1]
     if(diff > 0) {
-      plusdiffs.push([point[0], diff])
+      plusdiffs.push([other_point[0], diff])
     } else {
       minusdiffs.push([point[0], diff])
     }
