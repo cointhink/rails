@@ -33,8 +33,8 @@ function setup(data) {
       minusdiffs.push([point[0], diff])
     }
   }
-  dset.push({label: 'mtgox yes', data: plusdiffs, yaxis: 2, points: {show: false}})
-  dset.push({label: 'bitstamp yes', data: minusdiffs, yaxis: 2, points: {show: false}})
+  dset.push({label: 'bitstamp buy', data: plusdiffs, yaxis: 2, points: {show: false}})
+  dset.push({label: 'mtgox buy', data: minusdiffs, yaxis: 2, points: {show: false}})
 
   console.log(dset)
   $.plot($("#chart"), dset, options);
