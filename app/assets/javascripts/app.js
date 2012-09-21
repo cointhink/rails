@@ -8,7 +8,9 @@ function setup(data) {
     },
     xaxis: { mode: 'time',
              timeformat: "%m/%d %I%p",
-             tickSize: [1, "hour"]}
+             tickSize: [1, "hour"]},
+    legend: { position: 'nw',
+              container: '#legend'}
   };
 
   var dset = []
@@ -31,8 +33,8 @@ function setup(data) {
       minusdiffs.push([point[0], diff])
     }
   }
-  dset.push({label: 'mtgox yes', data: plusdiffs, yaxis: 2})
-  dset.push({label: 'bitstamp yes', data: minusdiffs, yaxis: 2})
+  dset.push({label: 'mtgox yes', data: plusdiffs, yaxis: 2, points: {show: false}})
+  dset.push({label: 'bitstamp yes', data: minusdiffs, yaxis: 2, points: {show: false}})
 
   console.log(dset)
   $.plot($("#chart"), dset, options);
