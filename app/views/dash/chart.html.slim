@@ -2,13 +2,19 @@ javascript:
   $(function(){setup(#{{@data.to_json}})})
 
 div
-  | Chart
+  | Market Balances
 
 ul
   - Market.all.each do |market|
     li #{market.name} | $#{market.usd_balance} | #{market.btc_balance} BTC
 
+div
+  | History
+
 div#chart
+
+div
+  | Recommendation
 
 div
   - if @last_mtgox.highest_bid_usd > @last_bitstamp.lowest_ask_usd
