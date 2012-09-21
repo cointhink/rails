@@ -4,4 +4,8 @@ javascript:
 div
   | Chart
 
+ul
+  - Market.all.each do |market|
+    li #{market.name} | $#{market.usd_balance} | #{market.btc_balance} BTC
+
 div#chart
