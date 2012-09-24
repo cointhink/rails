@@ -10,10 +10,11 @@ class Market < ActiveRecord::Base
       left_last = m[0].last_ticker
       right_last = m[1].last_ticker
       [m[0].name,
-       left_last.lowest_ask_usd,
+       left_last.highest_bid_usd,
        m[1].name,
-       right_last.highest_bid_usd,
-       left_last.lowest_ask_usd - right_last.highest_bid_usd]
+       right_last.lowest_ask_usd,
+       right_last.highest_bid_usd*(1-m[0].fee_percentage) -
+       left_last.lowest_ask_usd*(1-m[1].fee_percentage) ]
     end
     askbids.sort{|e| e[4]}.reverse
   end
