@@ -17,11 +17,12 @@ function setup(data) {
   for(var market_id in data) {
     dset.push({label: data[market_id][0]+" ask",
                data: data[market_id][2],
-               color: color_index})
+               color: color_index,
+               points: {radius: 5}})
     dset.push({label: data[market_id][0]+" bid",
                data: data[market_id][1],
                color: color_index,
-               points: {radius: 5}})
+               })
     color_index = color_index + 1;
   }
 
