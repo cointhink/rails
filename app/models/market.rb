@@ -16,4 +16,13 @@ class Market < ActiveRecord::Base
   def last_ticker
     tickers.last
   end
+
+  def api
+    "Markets::#{name.classify}".constantize.new
+  end
+
+  def data_poll
+    attrs = api.data_poll
+    tickers.create(attrs)
+  end
 end
