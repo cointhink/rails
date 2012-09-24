@@ -6,7 +6,7 @@ div
 
 ul
   - Market.all.each do |market|
-    li #{market.name} | fee #{market.fee_percentage}% | $#{market.usd_balance} | #{market.btc_balance} BTC
+    li #{market.name} | fee #{market.fee_percentage}% | buy $#{market.tickers.last.lowest_ask_usd} | sell $#{market.tickers.last.highest_bid_usd} | $#{market.usd_balance} | #{market.btc_balance} BTC
 
 div
   | History
