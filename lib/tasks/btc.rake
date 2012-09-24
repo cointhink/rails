@@ -2,7 +2,7 @@ namespace :btc do
   desc 'Record stats about each market'
   task :snapshot => :environment do
 
-    ['mtgox', 'bitstamp'].each do |market_name|
+    ['mtgox', 'bitstamp', 'intersango'].each do |market_name|
       market = Market.find_or_create_by_name(market_name)
       record = market.data_poll
       puts "#{market.name} #{record.inspect}"
