@@ -1,5 +1,4 @@
 function setup(data) {
-  console.log('setup')
 
   var options = {
     series: {
@@ -14,13 +13,17 @@ function setup(data) {
   };
 
   var dset = []
+  var color_index = 0;
   for(var market_id in data) {
     dset.push({label: data[market_id][0]+" ask",
-               data: data[market_id][2]})
+               data: data[market_id][2],
+               color: color_index})
     dset.push({label: data[market_id][0]+" bid",
-               data: data[market_id][1]})
+               data: data[market_id][1],
+               color: color_index,
+               points: {radius: 5}})
+    color_index = color_index + 1;
   }
 
-  console.log(dset)
   $.plot($("#chart"), dset, options);
 }
