@@ -19,8 +19,4 @@ div.clearboth
   | Recommendation
 
 div
-  - if @last_mtgox.highest_bid_usd > @last_bitstamp.lowest_ask_usd
-    | Buy at Bitstamp for $#{@last_bitstamp.lowest_ask_usd} and sell at Mtgox for $#{@last_mtgox.highest_bid_usd}
-
-  - if @last_bitstamp.highest_bid_usd > @last_mtgox.lowest_ask_usd
-    | Buy at Mtgox for $#{@last_mtgox.lowest_ask_usd} and sell at Bitstamp for $#{@last_bitstamp.highest_bid_usd}
+  | Buy at #{@best_pair[0]} for $#{@best_pair[1]} and sell at #{@best_pair[2]} for $#{@best_pair[3]} for a profit of $#{@best_pair[4]}

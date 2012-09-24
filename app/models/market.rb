@@ -3,6 +3,21 @@ class Market < ActiveRecord::Base
   has_many :tickers
   has_many :balances
 
+  # Class methods
+  def self.pair_spreads
+    pairs = Combinatorics.pairs(Market.all)
+    askbids = pairs.map do |m|
+      left_last = m[0].last_ticker
+      right_last = m[1].last_ticker
+      [m[0].name,
+       left_last.lowest_ask_usd,
+       m[1].name,
+       right_last.highest_bid_usd,
+       left_last.lowest_ask_usd - right_last.highest_bid_usd]
+    end
+    askbids.sort{|e| e[4]}.reverse
+  end
+
   def usd_balance
     last = balances.usd.last
     last ? last.amount : 0
