@@ -1,7 +1,7 @@
 class Trade < ActiveRecord::Base
   belongs_to :market
-  has_one :balance_in, :as => :balanceable, :class_name => :Balance
-  has_one :balance_out, :as => :balanceable, :class_name => :Balance
+  belongs_to :balance_in, :class_name => :Balance
+  belongs_to :balance_out, :class_name => :Balance
   attr_accessible :executed, :expected_fee,
                   :expected_rate, :fee, :order_id, :rate,
                   :balance_in, :balance_out

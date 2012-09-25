@@ -22,7 +22,7 @@ div
 div
   - din = @strategy.trades.first.balance_in.amount
   - dout = @strategy.trades.last.calculated_out
-  | #{@strategy.trades.count} moves $#{din} => $#{dout}
+  | #{@strategy.trades.count} moves $#{"%0.3f"%din} => $#{"%0.3f"%dout}. Result $#{"%0.3f"%(dout-din)}
 ul
   - @strategy.trades.each do |t|
-    li #{t.market.name} spend #{t.balance_in.currency == 'usd' ? 'usd$' : ''}#{t.balance_in.amount}#{t.balance_in.currency == 'btc' ? 'btc' : ''} at rate #{t.expected_rate} fee #{t.expected_fee} calculated out #{t.calculated_out}
+    li #{t.market.name} spend #{t.balance_in.currency == 'usd' ? 'usd$' : ''}#{t.balance_in.amount}#{t.balance_in.currency == 'btc' ? 'btc' : ''} at rate #{"%0.3f"%t.expected_rate} fee #{"%0.3f"%t.expected_fee} calculated out #{"%0.3f"%t.calculated_out} #{t.balance_out.currency}
