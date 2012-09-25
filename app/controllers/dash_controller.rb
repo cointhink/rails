@@ -7,6 +7,7 @@ class DashController < ApplicationController
     end
 
     @best_pair = Market.pair_spreads.first
+    @strategy = Strategy.last
 
     @last_mtgox = Market.first.last_ticker
     @last_bitstamp = Market.last.last_ticker
