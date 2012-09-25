@@ -10,7 +10,7 @@ class Strategy < ActiveRecord::Base
                                     expected_fee:pair[2],
                                     expected_rate:pair[1]})
 
-    t2_in = Balance.create(amount: pair[4], currency: 'btc')
+    t2_in = Balance.create(amount: trade1.calculated_out, currency: 'btc')
     t2_out = Balance.create(currency: 'usd')
     trade2 = pair[3].trades.create({balance_in: t2_in,
                                     balance_out: t2_out,

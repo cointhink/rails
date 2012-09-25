@@ -16,15 +16,13 @@ div#chart
 div#legend
 
 div.clearboth
-  | Recommendation
-
-div
-  | Buy at #{@best_pair[0].name} for $#{@best_pair[1]} (fee $#{"%0.3f" % @best_pair[2]}) and sell at #{@best_pair[3].name} for $#{@best_pair[4]} (fee $#{"%0.3f" % @best_pair[5]}) for a profit of $#{"%0.3f" % @best_pair[6]}.
 
 div
   | Last Strategy #{@strategy.created_at}
 div
-  | #{@strategy.trades.count} moves
+  - din = @strategy.trades.first.balance_in.amount
+  - dout = @strategy.trades.last.calculated_out
+  | #{@strategy.trades.count} moves $#{din} => $#{dout}
 ul
   - @strategy.trades.each do |t|
-    li #{t.market.name} spend #{t.balance_in.currency == 'usd' ? 'usd$' : ''}#{t.balance_in.amount}#{t.balance_in.currency == 'btc' ? 'btc' : ''} at $#{t.expected_rate} fee $#{t.expected_fee}
+    li #{t.market.name} spend #{t.balance_in.currency == 'usd' ? 'usd$' : ''}#{t.balance_in.amount}#{t.balance_in.currency == 'btc' ? 'btc' : ''} at rate #{t.expected_rate} fee #{t.expected_fee} calculated out #{t.calculated_out}

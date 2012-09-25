@@ -13,13 +13,13 @@ class Market < ActiveRecord::Base
 
       buy_fee = buy_for*(m[0].fee_percentage/100.0)
       resultant_btc = (buy_for-buy_fee)/buy_for
-      sell_fee = resultant_btc *sell_for*(m[1].fee_percentage/100.0)
+      sell_fee = resultant_btc*(m[1].fee_percentage/100.0)
 
       [m[0],
        buy_for,
        buy_fee,
        m[1],
-       sell_for,
+       1/sell_for,
        sell_fee,
        sell_for - buy_for - buy_fee - sell_fee ]
     end
