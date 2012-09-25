@@ -9,12 +9,16 @@ class Market < ActiveRecord::Base
     askbids = pairs.map do |m|
       left_last = m[0].last_ticker
       right_last = m[1].last_ticker
+      initial_amount = right_last.highest_bid_usd
       [m[0].name,
-       left_last.highest_bid_usd,
+       left_last.lowest_ask_usd,
        m[1].name,
-       right_last.lowest_ask_usd,
-       right_last.highest_bid_usd*(1-m[0].fee_percentage) -
-       left_last.lowest_ask_usd*(1-m[1].fee_percentage) ]
+       right_last.highest_bid_usd,
+       initial_amount -(
+        (1-(m[0].fee_percentage/100.0))*
+        (right_last.highest_bid_usd)*
+        (1-(m[1].fee_percentage/100.0))
+         ) ]
     end
     askbids.sort{|e| e[4]}.reverse
   end
