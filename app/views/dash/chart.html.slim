@@ -27,4 +27,4 @@ div
   | #{@strategy.trades.count} moves
 ul
   - @strategy.trades.each do |t|
-    li #{t.market.name} spend $#{t.amount_in} at $#{t.expected_rate} fee $#{t.expected_fee}
+    li #{t.market.name} spend #{t.balance_in.currency == 'usd' ? 'usd$' : ''}#{t.balance_in.amount}#{t.balance_in.currency == 'btc' ? 'btc' : ''} at $#{t.expected_rate} fee $#{t.expected_fee}

@@ -3,10 +3,17 @@ class Strategy < ActiveRecord::Base
   has_many :trades
 
   def self.create_two_trades(pair)
-    trade1 = pair[0].trades.create({amount_in:pair[1],
+    t1_in = Balance.create(amount: pair[1], currency: 'usd')
+    t1_out = Balance.create(currency: 'btc')
+    trade1 = pair[0].trades.create({balance_in:t1_in,
+                                    balance_out:t1_out,
                                     expected_fee:pair[2],
                                     expected_rate:pair[1]})
-    trade2 = pair[3].trades.create({amount_in:pair[4],
+
+    t2_in = Balance.create(amount: pair[4], currency: 'btc')
+    t2_out = Balance.create(currency: 'usd')
+    trade2 = pair[3].trades.create({balance_in: t2_in,
+                                    balance_out: t2_out,
                                     expected_fee:pair[5],
                                     expected_rate:pair[4]})
     strategy = Strategy.create

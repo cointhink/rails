@@ -1,7 +1,7 @@
 class Market < ActiveRecord::Base
   attr_accessible :name
   has_many :tickers
-  has_many :balances
+  has_many :balances, :as => :balanceable
   has_many :trades
 
   # Class methods
