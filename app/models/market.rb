@@ -22,7 +22,7 @@ class Market < ActiveRecord::Base
        sell_fee,
        sell_for - buy_for - buy_fee - sell_fee ]
     end
-    askbids.sort{|e| e[6]}.reverse
+    askbids.sort{|a,b| b[6] <=> a[6]}
   end
 
   def usd_balance
