@@ -7,7 +7,7 @@ gem 'jquery-rails'
 gem 'jbuilder'
 gem 'pry-rails'
 gem 'slim'
-
+gem 'thin'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
