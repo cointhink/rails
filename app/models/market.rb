@@ -7,20 +7,22 @@ class Market < ActiveRecord::Base
   def self.pair_spreads
     pairs = Combinatorics.pairs(Market.all)
     askbids = pairs.map do |m|
-      left_last = m[0].last_ticker
-      right_last = m[1].last_ticker
-      initial_amount = right_last.highest_bid_usd
+      buy_for = m[0].last_ticker.lowest_ask_usd
+      sell_for = m[1].last_ticker.highest_bid_usd
+
+      buy_fee = buy_for*(m[0].fee_percentage/100.0)
+      resultant_btc = (buy_for-buy_fee)/buy_for
+      sell_fee = resultant_btc *sell_for*(m[1].fee_percentage/100.0)
+
       [m[0].name,
-       left_last.lowest_ask_usd,
+       buy_for,
+       buy_fee,
        m[1].name,
-       right_last.highest_bid_usd,
-       initial_amount -(
-        (1-(m[0].fee_percentage/100.0))*
-        (right_last.highest_bid_usd)*
-        (1-(m[1].fee_percentage/100.0))
-         ) ]
+       sell_for,
+       sell_fee,
+       sell_for - buy_for - buy_fee - sell_fee ]
     end
-    askbids.sort{|e| e[4]}.reverse
+    askbids.sort{|e| e[6]}.reverse
   end
 
   def usd_balance

@@ -19,4 +19,4 @@ div.clearboth
   | Recommendation
 
 div
-  | Buy at #{@best_pair[0]} for $#{@best_pair[1]} and sell at #{@best_pair[2]} for $#{@best_pair[3]} for a profit of $#{"%0.3f" % @best_pair[4]} after fees.
+  | Buy at #{@best_pair[0]} for $#{@best_pair[1]} (fee $#{"%0.3f" % @best_pair[2]}) and sell at #{@best_pair[3]} for $#{@best_pair[4]} (fee $#{"%0.3f" % @best_pair[5]}) for a profit of $#{"%0.3f" % @best_pair[6]}.
