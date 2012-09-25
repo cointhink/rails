@@ -8,6 +8,7 @@ namespace :btc do
       puts "#{market.name} #{record.inspect}"
     end
 
+    puts "Calculating best pair"
     best_pair = Market.pair_spreads.first
     Strategy.create_two_trades(best_pair)
   end

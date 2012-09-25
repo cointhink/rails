@@ -17,6 +17,9 @@ div#legend
 
 div.clearboth
 
+div
+  | 24 hour total $#{"%0.3f"%Strategy.total_since(24.hours.ago)}
+
 - if @strategy
   div
     | Last Strategy #{@strategy.created_at}

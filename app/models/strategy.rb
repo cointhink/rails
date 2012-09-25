@@ -1,6 +1,11 @@
 class Strategy < ActiveRecord::Base
   # attr_accessible :title, :body
-  has_many :trades
+  has_many :trades, :dependent => :destroy
+
+  def self.actionable_pairs(pairs)
+    # filter by depth at price or available market cash
+    # which ever runs out first
+  end
 
   def self.create_two_trades(pair)
     t1_in = Balance.create(amount: pair[1], currency: 'usd')
@@ -19,5 +24,13 @@ class Strategy < ActiveRecord::Base
     strategy = Strategy.create
     strategy.trades << trade1
     strategy.trades << trade2
+  end
+
+  def self.total_since(time)
+    trades = Strategy.where(["created_at > ?", time]).map do |s|
+              [s.trades.first.balance_in.amount,
+               s.trades.last.calculated_out]
+            end
+    trades.sum{|t| t.last - t.first}
   end
 end
