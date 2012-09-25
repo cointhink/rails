@@ -26,14 +26,12 @@ class Market < ActiveRecord::Base
     askbids.sort{|a,b| b[6] <=> a[6]}
   end
 
-  def usd_balance
-    last = balances.usd.last
-    last ? last.amount : 0
+  def usd
+    balances.usd.last || balances.create({currency:"usd", amount: 0})
   end
 
-  def btc_balance
-    last = balances.btc.last
-    last ? last.amount : 0
+  def btc
+    balances.btc.last || balances.create({currency:"btc", amount: 0})
   end
 
   def last_ticker
