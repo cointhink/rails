@@ -20,7 +20,11 @@ namespace :btc do
   task :strategy => :environment do
     pairs = Market.pair_spreads
 
-    price_pairs = Strategy.price_pairs(pairs)
-    puts price_pairs.inspect
+    profitable_pairs = Strategy.profitable_pairs_asks
+    profitable_pairs.each do |pair|
+      ask_momentum = pair[1].sum{|a| a.momentum}
+      puts "buy market #{pair[0].name} $#{"%0.3f"%ask_momentum} investment. #{pair[2].name}"
+      pair[1].each{|a| puts "ask: $#{a.price} #{a.quantity}btc =$#{a.momentum}"}
+    end
   end
 end
