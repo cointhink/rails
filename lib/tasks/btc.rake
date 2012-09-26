@@ -4,8 +4,9 @@ namespace :btc do
 
     ['mtgox', 'bitstamp', 'intersango', 'btce'].each do |market_name|
       market = Market.find_or_create_by_name(market_name)
-      record = market.data_poll
-      puts "#{market.name} #{record.inspect}"
+      puts "#{market.name} polling"
+      market.data_poll
+      puts "#{market.name} polled"
     end
 
     puts "Calculating best pair"

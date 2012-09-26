@@ -3,6 +3,7 @@ class Market < ActiveRecord::Base
   has_many :tickers
   has_many :balances, :as => :balanceable
   has_many :trades
+  has_many :depths
 
   # Class methods
   def self.pair_spreads
@@ -43,7 +44,13 @@ class Market < ActiveRecord::Base
   end
 
   def data_poll
-    attrs = api.data_poll
+    attrs = api.ticker_poll
     tickers.create(attrs)
+
+    depth_data = api.depth_poll
+    ActiveRecord::Base.transaction do
+      depths.create(depth_data["bids"])
+      depths.create(depth_data["asks"])
+    end
   end
 end
