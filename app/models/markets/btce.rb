@@ -4,5 +4,7 @@ class Markets::Btce
     #unbelivable bug - buy/sell is swapped in the api results
     attrs = {:highest_bid_usd => data["sell"],
              :lowest_ask_usd => data["buy"]}
+
+    depth = JSON.parse(Faraday.get('https://btc-e.com/api/2/btc_usd/depth').body)
   end
 end
