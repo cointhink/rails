@@ -4,4 +4,8 @@ class Depth < ActiveRecord::Base
 
   scope :asks, where(bidask: "ask")
   scope :bids, where(bidask: "bid")
+
+  def momentum
+    price*quantity
+  end
 end
