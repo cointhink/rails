@@ -2,9 +2,15 @@ class Strategy < ActiveRecord::Base
   # attr_accessible :title, :body
   has_many :trades, :dependent => :destroy
 
-  def self.actionable_pairs(pairs)
-    # filter by depth at price or available market cash
-    # which ever runs out first
+  def self.price_pairs(pairs)
+    # filter for asks with matching bids, price only
+    Market.all.permutation(2) do |buy_market, sell_market|
+      asks = buy_market.depth_runs.last.depths.asks
+      bids = sell_market.depth_runs.last.depths.bids
+
+      profitable_asks = asks.where("price < ?", bids.maximum(:price))
+      puts "#{asks.size} #{profitable_asks.size} #{bids.size}"
+    end
   end
 
   def self.create_two_trades(pair)
