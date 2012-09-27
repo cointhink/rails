@@ -3,19 +3,33 @@ class Strategy < ActiveRecord::Base
   has_many :trades, :dependent => :destroy
 
   def self.satisfied_bids
+    run_ids = Market.all.map{|market| market.depth_runs.last.id}
+    depths = Depth.where("depth_run_id in (?)", run_ids)
 
-    runs = Market.all.map{|market| market.depth_runs.last.id}
-    depths = Depth.where("depth_run_id in (?)", runs)
+    asks = depths.asks.order("price asc")
+    bids = depths.bids.order("price desc")
 
-    asks = depths.asks.order("price desc")
-    bids = depths.bids.order("price asc")
-
-    #max_bid = bids.maximum(:price)
-    #max_bid_after_fee = max_bid*(1-(buy_market.fee_percentage/100))
-    #profitable_asks = asks.where("price < ?", max_bid_after_fee)
-    #if profitable_asks.count > 0
-    #  profitable_pairs << [buy_market, profitable_asks, sell_market, []]
-    #end
+    bid = bids.first
+    fee_percentage = bid.depth_run.market.fee_percentage
+    remaining_factor = 1-(fee_percentage/100.0)
+    bid_price_with_fee = bid.price*remaining_factor
+    puts "Target price $#{bid_price_with_fee} ($#{bid.price} original, #{fee_percentage}% fee. #{remaining_factor})"
+    matching_asks = asks.where('price < ?', bid_price_with_fee)
+    action_asks = []
+    momentum_left = bid.momentum
+    matching_asks.each do |ask|
+      if momentum_left > 0
+        if momentum_left >= ask.momentum
+          quantity = ask.quantity
+        else
+          quantity = momentum_left / ask.price
+        end
+        momentum_left -= ask.price*quantity
+        action_asks << [ask, quantity]
+      end
+    end
+    action = [bid, action_asks]
+    [action] # single action strategy
   end
 
   def self.create_two_trades(pair)

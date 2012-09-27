@@ -45,7 +45,8 @@ class Market < ActiveRecord::Base
 
   def data_poll
     ticker_poll
-    depth_poll
+    depth_data = depth_poll
+    [name, depth_data["bids"].size, depth_data["asks"].size]
   end
 
   def ticker_poll
@@ -60,5 +61,6 @@ class Market < ActiveRecord::Base
       depth_run.depths.create(depth_data["bids"])
       depth_run.depths.create(depth_data["asks"])
     end
+    depth_data
   end
 end

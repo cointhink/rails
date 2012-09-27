@@ -4,8 +4,8 @@ namespace :btc do
 
     Market.all.each do |market|
       puts "#{market.name} polling"
-      market.data_poll
-      puts "#{market.name} polled"
+      stats = market.data_poll
+      puts stats.inspect
     end
 
     puts "Calculating best pair"
@@ -19,6 +19,15 @@ namespace :btc do
   desc 'Best strategy for current conditions'
   task :strategy => :environment do
     actions = Strategy.satisfied_bids
-    actions.each{|action| puts action.inspect}
+    actions.each do |action|
+      bid = action.first
+      actions = action.last
+      puts "bid #{bid.depth_run.market.name} $#{bid.price} x#{bid.quantity}"
+      actions.each do |action|
+        ask = action.first
+        quantity = action.last
+        puts "ask #{ask.depth_run.market.name} $#{ask.price} x#{ask.quantity} #{quantity}"
+      end
+    end
   end
 end
