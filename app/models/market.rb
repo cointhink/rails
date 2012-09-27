@@ -44,9 +44,16 @@ class Market < ActiveRecord::Base
   end
 
   def data_poll
+    ticker_poll
+    depth_poll
+  end
+
+  def ticker_poll
     attrs = api.ticker_poll
     tickers.create(attrs)
+  end
 
+  def depth_poll
     depth_data = api.depth_poll
     depth_run = depth_runs.create
     ActiveRecord::Base.transaction do
