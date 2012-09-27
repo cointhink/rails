@@ -4,12 +4,11 @@ class Strategy < ActiveRecord::Base
 
   def self.satisfied_bids
 
-    asks = []
-    bids = []
-    Market.all.each do |market|
-      asks += market.depth_runs.last.depths.asks.order("price desc")
-      bids += market.depth_runs.last.depths.bids.order("price asc")
-    end
+    runs = Market.all.map{|market| market.depth_runs.last.id}
+    depths = Depth.where("depth_run_id in ?", runs)
+
+    asks = depths.asks.order("price desc")
+    bids = depths.bids.order("price asc")
 
     #max_bid = bids.maximum(:price)
     #max_bid_after_fee = max_bid*(1-(buy_market.fee_percentage/100))

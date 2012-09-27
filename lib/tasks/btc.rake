@@ -10,20 +10,15 @@ namespace :btc do
 
     puts "Calculating best pair"
     pairs = Market.pair_spreads
-    best_pair = pairs.first
-    Strategy.create_two_trades(best_pair)
-
+    if pairs.size > 0
+      best_pair = pairs.first
+      Strategy.create_two_trades(best_pair)
+    end
   end
 
   desc 'Best strategy for current conditions'
   task :strategy => :environment do
-    pairs = Market.pair_spreads
-
-    profitable_pairs = Strategy.profitable_pairs_asks
-    profitable_pairs.each do |pair|
-      ask_momentum = pair[1].sum{|a| a.momentum}
-      puts "buy market #{pair[0].name} $#{"%0.3f"%ask_momentum} investment. #{pair[2].name}"
-      pair[1].each{|a| puts "ask: $#{a.price} #{a.quantity}btc =$#{a.momentum}"}
-    end
+    actions = Strategy.satisfied_bids
+    actions.each{|action| put action.inspect}
   end
 end
