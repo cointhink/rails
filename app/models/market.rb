@@ -1,5 +1,5 @@
 class Market < ActiveRecord::Base
-  attr_accessible :name
+  attr_accessible :name, :fee_percentage
   has_many :tickers
   has_many :balances, :as => :balanceable
   has_many :trades

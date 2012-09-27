@@ -19,6 +19,6 @@ namespace :btc do
   desc 'Best strategy for current conditions'
   task :strategy => :environment do
     actions = Strategy.satisfied_bids
-    actions.each{|action| put action.inspect}
+    actions.each{|action| puts action.inspect}
   end
 end

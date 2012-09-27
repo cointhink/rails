@@ -5,7 +5,7 @@ class Strategy < ActiveRecord::Base
   def self.satisfied_bids
 
     runs = Market.all.map{|market| market.depth_runs.last.id}
-    depths = Depth.where("depth_run_id in ?", runs)
+    depths = Depth.where("depth_run_id in (?)", runs)
 
     asks = depths.asks.order("price desc")
     bids = depths.bids.order("price asc")
