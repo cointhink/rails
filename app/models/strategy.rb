@@ -15,9 +15,16 @@ class Strategy < ActiveRecord::Base
     bid_price_with_fee = bid.price*remaining_factor
     puts "Target price $#{bid_price_with_fee} ($#{bid.price} original, #{fee_percentage}% fee. #{remaining_factor})"
     matching_asks = asks.where('price < ?', bid_price_with_fee)
-    action_asks = []
-    momentum_left = bid.momentum
-    matching_asks.each do |ask|
+    action_asks = consume_depths(matching_asks, bid.momentum)
+
+    action = [bid, action_asks]
+    [action] # single action strategy
+  end
+
+  def self.consume_depths(depths, amount_usd)
+    momentum_left = amount_usd
+    actions = []
+    depths.each do |ask|
       if momentum_left > 0
         if momentum_left >= ask.momentum
           quantity = ask.quantity
@@ -25,11 +32,10 @@ class Strategy < ActiveRecord::Base
           quantity = momentum_left / ask.price
         end
         momentum_left -= ask.price*quantity
-        action_asks << [ask, quantity]
+        actions << [ask, quantity]
       end
     end
-    action = [bid, action_asks]
-    [action] # single action strategy
+    actions
   end
 
   def self.create_two_trades(pair)
