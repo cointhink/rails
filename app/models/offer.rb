@@ -6,6 +6,10 @@ class Offer < ActiveRecord::Base
   scope :asks, where(bidask: "ask")
   scope :bids, where(bidask: "bid")
 
+  def balance
+    Balance.new(amount: price, currency: depth_run.market.right_currency)
+  end
+
   def momentum
     in_balance.amount*out_balance.amount
   end
