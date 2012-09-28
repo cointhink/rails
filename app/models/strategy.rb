@@ -35,7 +35,7 @@ class Strategy < ActiveRecord::Base
   def self.consume_depths(depths, momentum)
     actions = []
     depths.each do |ask|
-      if momentum > 0
+      if momentum > 0.00001 #floatingpoint
         if momentum >= ask.momentum
           quantity = ask.quantity
         else
