@@ -32,17 +32,16 @@ class Strategy < ActiveRecord::Base
     [action] # single action strategy
   end
 
-  def self.consume_depths(depths, amount_usd)
-    momentum_left = amount_usd
+  def self.consume_depths(depths, momentum)
     actions = []
     depths.each do |ask|
-      if momentum_left > 0
-        if momentum_left >= ask.momentum
+      if momentum > 0
+        if momentum >= ask.momentum
           quantity = ask.quantity
         else
-          quantity = momentum_left / ask.price
+          quantity = momentum / ask.price
         end
-        momentum_left -= ask.price*quantity
+        momentum -= ask.price*quantity
         actions << [ask, quantity]
       end
     end
