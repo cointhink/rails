@@ -48,7 +48,7 @@ class Market < ActiveRecord::Base
     depth_data = depth_poll
     [name,
      "bid count: #{depth_data["bids"].size}",
-     "bid max price: #{depth_data["bids"].max{|b| b[:in_balance_attributes][:amount]}}",
+     "bid max price: #{depth_data["bids"].max{|b| b[:balance_attributes][:amount]}}",
      depth_data["asks"].size]
   end
 
