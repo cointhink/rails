@@ -33,7 +33,7 @@ class Strategy < ActiveRecord::Base
   end
 
   def self.consume_depths(depths, money)
-    puts "Buying #{money.amount}#{money.currency} from #{depths.size} offers"
+    puts "Buying the first #{money.amount}#{money.currency} from #{depths.size} offers"
     momentum = money.amount
     actions = []
     depths.each do |depth|
