@@ -26,23 +26,35 @@ class Strategy < ActiveRecord::Base
     bid_price_with_fee = bid.price*remaining_factor
     puts "Target price $#{bid_price_with_fee} ($#{bid.price} original, #{fee_percentage}% fee. #{remaining_factor})"
     matching_asks = asks.where('price < ?', bid_price_with_fee)
-    action_asks = consume_depths(matching_asks, bid.momentum)
+    action_asks = consume_depths(matching_asks, Balance.usd(bid.momentum))
 
     action = [bid, action_asks]
     [action] # single action strategy
   end
 
-  def self.consume_depths(depths, momentum)
+  def self.consume_depths(depths, money)
+    puts "Buying #{money.amount}#{money.currency} from #{depths.size} offers"
+    momentum = money.amount
     actions = []
-    depths.each do |ask|
+    depths.each do |depth|
       if momentum > 0.00001 #floatingpoint
-        if momentum >= ask.momentum
-          quantity = ask.quantity
-        else
-          quantity = momentum / ask.price
+        if money.currency == 'usd'
+          raise "Wrong currency!" unless depth.bidask == 'ask'
+          offer_quantity = depth.quantity
+          offer_price = depth.price
         end
-        momentum -= ask.price*quantity
-        actions << [ask, quantity]
+        if money.currency == 'btc'
+          raise "Wrong currency!" unless depth.bidask == 'bid'
+          offer_quantity = depth.price
+          offer_price = depth.quantity
+        end
+        if momentum >= depth.momentum
+          quantity = offer_quantity
+        else
+          quantity = momentum / offer_price
+        end
+        momentum -= offer_price*quantity
+        actions << [depth, quantity]
       end
     end
     actions
