@@ -13,9 +13,9 @@ class Market < ActiveRecord::Base
       buy_for = m[0].last_ticker.lowest_ask_usd
       sell_for = m[1].last_ticker.highest_bid_usd
 
-      buy_fee = buy_for*(m[0].fee_percentage/100.0)
+      buy_fee = buy_for*(m[0].exchange.fee_percentage/100.0)
       resultant_btc = (buy_for-buy_fee)/buy_for
-      sell_fee = resultant_btc*(m[1].fee_percentage/100.0)
+      sell_fee = resultant_btc*(m[1].exchange.fee_percentage/100.0)
 
       [m[0],
        buy_for,
