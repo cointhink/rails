@@ -11,7 +11,7 @@ namespace :btc do
     end
 
     puts "Calculating best pair"
-    pairs = Market.pair_spreads
+    pairs = Strategy.pair_spreads
     if pairs.size > 0
       best_pair = pairs.first
       Strategy.create_two_trades(best_pair)

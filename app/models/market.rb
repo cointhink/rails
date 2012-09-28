@@ -6,28 +6,6 @@ class Market < ActiveRecord::Base
   has_many :trades
   has_many :depth_runs
 
-  # Class methods
-  def self.pair_spreads
-    pairs = Combinatorics.pairs(Market.all)
-    askbids = pairs.map do |m|
-      buy_for = m[0].last_ticker.lowest_ask_usd
-      sell_for = m[1].last_ticker.highest_bid_usd
-
-      buy_fee = buy_for*(m[0].exchange.fee_percentage/100.0)
-      resultant_btc = (buy_for-buy_fee)/buy_for
-      sell_fee = resultant_btc*(m[1].exchange.fee_percentage/100.0)
-
-      [m[0],
-       buy_for,
-       buy_fee,
-       m[1],
-       1/sell_for,
-       sell_fee,
-       sell_for - buy_for - buy_fee - sell_fee ]
-    end
-    askbids.sort{|a,b| b[6] <=> a[6]}
-  end
-
   def usd
     balances.usd.last || balances.create({currency:"usd", amount: 0})
   end
