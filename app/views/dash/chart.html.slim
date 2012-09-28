@@ -5,7 +5,7 @@ div Market Balances
 
 ul
   - Market.all.each do |market|
-    li #{market.name} | fee #{market.fee_percentage}% | ask $#{market.tickers.last.lowest_ask_usd} | bid $#{market.tickers.last.highest_bid_usd} | $#{market.usd.amount} | #{market.btc.amount} BTC
+    li #{market.exchange.name} | fee #{market.exchange.fee_percentage}% | ask $#{market.tickers.last.lowest_ask_usd} | bid $#{market.tickers.last.highest_bid_usd} | $#{market.usd.amount} | #{market.btc.amount} BTC
 
 div Chart
 

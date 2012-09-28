@@ -2,10 +2,12 @@ namespace :btc do
   desc 'Record stats about each market'
   task :snapshot => :environment do
 
-    Market.all.each do |market|
-      puts "#{market.name} polling"
-      stats = market.data_poll
-      puts stats.inspect
+    Exchange.all.each do |exchange|
+      exchange.markets.each do |market|
+        puts "#{exchange.name} #{market.left_currency}/#{market.right_currency} polling"
+        stats = market.data_poll
+        puts stats.inspect
+      end
     end
 
     puts "Calculating best pair"

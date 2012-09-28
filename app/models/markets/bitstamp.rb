@@ -9,14 +9,14 @@ class Markets::Bitstamp
     data = JSON.parse(Faraday.get('https://www.bitstamp.net/api/order_book/').body)
     data["asks"].map! do |offer|
       { bidask: "ask",
-        in_balance_attributes: {amount:offer.first, currency: 'usd'},
-        out_balance_attributes: {amount:offer.last, currency: 'btc'}
+        price: offer.first,
+        quantity: offer.last
       }
     end
     data["bids"].map! do |offer|
       { bidask: "bid",
-        in_balance_attributes: {amount:offer.last, currency: 'btc'},
-        out_balance_attributes: {amount:offer.first, currency: 'usd'}
+        price: offer.first,
+        quantity: offer.last
       }
     end
     data

@@ -9,17 +9,15 @@ class Markets::Mtgox
     data = JSON.parse(Faraday.get('https://mtgox.com/api/1/BTCUSD/depth').body)["return"]
     data["asks"].map! do |offer|
       { bidask: "ask",
-        currency: "btc",
         listed_at: Time.at(offer["stamp"].to_i/1000000),
-        balance_attributes: {amount:offer["price"], currency: 'usd'},
+        price: offer["price"],
         quantity: offer["amount"]
       }
     end
     data["bids"].map! do |offer|
       { bidask: "bid",
-        currency: "btc",
         listed_at: Time.at(offer["stamp"].to_i/1000000),
-        balance_attributes: {amount:offer["price"], currency: 'usd'},
+        price: offer["price"],
         quantity: offer["amount"]
       }
     end

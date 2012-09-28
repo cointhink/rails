@@ -1,5 +1,6 @@
 class Market < ActiveRecord::Base
-  attr_accessible :name, :fee_percentage
+  attr_accessible :left_currency, :right_currency
+  belongs_to :exchange
   has_many :tickers
   has_many :balances, :as => :balanceable
   has_many :trades
@@ -40,15 +41,15 @@ class Market < ActiveRecord::Base
   end
 
   def api
-    "Markets::#{name.classify}".constantize.new
+    "Markets::#{exchange.name.classify}".constantize.new
   end
 
   def data_poll
     ticker_poll
     depth_data = depth_poll
-    [name,
+    [exchange.name,
      "bid count: #{depth_data["bids"].size}",
-     "bid max price: #{depth_data["bids"].max{|b| b[:balance_attributes][:amount]}}",
+     "bid max price: #{depth_data["bids"].max{|b| b[:price].to_i}}",
      depth_data["asks"].size]
   end
 

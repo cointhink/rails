@@ -10,14 +10,14 @@ class Markets::Btce
     data = JSON.parse(Faraday.get('https://btc-e.com/api/2/btc_usd/depth').body)
     data["asks"].map! do |offer|
       { bidask: "ask",
-        in_balance_attributes: {amount:offer.first, currency: 'usd'},
-        out_balance_attributes: {amount:offer.last, currency: 'btc'}
+        price: offer.first,
+        quantity: offer.last
       }
     end
     data["bids"].map! do |offer|
       { bidask: "bid",
-        in_balance_attributes: {amount:offer.last, currency: 'btc'},
-        out_balance_attributes: {amount:offer.first, currency: 'usd'}
+        price: offer.first,
+        quantity: offer.last
       }
     end
     data
