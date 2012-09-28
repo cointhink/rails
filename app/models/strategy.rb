@@ -77,6 +77,7 @@ class Strategy < ActiveRecord::Base
     strategy = Strategy.create
     strategy.trades << trade1
     strategy.trades << trade2
+    puts strategy.trades.inspect
   end
 
   def self.total_since(time)

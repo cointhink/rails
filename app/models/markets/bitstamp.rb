@@ -7,18 +7,16 @@ class Markets::Bitstamp
 
   def depth_poll
     data = JSON.parse(Faraday.get('https://www.bitstamp.net/api/order_book/').body)
-    data["asks"].map! do |a|
+    data["asks"].map! do |offer|
       { bidask: "ask",
-        currency: "usd",
-        price: a.first,
-        quantity: a.last
+        in_balance: Balance.make_usd(offer.first),
+        out_balance: Balance.make_btc(offer.last)
       }
     end
-    data["bids"].map! do |a|
+    data["bids"].map! do |offer|
       { bidask: "bid",
-        currency: "usd",
-        price: a.first,
-        quantity: a.last
+        in_balance: Balance.make_btc(offer.last),
+        out_balance: Balance.make_usd(offer.first)
       }
     end
     data

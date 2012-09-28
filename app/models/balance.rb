@@ -5,11 +5,11 @@ class Balance < ActiveRecord::Base
   scope :usd, where(:currency => "usd")
   scope :btc, where(:currency => "btc")
 
-  def self.btc(amount)
+  def self.make_btc(amount)
     Balance.new(amount:amount,currency:'btc')
   end
 
-  def self.usd(amount)
+  def self.make_usd(amount)
     Balance.new(amount:amount,currency:'usd')
   end
 end

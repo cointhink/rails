@@ -58,8 +58,8 @@ class Market < ActiveRecord::Base
     depth_data = api.depth_poll
     depth_run = depth_runs.create
     ActiveRecord::Base.transaction do
-      depth_run.depths.create(depth_data["bids"])
-      depth_run.depths.create(depth_data["asks"])
+      depth_run.offers.create(depth_data["bids"])
+      depth_run.offers.create(depth_data["asks"])
     end
     depth_data
   end

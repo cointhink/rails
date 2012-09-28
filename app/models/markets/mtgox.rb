@@ -7,20 +7,18 @@ class Markets::Mtgox
 
   def depth_poll
     data = JSON.parse(Faraday.get('https://mtgox.com/api/1/BTCUSD/depth').body)["return"]
-    data["asks"].map! do |a|
+    data["asks"].map! do |offer|
       { bidask: "ask",
-        currency: "usd",
-        listed_at: Time.at(a["stamp"].to_i/1000000),
-        price: a["price"],
-        quantity: a["amount"]
+        listed_at: Time.at(offer["stamp"].to_i/1000000),
+        in_balance: Balance.make_usd(offer["price"]),
+        out_balance: Balance.make_btc(offer["amount"])
       }
     end
-    data["bids"].map! do |a|
+    data["bids"].map! do |offer|
       { bidask: "bid",
-        currency: "usd",
-        listed_at: Time.at(a["stamp"].to_i/1000000),
-        price: a["price"],
-        quantity: a["amount"]
+        listed_at: Time.at(offer["stamp"].to_i/1000000),
+        in_balance: Balance.make_btc(offer["price"]),
+        out_balance: Balance.make_usd(offer["amount"])
       }
     end
     data

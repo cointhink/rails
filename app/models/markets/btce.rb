@@ -8,18 +8,16 @@ class Markets::Btce
 
   def depth_poll
     data = JSON.parse(Faraday.get('https://btc-e.com/api/2/btc_usd/depth').body)
-    data["asks"].map! do |a|
+    data["asks"].map! do |offer|
       { bidask: "ask",
-        currency: "usd",
-        price: a.first,
-        quantity: a.last
+        in_balance: Balance.make_usd(offer.first),
+        out_balance: Balance.make_btc(offer.last)
       }
     end
-    data["bids"].map! do |a|
+    data["bids"].map! do |offer|
       { bidask: "bid",
-        currency: "usd",
-        price: a.first,
-        quantity: a.last
+        in_balance: Balance.make_btc(offer.last),
+        out_balance: Balance.make_usd(offer.first)
       }
     end
     data
