@@ -9,14 +9,14 @@ class Markets::Intersango
     data = JSON.parse(Faraday.get('https://intersango.com/api/depth.php?currency_pair_id=3').body)
     data["asks"].map! do |offer|
       { bidask: "ask",
-        in_balance: Balance.make_usd(offer.first),
-        out_balance: Balance.make_btc(offer.last)
+        in_balance_attributes: {amount:offer.first, currency: 'usd'},
+        out_balance_attributes: {amount:offer.last, currency: 'btc'}
       }
     end
     data["bids"].map! do |offer|
       { bidask: "bid",
-        in_balance: Balance.make_btc(offer.last),
-        out_balance: Balance.make_usd(offer.first)
+        in_balance_attributes: {amount:offer.last, currency: 'btc'},
+        out_balance_attributes: {amount:offer.first, currency: 'usd'}
       }
     end
     data

@@ -15,18 +15,19 @@ class Strategy < ActiveRecord::Base
 
   def self.satisfied_bids
     run_ids = Market.all.map{|market| market.depth_runs.last.id}
-    depths = Offer.where("depth_run_id in (?)", run_ids)
+    depths = Offer.where("depth_run_id in (?)", run_ids).joins(:in_balance)
 
-    asks = depths.joins(:in_balance).asks.order("balances.amount asc")
-    bids = depths.joins(:out_balance).bids.order("balances.amount desc")
-puts bids.explain
+    asks = depths.asks.order("balances.amount asc")
+    bids = depths.bids.order("balances.amount desc")
+
     bid = bids.first
+puts "#{bid.inspect} #{bid.in_balance.inspect} #{bid.out_balance.inspect}"
     fee_percentage = bid.depth_run.market.fee_percentage
     remaining_factor = 1-(fee_percentage/100.0)
-    bid_price_with_fee = bid.balance.amount*remaining_factor
-    puts "Target price $#{bid_price_with_fee} ($#{bid.balance.amount} original, #{fee_percentage}% fee. #{remaining_factor})"
+    bid_price_with_fee = bid.in_balance.amount*remaining_factor
+    puts "Target price $#{bid_price_with_fee} ($#{bid.in_balance.amount} original, #{fee_percentage}% fee. #{remaining_factor})"
     matching_asks = asks.where('balances.amount < ?', bid_price_with_fee)
-    action_asks = consume_depths(matching_asks, bid.balance)
+    action_asks = consume_depths(matching_asks, bid.in_balance)
 
     action = [bid, action_asks]
     [action] # single action strategy
@@ -38,8 +39,8 @@ puts bids.explain
     actions = []
     offers.each do |offer|
       if momentum > 0.00001 #floatingpoint
-        quantity = [momentum / offer.balance.amount, offer.other_balance.amount].min
-        momentum -= offer.balance.amount*quantity
+        quantity = [momentum / offer.in_balance.amount, offer.out_balance.amount].min
+        momentum -= offer.in_balance.amount*quantity
         actions << [offer, quantity]
       end
     end

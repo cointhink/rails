@@ -10,15 +10,15 @@ class Markets::Mtgox
     data["asks"].map! do |offer|
       { bidask: "ask",
         listed_at: Time.at(offer["stamp"].to_i/1000000),
-        in_balance: Balance.make_usd(offer["price"]),
-        out_balance: Balance.make_btc(offer["amount"])
+        in_balance_attributes: {amount:offer["price"], currency: 'usd'},
+        out_balance_attributes: {amount:offer["amount"], currency: 'btc'}
       }
     end
     data["bids"].map! do |offer|
       { bidask: "bid",
         listed_at: Time.at(offer["stamp"].to_i/1000000),
-        in_balance: Balance.make_btc(offer["price"]),
-        out_balance: Balance.make_usd(offer["amount"])
+        in_balance_attributes: {amount:offer["amount"], currency: 'btc'},
+        out_balance_attributes: {amount:offer["price"], currency: 'usd'}
       }
     end
     data
