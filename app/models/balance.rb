@@ -12,4 +12,8 @@ class Balance < ActiveRecord::Base
   def self.make_usd(amount)
     Balance.new(amount:amount,currency:'usd')
   end
+
+  def *(num)
+    Balance.new(amount: amount*num, currency: currency)
+  end
 end
