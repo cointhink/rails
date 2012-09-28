@@ -16,17 +16,19 @@ namespace :btc do
     end
   end
 
-  desc 'Best strategy for current conditions'
-  task :strategy => :environment do
-    actions = Strategy.satisfied_bids
-    actions.each do |action|
-      bid = action.first
-      actions = action.last
-      puts "bid #{bid.depth_run.market.name} $#{bid.price} x#{bid.quantity}"
+  namespace :strategy do
+    desc 'Operate on the best bid'
+    task :bestbid => :environment do
+      actions = Strategy.satisfied_bids
       actions.each do |action|
-        ask = action.first
-        quantity = action.last
-        puts "ask #{ask.depth_run.market.name} $#{ask.price} x#{ask.quantity} #{quantity}"
+        bid = action.first
+        actions = action.last
+        puts "bid #{bid.depth_run.market.name} $#{bid.price} x#{bid.quantity}"
+        actions.each do |action|
+          ask = action.first
+          quantity = action.last
+          puts "ask #{ask.depth_run.market.name} $#{ask.price} x#{ask.quantity} #{quantity}"
+        end
       end
     end
   end
