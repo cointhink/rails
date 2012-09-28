@@ -27,7 +27,7 @@ class Strategy < ActiveRecord::Base
     bid_after_fee = bid.balance*remaining_factor
     puts "Finding asks above #{bid_after_fee.amount}#{bid_after_fee.currency} (#{bid.balance.amount}#{bid.balance.currency} original, #{fee_percentage}% fee)"
     matching_asks = asks.where('price < ?', bid_after_fee.amount)
-    action_asks = consume_depths(matching_asks, bid_after_fee*bid.quantity)
+    action_asks = consume_depths(matching_asks, Balance.make_usd(100))
 
     action = [bid, action_asks]
     [action] # single action strategy
@@ -41,7 +41,7 @@ class Strategy < ActiveRecord::Base
       if momentum > 0.00001 #floatingpoint
         quantity = [momentum / offer.balance.amount, offer.quantity].min
         momentum -= offer.balance.amount*quantity
-        actions << [offer, quantity]
+        actions << {ask: offer, quantity: quantity, subtotal: money.amount-momentum}
       end
     end
     actions
