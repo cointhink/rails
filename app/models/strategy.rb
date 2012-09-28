@@ -15,46 +15,32 @@ class Strategy < ActiveRecord::Base
 
   def self.satisfied_bids
     run_ids = Market.all.map{|market| market.depth_runs.last.id}
-    depths = Depth.where("depth_run_id in (?)", run_ids)
+    depths = Offer.where("depth_run_id in (?)", run_ids)
 
-    asks = depths.asks.order("price asc")
-    bids = depths.bids.order("price desc")
-
+    asks = depths.joins(:in_balance).asks.order("balances.amount asc")
+    bids = depths.joins(:out_balance).bids.order("balances.amount desc")
+puts bids.explain
     bid = bids.first
     fee_percentage = bid.depth_run.market.fee_percentage
     remaining_factor = 1-(fee_percentage/100.0)
-    bid_price_with_fee = bid.price*remaining_factor
-    puts "Target price $#{bid_price_with_fee} ($#{bid.price} original, #{fee_percentage}% fee. #{remaining_factor})"
-    matching_asks = asks.where('price < ?', bid_price_with_fee)
-    action_asks = consume_depths(matching_asks, Balance.usd(bid.momentum))
+    bid_price_with_fee = bid.balance.amount*remaining_factor
+    puts "Target price $#{bid_price_with_fee} ($#{bid.balance.amount} original, #{fee_percentage}% fee. #{remaining_factor})"
+    matching_asks = asks.where('balances.amount < ?', bid_price_with_fee)
+    action_asks = consume_depths(matching_asks, bid.balance)
 
     action = [bid, action_asks]
     [action] # single action strategy
   end
 
-  def self.consume_depths(depths, money)
-    puts "Buying the first #{money.amount}#{money.currency} from #{depths.size} offers"
+  def self.consume_depths(offers, money)
+    puts "Buying the first #{money.amount}#{money.currency} from #{offers.size} offers"
     momentum = money.amount
     actions = []
-    depths.each do |depth|
+    offers.each do |offer|
       if momentum > 0.00001 #floatingpoint
-        if money.currency == 'usd'
-          raise "Wrong currency!" unless depth.bidask == 'ask'
-          offer_quantity = depth.quantity
-          offer_price = depth.price
-        end
-        if money.currency == 'btc'
-          raise "Wrong currency!" unless depth.bidask == 'bid'
-          offer_quantity = depth.price
-          offer_price = depth.quantity
-        end
-        if momentum >= depth.momentum
-          quantity = offer_quantity
-        else
-          quantity = momentum / offer_price
-        end
-        momentum -= offer_price*quantity
-        actions << [depth, quantity]
+        quantity = [momentum / offer.balance.amount, offer.other_balance.amount].min
+        momentum -= offer.balance.amount*quantity
+        actions << [offer, quantity]
       end
     end
     actions

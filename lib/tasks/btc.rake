@@ -23,11 +23,11 @@ namespace :btc do
       actions.each do |action|
         bid = action.first
         actions = action.last
-        puts "bid #{bid.depth_run.market.name} $#{bid.price} x#{bid.quantity}"
+        puts "bid #{bid.depth_run.market.name} #{bid.balance.amount}#{bid.balance.currency} x#{bid.other_balance.amount}"
         actions.each do |action|
           ask = action.first
           quantity = action.last
-          puts "ask #{ask.depth_run.market.name} $#{ask.price} x#{ask.quantity} #{quantity}"
+          puts "ask #{ask.depth_run.market.name} #{ask.balance.amount}#{ask.balance.currency} x#{ask.other_balance.amount} #{quantity}"
         end
       end
     end

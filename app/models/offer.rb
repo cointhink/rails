@@ -8,7 +8,22 @@ class Offer < ActiveRecord::Base
   scope :asks, where(bidask: "ask")
   scope :bids, where(bidask: "bid")
 
+
+  def balance
+    case bidask
+    when 'ask' then in_balance
+    when 'bid' then out_balance
+    end
+  end
+
+  def other_balance
+    case bidask
+    when 'ask' then out_balance
+    when 'bid' then in_balance
+    end
+  end
+
   def momentum
-    price*quantity
+    in_balance.amount*out_balance.amount
   end
 end
