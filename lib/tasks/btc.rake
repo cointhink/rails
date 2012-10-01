@@ -38,7 +38,7 @@ namespace :btc do
     desc 'Total opportunity'
     task :opportunity => :environment do
       opportunity = Strategy.opportunity
-      puts opportunity.inspect
+      #puts opportunity.inspect
     end
   end
 end

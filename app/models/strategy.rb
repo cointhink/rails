@@ -46,12 +46,27 @@ class Strategy < ActiveRecord::Base
   end
 
   def self.clearing_offers(bids, asks)
-    # bids - offers to buy, best first
-    # asks - offers to sell, best first
+    # bids - offers to buy, price high to low
+    # asks - offers to sell, price low to high
 
-    asks.each do |ask|
-      bid_worksheet = bids.map{|bid| {bid: bid, remaining: bid.momentum}}
-
+    puts "Opportunity calc started. bid count #{bids.size} ask count #{asks.size}"
+    bids = bids.all[0,20]
+    asks.each_with_index do |ask, i|
+      print "#{i}. " if i%100==0
+      if bids.first.price > ask.price
+        good_bids = bids.select{|b| b.price > ask.price}
+        if good_bids.last.quantity > 0
+          bid_worksheet = consume_depths(good_bids, Balance.make_btc(ask.quantity))
+          puts "ask $#{ask.price} x#{ask.quantity} $#{ask.momentum}"
+          coins = 0
+          bid_worksheet.each do |bw|
+            puts "  bid ##{bw[:ask].id} #{bw[:ask].price} #{"%0.5f"%bw[:ask].quantity} qty #{"%0.5f"%bw[:quantity]}"
+            bw[:ask].quantity -= bw[:quantity]
+            coins += bw[:quantity]
+          end
+          puts "coins received #{coins}"
+        end
+      end
     end
   end
 
