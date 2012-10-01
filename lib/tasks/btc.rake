@@ -34,5 +34,11 @@ namespace :btc do
         puts "Coin balance after purchase run: #{"%0.5f"%action_coins}, selling at bid = #{"%0.2f"%bid_sale}"
       end
     end
+
+    desc 'Total opportunity'
+    task :opportunity => :environment do
+      opportunity = Strategy.opportunity
+      puts opportunity.inspect
+    end
   end
 end

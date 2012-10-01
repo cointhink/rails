@@ -13,6 +13,10 @@ class Strategy < ActiveRecord::Base
     consume_depths(bids, market.btc)
   end
 
+  # total opportunity
+  def self.opportunity
+  end
+
   def self.best_bid(cash)
     run_ids = Market.all.map{|market| market.depth_runs.last.id}
     depths = Offer.where("depth_run_id in (?)", run_ids)

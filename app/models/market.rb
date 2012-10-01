@@ -27,8 +27,8 @@ class Market < ActiveRecord::Base
     depth_data = depth_poll
     [exchange.name,
      "bid count: #{depth_data["bids"].size}",
-     "bid max price: #{depth_data["bids"].max{|b| b[:price].to_i}}",
-     depth_data["asks"].size]
+     "bid max price: #{depth_data["bids"].sort{|b| b[:price].to_i}[0,3]}",
+     "ask count: #{depth_data["asks"].size}"]
   end
 
   def ticker_poll
