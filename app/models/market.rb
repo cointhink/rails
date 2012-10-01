@@ -45,4 +45,8 @@ class Market < ActiveRecord::Base
     end
     depth_data
   end
+
+  def ticker
+    tickers.last
+  end
 end
