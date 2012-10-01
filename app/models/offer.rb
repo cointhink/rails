@@ -10,7 +10,7 @@ class Offer < ActiveRecord::Base
     Balance.new(amount: price, currency: depth_run.market.right_currency)
   end
 
-  def momentum
+  def cost(quantity=quantity)
     price*quantity
   end
 end

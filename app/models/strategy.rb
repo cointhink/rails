@@ -56,12 +56,12 @@ class Strategy < ActiveRecord::Base
       if bids.first.price > ask.price
         good_bids = bids.select{|b| b.price > ask.price}
         if good_bids.last.quantity > 0
-          bid_worksheet = consume_depths(good_bids, Balance.make_btc(ask.quantity))
-          puts "ask $#{ask.price} x#{ask.quantity} $#{ask.momentum}"
+          bid_worksheet = consume_offers(good_bids, Balance.make_btc(ask.quantity))
+          puts "ask $#{ask.price} x#{ask.quantity} $#{ask.cost}"
           coins = 0
           bid_worksheet.each do |bw|
-            puts "  bid ##{bw[:ask].id} #{bw[:ask].price} #{"%0.5f"%bw[:ask].quantity} qty #{"%0.5f"%bw[:quantity]}"
-            bw[:ask].quantity -= bw[:quantity]
+            puts "  bid ##{bw[:offer].id} #{bw[:offer].price} #{"%0.5f"%bw[:offer].quantity} qty #{"%0.5f"%bw[:quantity]}"
+            bw[:offer].quantity -= bw[:quantity]
             coins += bw[:quantity]
           end
           puts "coins received #{coins}"
@@ -70,15 +70,22 @@ class Strategy < ActiveRecord::Base
     end
   end
 
-  def self.consume_depths(offers, money)
+  def self.consume_offers(offers, money)
     puts "Buying the first #{money.amount}#{money.currency} from #{offers.size} offers"
-    momentum = money.amount
+    remaining = money.amount
     actions = []
     offers.each do |offer|
-      if momentum > 0.00001 #floatingpoint
-        quantity = [momentum / offer.balance.amount, offer.quantity].min
-        momentum -= offer.balance.amount*quantity
-        actions << {ask: offer, quantity: quantity, subtotal: money.amount-momentum}
+      if remaining > 0.00001 #floatingpoint
+        if offer.bidask == 'ask'
+          raise "Currency mismatch! #{money.currency} #{offer.depth_run.market.right_currency}" unless money.currency == offer.depth_run.market.right_currency
+          quantity_to_buy = [remaining / offer.balance.amount, offer.quantity].min
+          spent = offer.balance*quantity_to_buy
+          remaining -= spent
+          actions << {offer: offer, quantity: quantity_to_buy,
+                      subtotal: money.amount-remaining}
+        elsif offer.bidask == 'bid'
+          raise "Currency mismatch! #{money.currency} #{offer.depth_run.market.left_currency}" unless money.currency == offer.depth_run.market.left_currency
+        end
       end
     end
     actions
