@@ -13,7 +13,7 @@ class Strategy < ActiveRecord::Base
     consume_depths(bids, market.btc)
   end
 
-  def self.satisfied_bids
+  def self.best_bid(cash)
     run_ids = Market.all.map{|market| market.depth_runs.last.id}
     depths = Offer.where("depth_run_id in (?)", run_ids)
 
@@ -27,7 +27,7 @@ class Strategy < ActiveRecord::Base
     bid_after_fee = bid.balance*remaining_factor
     puts "Finding asks above #{bid_after_fee.amount}#{bid_after_fee.currency} (#{bid.balance.amount}#{bid.balance.currency} original, #{fee_percentage}% fee)"
     matching_asks = asks.where('price < ?', bid_after_fee.amount)
-    action_asks = consume_depths(matching_asks, Balance.make_usd(100))
+    action_asks = consume_depths(matching_asks, cash)
 
     action = [bid, action_asks]
     [action] # single action strategy

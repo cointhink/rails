@@ -20,8 +20,8 @@ namespace :btc do
 
   namespace :strategy do
     desc 'Operate on the best bid'
-    task :bestbid => :environment do
-      actions = Strategy.satisfied_bids
+    task :bestbid, [:amount] => :environment do |task, args|
+      actions = Strategy.best_bid(Balance.make_usd(args[:amount]||100))
       actions.each do |action|
         bid = action.first
         actions = action.last
