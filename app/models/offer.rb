@@ -11,6 +11,6 @@ class Offer < ActiveRecord::Base
   end
 
   def momentum
-    in_balance.amount*out_balance.amount
+    price*quantity
   end
 end

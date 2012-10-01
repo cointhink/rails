@@ -20,9 +20,10 @@ class Strategy < ActiveRecord::Base
 
     offers = DepthRun.all_offers
 
-    asks = depths.asks.order("price asc")
-    bids = depths.bids.order("price desc")
+    asks = offers.asks.order("price asc")
+    bids = offers.bids.order("price desc")
 
+    clearing_offers(bids, asks)
   end
 
   def self.best_bid(cash)
@@ -42,6 +43,16 @@ class Strategy < ActiveRecord::Base
 
     action = [bid, action_asks]
     [action] # single action strategy
+  end
+
+  def self.clearing_offers(bids, asks)
+    # bids - offers to buy, best first
+    # asks - offers to sell, best first
+
+    asks.each do |ask|
+      bid_worksheet = bids.map{|bid| {bid: bid, remaining: bid.momentum}}
+
+    end
   end
 
   def self.consume_depths(offers, money)
