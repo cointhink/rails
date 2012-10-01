@@ -15,11 +15,18 @@ class Strategy < ActiveRecord::Base
 
   # total opportunity
   def self.opportunity
+    # find all asks less than bids, fee adjusted
+    # assume unlimited buying funds
+
+    offers = DepthRun.all_offers
+
+    asks = depths.asks.order("price asc")
+    bids = depths.bids.order("price desc")
+
   end
 
   def self.best_bid(cash)
-    run_ids = Market.all.map{|market| market.depth_runs.last.id}
-    depths = Offer.where("depth_run_id in (?)", run_ids)
+    depths = DepthRun.all_offers
 
     asks = depths.asks.order("price asc")
     bids = depths.bids.order("price desc")
