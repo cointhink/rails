@@ -1,0 +1,20 @@
+div
+  | #{@exchange.name}
+
+- @exchange.markets.each do |market|
+  ul
+    li #{market.left_currency}/#{market.right_currency} #{number_to_currency(market.ticker.lowest_ask_usd)} - #{number_to_currency(market.ticker.highest_bid_usd)}
+
+  div Top 5 asks
+  table
+    - market.offers.asks.order('price asc').limit(5).each do |bid|
+      tr
+        td #{number_to_currency(bid.price)}
+        td #{bid.quantity}
+
+  div Top 5 bids
+  table
+    - market.offers.bids.order('price desc').limit(5).each do |bid|
+      tr
+        td #{number_to_currency(bid.price)}
+        td #{bid.quantity}

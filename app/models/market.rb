@@ -49,4 +49,8 @@ class Market < ActiveRecord::Base
   def ticker
     tickers.last
   end
+
+  def offers
+    depth_runs.last.offers
+  end
 end
