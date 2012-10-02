@@ -1,4 +1,4 @@
-function setup(data) {
+function setup(data, strategies) {
 
   var options = {
     series: {
@@ -25,6 +25,14 @@ function setup(data) {
                })
     color_index = color_index + 1;
   }
+
+  console.log(strategies)
+  dset.push({label: "profit",
+             data: strategies,
+             yaxis: 2,
+             color: 'grey',
+             bars: {show: true},
+             lines: {show: false}})
 
   $.plot($("#chart"), dset, options);
 }
