@@ -13,6 +13,14 @@ function setup(data, strategies) {
   };
 
   var dset = []
+  dset.push({label: "potential",
+             data: strategies,
+             yaxis: 2,
+             color: 'grey',
+             bars: {show: false},
+             lines: {show: false},
+             points: {radius: 8}})
+
   var color_index = 0;
   for(var market_id in data) {
     dset.push({label: data[market_id][0]+" ask",
@@ -25,15 +33,6 @@ function setup(data, strategies) {
                })
     color_index = color_index + 1;
   }
-
-  console.log(strategies)
-  dset.push({label: "potential",
-             data: strategies,
-             yaxis: 2,
-             color: 'grey',
-             bars: {show: false},
-             lines: {show: false},
-             points: {radius: 8}})
 
   $.plot($("#chart"), dset, options);
 }
