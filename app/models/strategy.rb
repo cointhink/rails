@@ -51,6 +51,7 @@ class Strategy < ActiveRecord::Base
 
     puts "Opportunity calc started. bid count #{bids.size} ask count #{asks.size}"
     bids = bids.all[0,20]
+    profit = 0
     asks.each_with_index do |ask, i|
       print "#{i}. " if i%100==0
       if bids.first.price > ask.price
@@ -58,16 +59,19 @@ class Strategy < ActiveRecord::Base
         if good_bids.last.quantity > 0
           bid_worksheet = consume_offers(good_bids, Balance.make_btc(ask.quantity))
           puts "ask $#{ask.price} x#{ask.quantity} $#{ask.cost}"
-          coins = 0
+          usd_in = 0
           bid_worksheet.each do |bw|
             puts "  bid ##{bw[:offer].id} #{bw[:offer].price} #{"%0.5f"%bw[:offer].quantity} qty #{"%0.5f"%bw[:quantity]}"
             bw[:offer].quantity -= bw[:quantity]
-            coins += bw[:quantity] * bw[:offer].price
+            usd_in += bw[:quantity] * bw[:offer].price
           end
-          puts "income #{coins}. "
+          mini_profit = usd_in - ask.cost
+          puts "received #{usd_in}. profit #{mini_profit} "
+          profit += mini_profit if mini_profit > 0
         end
       end
     end
+    puts "\ngrand profit: $#{"%0.2f"%profit}"
   end
 
   def self.consume_offers(offers, money)
