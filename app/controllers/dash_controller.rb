@@ -1,6 +1,6 @@
 class DashController < ApplicationController
   def chart
-    time = 6.hours.ago
+    time = 8.hours.ago
     @data = Market.all.map do |market|
       [ market.exchange.name,
         market.tickers.where("created_at > ?", time).map{|t| [t.created_at.to_i*1000, t.highest_bid_usd.to_f]},
