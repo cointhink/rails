@@ -62,9 +62,9 @@ class Strategy < ActiveRecord::Base
           bid_worksheet.each do |bw|
             puts "  bid ##{bw[:offer].id} #{bw[:offer].price} #{"%0.5f"%bw[:offer].quantity} qty #{"%0.5f"%bw[:quantity]}"
             bw[:offer].quantity -= bw[:quantity]
-            coins += bw[:quantity]
+            coins += bw[:quantity] * bw[:offer].price
           end
-          puts "coins received #{coins}"
+          puts "income #{coins}. "
         end
       end
     end
@@ -80,12 +80,14 @@ class Strategy < ActiveRecord::Base
           raise "Currency mismatch! #{money.currency} #{offer.depth_run.market.right_currency}" unless money.currency == offer.depth_run.market.right_currency
           quantity_to_buy = [remaining / offer.balance.amount, offer.quantity].min
           spent = offer.balance*quantity_to_buy
-          remaining -= spent
-          actions << {offer: offer, quantity: quantity_to_buy,
-                      subtotal: money.amount-remaining}
         elsif offer.bidask == 'bid'
           raise "Currency mismatch! #{money.currency} #{offer.depth_run.market.left_currency}" unless money.currency == offer.depth_run.market.left_currency
+          quantity_to_buy = remaining > offer.quantity ? offer.quantity : remaining
+          spent = quantity_to_buy
         end
+        remaining -= spent
+        actions << {offer: offer, quantity: quantity_to_buy,
+                    subtotal: money.amount-remaining}
       end
     end
     actions
