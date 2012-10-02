@@ -14,13 +14,21 @@ class Strategy < ActiveRecord::Base
 
     actions = clearing_offers(bids, asks)
 
+    market_totals = {}
     profit = actions.sum do |action|
       ask = action.first
       buys = action.last
+      market = market_totals[ask.depth_run.market.exchange.name] ||= Hash.new(0)
+      market[:usd] += ask.cost
+      buys.each do |bid|
+        bm = market_totals[bid[:offer].depth_run.market.exchange.name] ||= Hash.new(0)
+        bm[:btc] += bid[:quantity]
+      end
       buys.sum{|bid| bid[:offer].cost(bid[:quantity])} - ask.cost
     end
     investment = actions.sum {|action| action.first.cost }
     puts "#{actions.size} actions. Investment $#{"%0.2f"%investment} Profit $#{"%0.2f"%profit}"
+    market_totals.each {|k,v| puts "#{k} spends $#{v[:usd]} #{v[:btc]}btc"}
   end
 
   def self.best_bid(cash)
