@@ -39,7 +39,7 @@ class Strategy < ActiveRecord::Base
     bid_after_fee = bid.balance*remaining_factor
     puts "Finding asks above #{bid_after_fee.amount}#{bid_after_fee.currency} (#{bid.balance.amount}#{bid.balance.currency} original, #{fee_percentage}% fee)"
     matching_asks = asks.where('price < ?', bid_after_fee.amount)
-    action_asks = consume_depths(matching_asks, cash)
+    action_asks = consume_offers(matching_asks, cash)
 
     action = [bid, action_asks]
     [action] # single action strategy
@@ -54,16 +54,17 @@ class Strategy < ActiveRecord::Base
     profit = 0
     asks.each_with_index do |ask, i|
       print "#{i}. " if i%100==0
-      if bids.first.price > ask.price
-        good_bids = bids.select{|b| b.price > ask.price}
+      if bids.first.price_with_fee > ask.price_with_fee
+
+        good_bids = bids.select{|b| b.price_with_fee > ask.price_with_fee}
         if good_bids.last.quantity > 0
           bid_worksheet = consume_offers(good_bids, Balance.make_btc(ask.quantity))
-          puts "ask $#{ask.price} x#{ask.quantity} $#{ask.cost}"
+          puts "ask $#{ask.price_with_fee} (orig. #{ask.price}) x#{ask.quantity} $#{ask.cost}"
           usd_in = 0
           bid_worksheet.each do |bw|
-            puts "  bid ##{bw[:offer].id} #{bw[:offer].price} #{"%0.5f"%bw[:offer].quantity} qty #{"%0.5f"%bw[:quantity]}"
+            puts "  bid ##{bw[:offer].id} #{bw[:offer].price_with_fee} ($#{bw[:offer].price}) #{"%0.5f"%bw[:offer].quantity} qty #{"%0.5f"%bw[:quantity]}"
             bw[:offer].quantity -= bw[:quantity]
-            usd_in += bw[:quantity] * bw[:offer].price
+            usd_in += bw[:quantity] * bw[:offer].price_with_fee
           end
           mini_profit = usd_in - ask.cost
           puts "received #{usd_in}. profit #{mini_profit} "

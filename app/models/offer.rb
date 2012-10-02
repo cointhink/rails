@@ -10,6 +10,15 @@ class Offer < ActiveRecord::Base
     Balance.new(amount: price, currency: depth_run.market.right_currency)
   end
 
+  def price_with_fee
+    fee = depth_run.market.exchange.fee_percentage/100
+    if bidask == 'ask'
+      price*(1+fee)
+    elsif bidask == 'bid'
+      price*(1-fee)
+    end
+  end
+
   def cost(quantity=quantity)
     price*quantity
   end
