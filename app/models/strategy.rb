@@ -3,11 +3,12 @@ class Strategy < ActiveRecord::Base
   has_many :trades, :dependent => :destroy
 
   # total opportunity
-  def self.opportunity
+  def self.opportunity(markets)
     # find all asks less than bids, fee adjusted
     # assume unlimited buying funds
 
-    offers = DepthRun.all_offers
+    offers = DepthRun.all_offers(markets)
+    puts "Gathering info from #{markets.map{|m| "#{m.exchange.name} #{m.left_currency}/#{m.right_currency}"}.join(', ')}"
 
     asks = offers.asks.order("price asc")
     bids = offers.bids.order("price desc")

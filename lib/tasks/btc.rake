@@ -36,8 +36,13 @@ namespace :btc do
     end
 
     desc 'Total opportunity'
-    task :opportunity => :environment do
-      opportunity = Strategy.opportunity
+    task :opportunity, [:markets] => :environment do |task, args|
+      if args[:markets]
+        markets = args[:markets].split('-').map{|name| Exchange.find_by_name(name).markets.first}
+      else
+        markets = Market.all
+      end
+      opportunity = Strategy.opportunity(markets)
       #puts opportunity.inspect
     end
   end
