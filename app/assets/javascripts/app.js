@@ -32,7 +32,8 @@ function setup(data, strategies) {
              yaxis: 2,
              color: 'grey',
              bars: {show: false},
-             lines: {show: false}})
+             lines: {show: false},
+             points: {radius: 8}})
 
   $.plot($("#chart"), dset, options);
 }
