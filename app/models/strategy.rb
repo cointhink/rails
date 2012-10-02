@@ -13,6 +13,7 @@ class Strategy < ActiveRecord::Base
     bids = offers.bids.order("price desc")
 
     actions = clearing_offers(bids, asks)
+
     profit = actions.sum do |action|
       ask = action.first
       buys = action.last
@@ -45,26 +46,26 @@ class Strategy < ActiveRecord::Base
     # bids - offers to buy, price high to low
     # asks - offers to sell, price low to high
 
-    puts "Opportunity calc started. bid count #{bids.size} ask count #{asks.size}"
-    bids = bids.all[0,20]
-    profit = 0
+    puts "Opportunity calc started. Total markets bid count #{bids.size} ask count #{asks.size}"
+    bids = bids.all
     actions = []
     asks.each_with_index do |ask, i|
-      print "#{i}. " if i%100==0
+      print "#{i}. " if i%100==0 && i > 0
       if bids.first.price_with_fee > ask.price_with_fee
 
         good_bids = bids.select{|b| b.price_with_fee > ask.price_with_fee}
+        puts "Profitable bid count #{good_bids.size}"
         if good_bids.last.quantity > 0
           bid_worksheet = consume_offers(good_bids, Balance.make_btc(ask.quantity))
-          puts "#{ask.depth_run.market.exchange.name} ask $#{ask.price_with_fee} (orig. #{ask.price}) x#{ask.quantity} $#{ask.cost}"
+          puts "#{ask.depth_run.market.exchange.name} ask $#{ask.price_with_fee} (orig. $#{ask.price}) x#{"%0.5f"%ask.quantity} $#{ask.cost}"
           usd_in = 0
           bid_worksheet.each do |bw|
-            puts "  #{bw[:offer].depth_run.market.exchange.name} bid ##{bw[:offer].id} #{bw[:offer].price_with_fee} ($#{bw[:offer].price}) #{"%0.5f"%bw[:offer].quantity} qty #{"%0.5f"%bw[:quantity]}"
+            puts "  #{bw[:offer].depth_run.market.exchange.name} bid ##{bw[:offer].id} $#{"%0.2f"%bw[:offer].price_with_fee} ($#{"%0.2f"%bw[:offer].price}) #{"%0.5f"%bw[:offer].quantity}btc qty #{"%0.5f"%bw[:quantity]}btc"
             bw[:offer].quantity -= bw[:quantity]
             usd_in += bw[:quantity] * bw[:offer].price_with_fee
           end
           mini_profit = usd_in - ask.cost
-          puts "received #{usd_in}. profit #{mini_profit} "
+          puts "received $#{"%0.2f"%usd_in}. profit $#{"%0.2f"%mini_profit} "
           if mini_profit > 0
             actions << [ask, bid_worksheet]
           end
@@ -76,7 +77,7 @@ class Strategy < ActiveRecord::Base
   end
 
   def self.consume_offers(offers, money)
-    puts "Buying the first #{money.amount}#{money.currency} from #{offers.size} offers"
+    puts "Buying the first #{"%0.5f"%money.amount}#{money.currency} from #{offers.size} offers"
     remaining = money.amount
     actions = []
     offers.each do |offer|
