@@ -2,17 +2,6 @@ class Strategy < ActiveRecord::Base
   # attr_accessible :title, :body
   has_many :trades, :dependent => :destroy
 
-  def self.available_market_bids
-    bids = []
-    Market.all.each{|market| bids << available_bids(market)}
-  end
-
-  def self.available_bids(market)
-    depths = market.depth_runs.last.depths
-    bids = depths.bids.order("price desc")
-    consume_depths(bids, market.btc)
-  end
-
   # total opportunity
   def self.opportunity
     # find all asks less than bids, fee adjusted
