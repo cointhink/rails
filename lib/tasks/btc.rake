@@ -10,12 +10,6 @@ namespace :btc do
       end
     end
 
-    puts "Calculating best pair"
-    pairs = Strategy.pair_spreads
-    if pairs.size > 0
-      best_pair = pairs.first
-      Strategy.create_two_trades(best_pair)
-    end
   end
 
   namespace :strategy do
@@ -44,6 +38,16 @@ namespace :btc do
       end
       opportunity = Strategy.opportunity(markets)
       #puts opportunity.inspect
+    end
+
+    desc 'Best pair of markets'
+    task :bestpair => :environment do
+      puts "Calculating best pair"
+      pairs = Strategy.pair_spreads
+      if pairs.size > 0
+        best_pair = pairs.first
+        Strategy.create_two_trades(best_pair)
+      end
     end
   end
 end

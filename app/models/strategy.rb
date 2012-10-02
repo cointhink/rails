@@ -8,24 +8,32 @@ class Strategy < ActiveRecord::Base
     # assume unlimited buying funds
 
     offers = DepthRun.all_offers(markets)
-    puts "Gathering info from #{markets.map{|m| "#{m.exchange.name} #{m.left_currency}/#{m.right_currency}"}.join(', ')}"
+    puts "Markets: #{markets.map{|m| "#{m.exchange.name} #{m.left_currency}/#{m.right_currency}"}.join(', ')}"
 
     asks = offers.asks.order("price asc")
     bids = offers.bids.order("price desc")
 
     actions = clearing_offers(bids, asks)
 
+    strategy = Strategy.create
     market_totals = {}
     profit = actions.sum do |action|
       ask = action.first
       buys = action.last
       market = market_totals[ask.depth_run.market.exchange.name] ||= Hash.new(0)
       market[:usd] += ask.cost
+
+      # even more crap
+      strategy.trades << Trade.new(balance_in: Balance.make_usd(ask.cost),
+                                   balance_out: Balance.make_btc(ask.quantity))
+
       buys.each do |bid|
         bm = market_totals[bid[:offer].depth_run.market.exchange.name] ||= Hash.new(0)
         bm[:btc] += bid[:quantity]
       end
-      buys.sum{|bid| bid[:offer].cost(bid[:quantity])} - ask.cost
+
+      buys_make = buys.sum{|bid| bid[:offer].cost(bid[:quantity])}
+      buys_make - ask.cost
     end
     investment = actions.sum {|action| action.first.cost }
     puts "#{actions.size} actions. Investment $#{"%0.2f"%investment} Profit $#{"%0.2f"%profit}"
