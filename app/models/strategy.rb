@@ -16,6 +16,7 @@ class Strategy < ActiveRecord::Base
     actions = clearing_offers(bids, asks)
 
     strategy = Strategy.create
+    puts "Analyzing #{actions.size} trade groups"
     market_totals = {}
     profit = actions.sum do |action|
       ask = action.first
@@ -25,11 +26,19 @@ class Strategy < ActiveRecord::Base
 
       # even more crap
       strategy.trades << Trade.new(balance_in: Balance.make_usd(ask.cost),
-                                   balance_out: Balance.make_btc(ask.quantity))
+                                   balance_out: Balance.make_btc(ask.quantity),
+                                   market: ask.depth_run.market,
+                                   expected_fee: ask.depth_run.market.exchange.fee_percentage,
+                                   expected_rate: ask.price)
 
       buys.each do |bid|
         bm = market_totals[bid[:offer].depth_run.market.exchange.name] ||= Hash.new(0)
         bm[:btc] += bid[:quantity]
+        strategy.trades << Trade.new(balance_in: Balance.make_btc(bid[:quantity]),
+                                     balance_out: Balance.make_usd(bid[:offer].cost(bid[:quantity])),
+                                     market: bid[:offer].depth_run.market,
+                                     expected_fee: bid[:offer].depth_run.market.exchange.fee_percentage,
+                                     expected_rate: bid[:offer].price)
       end
 
       buys_make = buys.sum{|bid| bid[:offer].cost(bid[:quantity])}
@@ -109,8 +118,10 @@ class Strategy < ActiveRecord::Base
           spent = quantity_to_buy
         end
         remaining -= spent
-        actions << {offer: offer, quantity: quantity_to_buy,
-                    subtotal: money.amount-remaining}
+        if quantity_to_buy > 0.00001
+          actions << {offer: offer, quantity: quantity_to_buy,
+                      subtotal: money.amount-remaining}
+        end
       end
     end
     actions
@@ -163,5 +174,15 @@ class Strategy < ActiveRecord::Base
                s.trades.last.calculated_out]
             end
     trades.sum{|t| t.last - t.first}
+  end
+
+  def balance_in
+    amount = trades.all.select{|t| t.balance_in.currency == 'usd'}.sum{|t| t.balance_in.amount}
+    Balance.make_usd(amount)
+  end
+
+  def balance_out
+    amount = trades.all.select{|t| t.balance_out.currency == 'usd'}.sum{|t| t.balance_out.amount}
+    Balance.make_usd(amount)
   end
 end
