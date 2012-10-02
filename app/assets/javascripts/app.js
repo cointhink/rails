@@ -27,11 +27,11 @@ function setup(data, strategies) {
   }
 
   console.log(strategies)
-  dset.push({label: "profit",
+  dset.push({label: "potential",
              data: strategies,
              yaxis: 2,
              color: 'grey',
-             bars: {show: true},
+             bars: {show: false},
              lines: {show: false}})
 
   $.plot($("#chart"), dset, options);
