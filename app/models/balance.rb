@@ -15,7 +15,7 @@ class Balance < ActiveRecord::Base
 
   def *(num)
     if num.is_a?(Balance)
-      raise "Incompatible currencies - #{currency}/#{num.currency}" if currency != num.currency
+      currency_check!(num)
       quantity = num.amount
     else
       quantity = num
@@ -24,12 +24,16 @@ class Balance < ActiveRecord::Base
   end
 
   def -(num)
-    raise "Incompatible currencies - #{currency}/#{num.currency}" if currency != num.currency
+    currency_check!(num)
     Balance.new(amount: amount-num.amount, currency: currency)
   end
 
   def +(num)
-    raise "Incompatible currencies - #{currency}/#{num.currency}" if currency != num.currency
+    currency_check!(num)
     Balance.new(amount: amount+num.amount, currency: currency)
+  end
+
+  def currency_check!(balance)
+    raise "Incompatible currencies - #{currency}/#{num.currency}" if currency != num.currency
   end
 end
