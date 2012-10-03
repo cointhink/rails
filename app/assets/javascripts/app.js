@@ -36,3 +36,23 @@ function setup(data, strategies) {
 
   $.plot($("#chart"), dset, options);
 }
+
+function chart_setup(data) {
+
+  var options = {
+    series: {
+        lines: { show: true },
+        points: { show: true },
+    },
+  };
+
+  var dset = []
+  for(var id in data) {
+    dset.push({label: data[id][0],
+               data: data[id][1],
+               })
+  }
+
+  console.log(dset)
+  $.plot($("#chart"), dset, options);
+}

@@ -1,0 +1,10 @@
+javascript:
+  $(function(){chart_setup(#{{@data.to_json}})})
+
+div Pairs
+
+div#chart
+
+ul.clearboth
+  - @pairs.each do |pair|
+    li #{pair[0].exchange.name}  <-> #{pair[3].exchange.name} #{"%0.2f"%pair[5]}

@@ -10,4 +10,10 @@ class DashController < ApplicationController
     @strategies = Strategy.where(["created_at > ?", time]).map{|s| [s.created_at.to_i*1000, s.potential.amount.to_f]}
     @strategy = Strategy.last
   end
+
+  def pairs
+    @data = [ ["mtgox/abc", [[1, 4]]]]
+    @pairs = Strategy.pair_spreads
+
+  end
 end
