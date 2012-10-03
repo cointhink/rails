@@ -177,7 +177,7 @@ class Strategy < ActiveRecord::Base
     puts strategy.trades.inspect
   end
 
-  def self.total_since(time)
+  def self.potential_since(time)
     trades = Strategy.where(["created_at > ?", time]).sum(&:potential)
   end
 
