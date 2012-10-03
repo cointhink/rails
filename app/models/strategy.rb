@@ -178,11 +178,7 @@ class Strategy < ActiveRecord::Base
   end
 
   def self.total_since(time)
-    trades = Strategy.where(["created_at > ?", time]).map do |s|
-              [s.trades.first.balance_in.amount,
-               s.trades.last.calculated_out]
-            end
-    trades.sum{|t| t.last - t.first}
+    trades = Strategy.where(["created_at > ?", time]).sum(&:potential)
   end
 
   def balance_in_calc
