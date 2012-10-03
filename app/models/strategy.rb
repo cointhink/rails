@@ -182,13 +182,11 @@ class Strategy < ActiveRecord::Base
   end
 
   def balance_in_calc
-    amount = trades.all.select{|t| t.balance_in.currency == 'usd'}.sum{|t| t.balance_in.amount}
-    Balance.make_usd(amount)
+    trades.reduce(Balance.make_usd(0)){|total, trade| total += trade.balance_in if trade.balance_in.currency == 'usd'}
   end
 
   def balance_out_calc
-    amount = trades.all.select{|t| t.balance_out.currency == 'usd'}.sum{|t| t.balance_out.amount}
-    Balance.make_usd(amount)
+    trades.reduce(Balance.make_usd(0)){|total, trade| total += trade.balance_out if trade.balance_out.currency == 'usd'}
   end
 
   def potential_calc
