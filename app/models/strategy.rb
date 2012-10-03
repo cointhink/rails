@@ -1,4 +1,8 @@
 class Strategy < ActiveRecord::Base
+  belongs_to :balance_in, :class_name => :Balance, :dependent => :destroy
+  belongs_to :balance_out, :class_name => :Balance, :dependent => :destroy
+  belongs_to :potential, :class_name => :Balance, :dependent => :destroy
+
   # attr_accessible :title, :body
   has_many :trades, :dependent => :destroy
 
@@ -47,6 +51,11 @@ class Strategy < ActiveRecord::Base
     investment = actions.sum {|action| action.first.cost }
     puts "#{actions.size} actions. Investment $#{"%0.2f"%investment} Profit $#{"%0.2f"%profit}"
     market_totals.each {|k,v| puts "#{k} spends $#{v[:usd]} #{v[:btc]}btc"}
+
+    strategy.balance_in = strategy.balance_in_calc
+    strategy.balance_out = strategy.balance_out_calc
+    strategy.potential = strategy.potential_calc
+    strategy.save
   end
 
   def self.best_bid(cash)
@@ -176,17 +185,17 @@ class Strategy < ActiveRecord::Base
     trades.sum{|t| t.last - t.first}
   end
 
-  def balance_in
+  def balance_in_calc
     amount = trades.all.select{|t| t.balance_in.currency == 'usd'}.sum{|t| t.balance_in.amount}
     Balance.make_usd(amount)
   end
 
-  def balance_out
+  def balance_out_calc
     amount = trades.all.select{|t| t.balance_out.currency == 'usd'}.sum{|t| t.balance_out.amount}
     Balance.make_usd(amount)
   end
 
-  def potential
+  def potential_calc
     balance_out - balance_in
   end
 end
