@@ -112,7 +112,7 @@ class Strategy < ActiveRecord::Base
   end
 
   def self.consume_offers(offers, money)
-    puts "Buying the first #{"%0.5f"%money.amount}#{money.currency} from #{offers.size} offers"
+    puts "Buying the first #{money} from #{offers.size} offers"
     remaining = money.dup
     actions = []
     offers.each do |offer|

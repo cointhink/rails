@@ -14,53 +14,36 @@ class Balance < ActiveRecord::Base
   end
 
   def <(num)
-    if num.is_a?(Balance)
-      currency_check!(num)
-      quantity = num.amount
-    else
-      quantity = num
-    end
-    amount<quantity
+    amount<value(num)
   end
 
   def >(num)
-    if num.is_a?(Balance)
-      currency_check!(num)
-      quantity = num.amount
-    else
-      quantity = num
-    end
-    amount>quantity
+    amount>value(num)
   end
 
   def *(num)
-    if num.is_a?(Balance)
-      currency_check!(num)
-      quantity = num.amount
-    else
-      quantity = num
-    end
-    Balance.new(amount: amount*quantity, currency: currency)
+    Balance.new(amount: amount*value(num), currency: currency)
   end
 
   def /(num)
-    if num.is_a?(Balance)
-      currency_check!(num)
-      quantity = num.amount
-    else
-      quantity = num
-    end
-    Balance.new(amount: amount/quantity, currency: currency)
+    Balance.new(amount: amount/value(num), currency: currency)
   end
 
   def -(num)
-    currency_check!(num)
-    Balance.new(amount: amount-num.amount, currency: currency)
+    Balance.new(amount: amount-value(num), currency: currency)
   end
 
   def +(num)
-    currency_check!(num)
-    Balance.new(amount: amount+num.amount, currency: currency)
+    Balance.new(amount: amount+value(num), currency: currency)
+  end
+
+  def value(num)
+    if num.is_a?(Balance)
+      currency_check!(num)
+      num.amount
+    else
+      num
+    end
   end
 
   def currency_check!(num)
