@@ -23,6 +23,16 @@ class Balance < ActiveRecord::Base
     Balance.new(amount: amount*quantity, currency: currency)
   end
 
+  def /(num)
+    if num.is_a?(Balance)
+      currency_check!(num)
+      quantity = num.amount
+    else
+      quantity = num
+    end
+    Balance.new(amount: amount/quantity, currency: currency)
+  end
+
   def -(num)
     currency_check!(num)
     Balance.new(amount: amount-num.amount, currency: currency)
