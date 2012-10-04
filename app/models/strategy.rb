@@ -23,14 +23,15 @@ class Strategy < ActiveRecord::Base
     puts "Analyzing #{actions.size} trade groups"
     market_totals = {}
     actions.each do |action|
-      ask = action.first
-      buys = action.last
+      ask = action[0]
+      btc_spent = action[1]
+      buys = action[2]
       market = market_totals[ask.depth_run.market.exchange.name] ||= Hash.new(0)
-      market[:usd] += ask.cost_with_fee
+      market[:usd] += ask.cost_with_fee(btc_spent)
 
       # even more crap
-      strategy.trades << Trade.new(balance_in: Balance.make_usd(ask.cost_with_fee),
-                                   balance_out: Balance.make_btc(ask.quantity_with_fee),
+      strategy.trades << Trade.new(balance_in: Balance.make_usd(ask.cost_with_fee(btc_spent)),
+                                   balance_out: Balance.make_btc(btc_spent),
                                    market: ask.depth_run.market,
                                    expected_fee: ask.depth_run.market.exchange.fee_percentage,
                                    expected_rate: ask.price_with_fee)
@@ -45,14 +46,13 @@ class Strategy < ActiveRecord::Base
                                      expected_rate: bid[:offer].price)
       end
     end
-    puts "strategy trades = #{strategy.trades.count}"
     strategy.balance_in = strategy.balance_in_calc
     strategy.balance_out = strategy.balance_out_calc
     strategy.potential = strategy.balance_out - strategy.balance_in
     strategy.save
 
     puts "#{strategy.trades.count} actions. Investment #{strategy.balance_in} Profit #{strategy.potential}"
-    market_totals.each {|k,v| puts "#{k} spends $#{v[:usd]} #{v[:btc]}btc"}
+    market_totals.each {|k,v| puts "#{k} spends $#{"%0.2f"%v[:usd]} #{"%0.5f"%v[:btc]}btc"}
   end
 
   def self.best_bid(cash)
@@ -90,19 +90,21 @@ class Strategy < ActiveRecord::Base
         puts "Profitable bid count #{good_bids.size}"
         bid_worksheet = consume_offers(good_bids, Balance.make_btc(ask.quantity))
         puts "#{ask.depth_run.market.exchange.name} ask $#{ask.price_with_fee} (orig. $#{ask.price}) x#{"%0.5f"%ask.quantity} $#{ask.cost_with_fee}"
+        btc_in = 0
         usd_in = Balance.make_usd(0)
         usd_out = Balance.make_usd(0)
         bid_worksheet.each do |bw|
           puts "  #{bw[:offer].depth_run.market.exchange.name} bid ##{bw[:offer].id} $#{"%0.2f"%bw[:offer].price_with_fee} (orig. $#{"%0.2f"%bw[:offer].price}) x#{"%0.5f"%bw[:offer].quantity}btc (orig #{"%0.5f"%bw[:offer].quantity_with_fee}) qty_to_buy #{"%0.5f"%bw[:quantity]}btc earned: #{bw[:spent]-(ask.price_with_fee * bw[:quantity])}"
-          usd_in += ask.price_with_fee * bw[:quantity]
+          btc_in +=  bw[:quantity]
           usd_out += bw[:spent]
         end
+        usd_in = ask.price_with_fee * btc_in
         mini_profit = usd_out - usd_in
-        puts "spent #{usd_in} left. received #{usd_out}. profit #{mini_profit}"
+        puts "spent #{"%0.2f"%usd_in} left. received #{usd_out}. profit #{mini_profit}"
         profit_check += mini_profit
         usd_in_check += usd_in
         usd_out_check += usd_out
-        actions << [ask, bid_worksheet]
+        actions << [ask, btc_in, bid_worksheet]
       end
     end
     puts
