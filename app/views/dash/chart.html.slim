@@ -23,4 +23,4 @@ div Strategy
     | Summary: #{@strategy.trades.count} trades. #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential}
   ul
     - @strategy.trades.each do |t|
-      li class="#{t.balance_in.btc? ? 'bid' : ''}" #{t.market.exchange.name} spend #{t.balance_in} at rate #{"%0.3f"%t.expected_rate} fee #{"%0.3f"%t.expected_fee} calculated out #{t.calculated_out} make #{t.balance_out}
+      li class="#{t.balance_in.btc? ? 'bid' : ''}" #{t.market.exchange.name} spend #{t.balance_in} at rate #{"%0.3f"%t.expected_rate} fee #{"%0.3f"%t.expected_fee} out #{t.balance_out}
