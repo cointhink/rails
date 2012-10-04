@@ -113,23 +113,21 @@ class Strategy < ActiveRecord::Base
 
   def self.consume_offers(offers, money)
     puts "Buying the first #{"%0.5f"%money.amount}#{money.currency} from #{offers.size} offers"
-    remaining = money.amount
+    remaining = money.dup
     actions = []
     offers.each do |offer|
       if remaining > 0.00001 #floatingpoint
         if offer.bidask == 'ask'
-          raise "Currency mismatch! #{money.currency} #{offer.depth_run.market.right_currency}" unless money.currency == offer.depth_run.market.right_currency
-          quantity_to_buy = [remaining / offer.balance.amount, offer.quantity].min
+          quantity_to_buy = [remaining / offer.balance, offer.quantity].min
           spent = offer.balance*quantity_to_buy
         elsif offer.bidask == 'bid'
-          raise "Currency mismatch! #{money.currency} #{offer.depth_run.market.left_currency}" unless money.currency == offer.depth_run.market.left_currency
           quantity_to_buy = remaining > offer.quantity ? offer.quantity : remaining
           spent = quantity_to_buy
         end
         remaining -= spent
         if quantity_to_buy > 0.00001
           actions << {offer: offer, quantity: quantity_to_buy,
-                      subtotal: money.amount-remaining}
+                      spent: spent}
         end
       end
     end

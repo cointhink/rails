@@ -13,6 +13,26 @@ class Balance < ActiveRecord::Base
     Balance.new(amount:amount,currency:'usd')
   end
 
+  def <(num)
+    if num.is_a?(Balance)
+      currency_check!(num)
+      quantity = num.amount
+    else
+      quantity = num
+    end
+    amount<quantity
+  end
+
+  def >(num)
+    if num.is_a?(Balance)
+      currency_check!(num)
+      quantity = num.amount
+    else
+      quantity = num
+    end
+    amount>quantity
+  end
+
   def *(num)
     if num.is_a?(Balance)
       currency_check!(num)
@@ -45,5 +65,11 @@ class Balance < ActiveRecord::Base
 
   def currency_check!(num)
     raise "Incompatible currencies - #{currency}/#{num.currency}" if currency != num.currency
+  end
+
+  def to_s
+    decimal = currency == 'usd' ? 2 : 5
+    format = "%0.#{decimal}f"
+    "#{format%amount}#{currency}"
   end
 end
