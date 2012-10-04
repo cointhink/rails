@@ -1,6 +1,7 @@
 class Balance < ActiveRecord::Base
   belongs_to :balanceable, :polymorphic => true
   attr_accessible :amount, :currency
+  validates :amount, :currency, :presence => true
 
   scope :usd, where(:currency => "usd")
   scope :btc, where(:currency => "btc")
@@ -54,5 +55,13 @@ class Balance < ActiveRecord::Base
     decimal = currency == 'usd' ? 2 : 5
     format = "%0.#{decimal}f"
     "#{format%amount}#{currency}"
+  end
+
+  def usd?
+    currency == 'usd'
+  end
+
+  def btc?
+    currency == 'usd'
   end
 end
