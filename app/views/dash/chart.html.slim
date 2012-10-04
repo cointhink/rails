@@ -20,7 +20,7 @@ div Strategy
   div
     | Last Strategy #{@strategy.created_at}
   div
-    | #{@strategy.trades.count} trades #{"%0.2f"%@strategy.balance_in.amount}#{@strategy.balance_in.currency} in, #{"%0.2f"%@strategy.balance_out.amount}#{@strategy.balance_out.currency} out, $#{"%0.2f"%(@strategy.potential.amount)} potential
+    | Summary: #{@strategy.trades.count} trades. #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential}
   ul
     - @strategy.trades.each do |t|
-      li #{t.market.exchange.name} spend #{"%0.2f"%t.balance_in.amount}#{t.balance_in.currency} at rate #{"%0.3f"%t.expected_rate} fee #{"%0.3f"%t.expected_fee} calculated out #{"%0.3f"%t.calculated_out} #{t.balance_out.currency}
+      li #{t.market.exchange.name} spend #{t.balance_in} at rate #{"%0.3f"%t.expected_rate} fee #{"%0.3f"%t.expected_fee} calculated out #{t.calculated_out} make #{t.balance_out}

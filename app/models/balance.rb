@@ -62,6 +62,6 @@ class Balance < ActiveRecord::Base
   end
 
   def btc?
-    currency == 'usd'
+    currency == 'btc'
   end
 end
