@@ -1,5 +1,5 @@
 javascript:
-  $(function(){setup(#{{@data.to_json}}, #{{@strategies.to_json}})})
+  $(function(){setup(#{{@data.to_json}}, #{{@strategy_data.to_json}}, #{{@strategy_ids.to_json}})})
 
 div Market Balances
 
@@ -15,12 +15,13 @@ div#legend
 
 div.clearboth
 
-div Strategy
 - if @strategy
   div
-    | Last Strategy #{@strategy.created_at}
-  div
-    | Summary: #{@strategy.trades.count} trades. #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential}
-  ul
-    - @strategy.trades.each do |t|
-      li class="#{t.balance_in.btc? ? 'bid' : ''}" #{t.market.exchange.name} spend #{t.balance_in} at rate #{"%0.3f"%t.expected_rate} fee #{"%0.3f"%t.expected_fee} out #{t.balance_out}
+    | Strategy #{@strategy.id}
+    div
+      | Last Strategy #{@strategy.created_at}
+    div
+      | Summary: #{@strategy.trades.count} trades. #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential}
+    ul
+      - @strategy.trades.each do |t|
+        li class="#{t.balance_in.btc? ? 'bid' : ''}" #{t.market.exchange.name} spend #{t.balance_in} at rate #{"%0.3f"%t.expected_rate} fee #{"%0.3f"%t.expected_fee} out #{t.balance_out}

@@ -1,4 +1,4 @@
-function setup(data, strategies) {
+function setup(data, strategies, strategy_ids) {
 
   var options = {
     series: {
@@ -9,7 +9,8 @@ function setup(data, strategies) {
              timeformat: "%m/%d %I%p",
              tickSize: [1, "hour"]},
     legend: { position: 'nw',
-              container: '#legend'}
+              container: '#legend'},
+    grid: {clickable: true}
   };
 
   var dset = []
@@ -35,6 +36,7 @@ function setup(data, strategies) {
   }
 
   $.plot($("#chart"), dset, options);
+  $("#chart").bind('plotclick', function(e,p,i){strategyClick(e,p,i,strategy_ids)})
 }
 
 function chart_setup(data) {
@@ -55,4 +57,12 @@ function chart_setup(data) {
 
   console.log(dset)
   $.plot($("#chart"), dset, options);
+}
+
+function strategyClick(event, point, item, strategy_ids) {
+      console.log(item.dataIndex);
+      console.log(item.seriesIndex);
+      if(item.seriesIndex == 0) {
+        window.location = "?strategy_id="+strategy_ids[item.dataIndex]
+      }
 }
