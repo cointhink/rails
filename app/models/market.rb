@@ -1,25 +1,21 @@
 class Market < ActiveRecord::Base
-  attr_accessible :left_currency, :right_currency
+  attr_accessible :from_exchange, :from_currency,
+                  :to_exchange, :to_currency, :fee_percentage, :delay_ms
+  belongs_to :from_exchange, :class_name => :Exchange
+  belongs_to :to_exchange, :class_name => :Exchange
   belongs_to :exchange
   has_many :tickers
-  has_many :balances, :as => :balanceable
   has_many :trades
   has_many :depth_runs
 
-  def usd
-    balances.usd.last || balances.create({currency:"usd", amount: 0})
-  end
-
-  def btc
-    balances.btc.last || balances.create({currency:"btc", amount: 0})
+  def self.trading(from_currency, to_currency)
+    Market.where(["to_exchange_id = from_exchange_id"]).
+           where(["from_currency = ? and to_currency = ?",
+                  from_currency, to_currency])
   end
 
   def last_ticker
     tickers.last
-  end
-
-  def api
-    "Markets::#{exchange.name.classify}".constantize.new
   end
 
   def data_poll
@@ -32,12 +28,12 @@ class Market < ActiveRecord::Base
   end
 
   def ticker_poll
-    attrs = api.ticker_poll
+    attrs = exchange.api.ticker_poll
     tickers.create(attrs)
   end
 
   def depth_poll
-    depth_data = api.depth_poll
+    depth_data = exchange.api.depth_poll
     depth_run = depth_runs.create
     ActiveRecord::Base.transaction do
       depth_run.offers.create(depth_data["bids"])
