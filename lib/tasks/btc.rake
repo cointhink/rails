@@ -6,7 +6,7 @@ namespace :btc do
       # hackish here
       markets = exchange.markets.internal.trading('btc','usd')
       if markets.size > 0
-        puts "polling BTCUSD"
+        puts "depth BTCUSD"
         data = exchange.api.depth_poll('btc','usd')
         [markets, exchange.markets.internal.trading('usd','btc')].flatten.each do |market|
           puts "#{market.from_currency}/#{market.to_currency} filtering"
