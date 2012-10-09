@@ -4,7 +4,7 @@ class Exchange < ActiveRecord::Base
   attr_accessible :fee_percentage, :name
 
   def api
-    "Markets::#{name.classify}".constantize.new
+    @api ||= "Exchanges::#{name.classify}".constantize.new
   end
 
   def usd

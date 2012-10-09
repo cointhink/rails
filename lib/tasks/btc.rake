@@ -1,13 +1,20 @@
 namespace :btc do
   desc 'Record stats about each market'
   task :snapshot => :environment do
-
-    Market.trading('btc','usd').each do |market|
-      puts "#{market.exchange.name} #{market.from_currency}/#{market.to_currency} polling"
-      stats = market.data_poll
-      puts stats.inspect
+    Exchange.all.each do |exchange|
+      puts "#{exchange.name}"
+      # hackish here
+      markets = exchange.markets.internal.trading('btc','usd')
+      if markets.size > 0
+        puts "polling BTCUSD"
+        data = exchange.api.depth_poll('btc','usd')
+        [markets, exchange.markets.internal.trading('usd','btc')].flatten.each do |market|
+          puts "#{market.from_currency}/#{market.to_currency} filtering"
+          offers = market.depth_filter(data)
+          puts "Created #{offers.size} offers"
+        end
+      end
     end
-
   end
 
   namespace :strategy do
@@ -29,12 +36,12 @@ namespace :btc do
 
     desc 'Total opportunity'
     task :opportunity, [:markets] => :environment do |task, args|
+      ask_markets = Market.trading('btc','usd')
+      bid_markets = Market.trading('usd','btc')
       if args[:markets]
-        markets = args[:markets].split('-').map{|name| Exchange.find_by_name(name).markets.first}
-      else
-        markets = Market.all
+        markets &= args[:markets].split('-').map{|name| Exchange.find_by_name(name).markets}.flatten
       end
-      opportunity = Strategy.opportunity(markets)
+      opportunity = Strategy.opportunity(ask_markets, bid_markets)
       #puts opportunity.inspect
     end
 

@@ -8,38 +8,24 @@ class Market < ActiveRecord::Base
   has_many :trades
   has_many :depth_runs
 
-  def self.trading(from_currency, to_currency)
-    Market.where(["to_exchange_id = from_exchange_id"]).
-           where(["from_currency = ? and to_currency = ?",
-                  from_currency, to_currency])
+  scope :internal, where("to_exchange_id = from_exchange_id")
+  scope :trading, lambda { |from_currency, to_currency|
+                    where(["from_currency = ? and to_currency = ?",
+                           from_currency, to_currency]) }
+  def api
+    "Markets::#{exchange.name.classify}".constantize.new(self)
   end
 
   def last_ticker
     tickers.last
   end
 
-  def data_poll
-    ticker_poll
-    depth_data = depth_poll
-    [exchange.name,
-     "bid count: #{depth_data["bids"].size}",
-     "bid max price: #{depth_data["bids"].sort{|b| b[:price].to_i}[0,3]}",
-     "ask count: #{depth_data["asks"].size}"]
-  end
-
-  def ticker_poll
-    attrs = exchange.api.ticker_poll
-    tickers.create(attrs)
-  end
-
-  def depth_poll
-    depth_data = exchange.api.depth_poll
+  def depth_filter(data)
     depth_run = depth_runs.create
+    offers = api.offers(data)
     ActiveRecord::Base.transaction do
-      depth_run.offers.create(depth_data["bids"])
-      depth_run.offers.create(depth_data["asks"])
+      depth_run.offers.create(offers)
     end
-    depth_data
   end
 
   def ticker
@@ -47,6 +33,7 @@ class Market < ActiveRecord::Base
   end
 
   def offers
-    depth_runs.last.offers
+    last_run = depth_runs.last
+    last_run ? last_run.offers : []
   end
 end

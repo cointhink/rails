@@ -1,4 +1,8 @@
 class Markets::Btce
+  def initialize(market)
+    @market = market
+  end
+
   def ticker_poll
     data = JSON.parse(Faraday.get('https://btc-e.com/api/2/btc_usd/ticker').body)["ticker"]
     #unbelivable bug - buy/sell is swapped in the api results
@@ -6,20 +10,17 @@ class Markets::Btce
              :lowest_ask_usd => data["buy"]}
   end
 
-  def depth_poll
-    data = JSON.parse(Faraday.get('https://btc-e.com/api/2/btc_usd/depth').body)
-    data["asks"].map! do |offer|
-      { bidask: "ask",
+  def offers(data)
+    if @market.from_currency == 'btc'
+      offer_type = "ask"
+    else
+      offer_type = "bid"
+    end
+    data[offer_type+"s"].map do |offer|
+      { bidask: offer_type,
         price: offer.first,
         quantity: offer.last
       }
     end
-    data["bids"].map! do |offer|
-      { bidask: "bid",
-        price: offer.first,
-        quantity: offer.last
-      }
-    end
-    data
   end
 end

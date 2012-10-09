@@ -1,26 +1,20 @@
 class Markets::Mtgox
-  def ticker_poll
-    data = JSON.parse(Faraday.get('https://mtgox.com/api/1/BTCUSD/ticker').body)["return"]
-    attrs = {:highest_bid_usd => data["buy"]["value"],
-             :lowest_ask_usd => data["sell"]["value"]}
+  def initialize(market)
+    @market = market
   end
 
-  def depth_poll
-    data = JSON.parse(Faraday.get('https://mtgox.com/api/1/BTCUSD/depth').body)["return"]
-    data["asks"].map! do |offer|
-      { bidask: "ask",
+  def offers(data)
+    if @market.from_currency == 'btc'
+      offer_type = "ask"
+    else
+      offer_type = "bid"
+    end
+    data[offer_type+"s"].map do |offer|
+      { bidask: offer_type,
         listed_at: Time.at(offer["stamp"].to_i/1000000),
         price: offer["price"],
         quantity: offer["amount"]
       }
     end
-    data["bids"].map! do |offer|
-      { bidask: "bid",
-        listed_at: Time.at(offer["stamp"].to_i/1000000),
-        price: offer["price"],
-        quantity: offer["amount"]
-      }
-    end
-    data
   end
 end
