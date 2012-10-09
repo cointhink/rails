@@ -1,10 +1,15 @@
 class DashController < ApplicationController
   def chart
     time = 8.hours.ago
-    @chart_data = Market.trading('btc','usd').map do |market|
-      [ market.exchange.name,
-        market.tickers.where("created_at > ?", time).map{|t| [t.created_at.to_i*1000, t.highest_bid_usd.to_f]},
-        market.tickers.where("created_at > ?", time).map{|t| [t.created_at.to_i*1000, t.lowest_ask_usd.to_f]}]
+    exchanges = Market.internal.trading('btc','usd').map{|m| m.exchange}
+
+    @chart_data = exchanges.map do |exchange|
+      btcusd = exchange.markets.internal.trading('btc','usd')
+      usdbtc = exchange.markets.internal.trading('usd','btc')
+      [ exchange.name,
+        btcusd.first.depth_runs.where("created_at > ?", time).map{|dr| o=dr.offers.order('price desc').last; [o.created_at.to_i*1000, o.price.to_f]},
+        usdbtc.first.depth_runs.where("created_at > ?", time).map{|dr| o=dr.offers.order('price asc').last; [o.created_at.to_i*1000, o.price.to_f]},
+      ]
     end
 
     strategies = Strategy.where(["created_at > ?", time])
