@@ -55,25 +55,6 @@ class Strategy < ActiveRecord::Base
     market_totals.each {|k,v| puts "#{k} spends $#{"%0.2f"%v[:usd]} #{"%0.5f"%v[:btc]}btc"}
   end
 
-  def self.best_bid(cash)
-    depths = DepthRun.all_offers
-
-    asks = depths.asks.order("price asc")
-    bids = depths.bids.order("price desc")
-
-    bid = bids.first
-
-    fee_percentage = bid.depth_run.market.exchange.fee_percentage
-    remaining_factor = 1-(fee_percentage/100.0)
-    bid_after_fee = bid.balance*remaining_factor
-    puts "Finding asks above #{bid_after_fee.amount}#{bid_after_fee.currency} (#{bid.balance.amount}#{bid.balance.currency} original, #{fee_percentage}% fee)"
-    matching_asks = asks.where('price < ?', bid_after_fee.amount)
-    action_asks = consume_offers(matching_asks, cash)
-
-    action = [bid, action_asks]
-    [action] # single action strategy
-  end
-
   def self.clearing_offers(bids, asks)
     best_bid = bids.first
     best_ask = asks.first
@@ -81,6 +62,8 @@ class Strategy < ActiveRecord::Base
     usd_out_check = Balance.make_usd(0)
     profit_check = Balance.make_usd(0)
     actions = []
+
+
     asks.each_with_index do |ask, i|
       print "#{i}. " if i%100==0 && i > 0
       if best_bid.trade_profit(ask) > 0
@@ -134,6 +117,25 @@ class Strategy < ActiveRecord::Base
       end
     end
     actions
+  end
+
+  def self.best_bid(cash)
+    depths = DepthRun.all_offers
+
+    asks = depths.asks.order("price asc")
+    bids = depths.bids.order("price desc")
+
+    bid = bids.first
+
+    fee_percentage = bid.depth_run.market.exchange.fee_percentage
+    remaining_factor = 1-(fee_percentage/100.0)
+    bid_after_fee = bid.balance*remaining_factor
+    puts "Finding asks above #{bid_after_fee.amount}#{bid_after_fee.currency} (#{bid.balance.amount}#{bid.balance.currency} original, #{fee_percentage}% fee)"
+    matching_asks = asks.where('price < ?', bid_after_fee.amount)
+    action_asks = consume_offers(matching_asks, cash)
+
+    action = [bid, action_asks]
+    [action] # single action strategy
   end
 
   def self.pair_spreads
