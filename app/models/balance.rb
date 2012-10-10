@@ -48,7 +48,7 @@ class Balance < ActiveRecord::Base
   end
 
   def currency_check!(num)
-    raise "Incompatible currencies - #{currency}/#{num.currency}" if currency != num.currency
+    raise "Currency #{currency} != #{num.currency}" if currency != num.currency
   end
 
   def to_s

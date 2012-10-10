@@ -16,13 +16,27 @@ class Offer < ActiveRecord::Base
     balance(currency) * (1-market_fee)
   end
 
+  def cost_with_fee(currency)
+    balance_with_fee(currency)*quantity
+  end
+
+  def market
+    depth_run.market
+  end
+
   def market_fee
     market.fee_percentage/100
+  end
+
+  def trade_profit(offer)
+    raise "Incompatible offers. #{market.from_currency}=>#{market.to_currency} cannot trade with #{offer.market.from_currency}=>#{offer.market.to_currency} " unless market.to_currency == offer.market.from_currency
+    offer.balance_with_fee(market.to_currency) - balance_with_fee
   end
 
   private
   def price_calc(currency)
     if currency == market.from_currency
+      1/price
     elsif currency == market.to_currency
       price
     end
@@ -34,10 +48,6 @@ class Offer < ActiveRecord::Base
     elsif currency == market.to_currency
       (1-market_fee)
     end
-  end
-
-  def market
-    depth_run.market
   end
 
   def currency_check!(currency)

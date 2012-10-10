@@ -75,24 +75,25 @@ class Strategy < ActiveRecord::Base
   end
 
   def self.clearing_offers(bids, asks)
-    best_bid_price = bids.first.price_with_fee('usd')
+    best_bid = bids.first
+    best_ask = asks.first
     usd_in_check = Balance.make_usd(0)
     usd_out_check = Balance.make_usd(0)
     profit_check = Balance.make_usd(0)
     actions = []
     asks.each_with_index do |ask, i|
       print "#{i}. " if i%100==0 && i > 0
-      if best_bid_price > ask.price_with_fee
-
-        good_bids = bids.select{|b| b.price_with_fee > ask.price_with_fee && b.quantity > 0}
+      if best_bid.trade_profit(ask) > 0
+        good_bids = bids.select{|b| b.balance_with_fee > ask.balance_with_fee(b.market.to_currency) && b.quantity > 0}
+        puts
         puts "Profitable bid count #{good_bids.size}"
         bid_worksheet = consume_offers(good_bids, Balance.make_btc(ask.quantity))
-        puts "#{ask.depth_run.market.exchange.name} ask $#{ask.price_with_fee} (orig. $#{ask.price}) x#{"%0.5f"%ask.quantity} $#{ask.cost_with_fee}"
+        puts "#{ask.market.exchange.name} ask $#{ask.balance_with_fee(best_bid.market.to_currency)} (orig. $#{ask.price}) x#{"%0.5f"%ask.quantity} $#{ask.cost_with_fee(best_bid.market.to_currency)}"
         btc_in = 0
         usd_in = Balance.make_usd(0)
         usd_out = Balance.make_usd(0)
         bid_worksheet.each do |bw|
-          puts "  #{bw[:offer].depth_run.market.exchange.name} bid ##{bw[:offer].id} $#{"%0.2f"%bw[:offer].price_with_fee} (orig. $#{"%0.2f"%bw[:offer].price}) x#{"%0.5f"%bw[:offer].quantity}btc (orig #{"%0.5f"%bw[:offer].quantity_with_fee}) qty_to_buy #{"%0.5f"%bw[:quantity]}btc earned: #{bw[:spent]-(ask.price_with_fee * bw[:quantity])}"
+          puts "  #{bw[:offer].market.exchange.name} bid ##{bw[:offer].id} $#{bw[:offer].balance_with_fee} (orig. $#{bw[:offer].balance}) x#{"%0.5f"%bw[:offer].quantity}btc qty_to_buy #{"%0.5f"%bw[:quantity]}btc earned: #{bw[:spent]-(ask.balance_with_fee(bw[:offer].market.to_currency) * bw[:quantity])}"
           btc_in +=  bw[:quantity]
           usd_out += bw[:spent]
         end
@@ -117,8 +118,8 @@ class Strategy < ActiveRecord::Base
     offers.each do |offer|
       if remaining > 0.00001 #floatingpoint
         if offer.bidask == 'ask'
-          price = offer.balance_with_fee
-          quantity_to_buy = [remaining / price, offer.quantity].min
+          price = offer.balance_with_fee(money.currency)
+          quantity_to_buy = [(remaining / price).amount, offer.quantity].min
           spent = price*quantity_to_buy
           remaining -= spent
         elsif offer.bidask == 'bid'
