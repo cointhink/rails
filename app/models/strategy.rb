@@ -75,8 +75,6 @@ class Strategy < ActiveRecord::Base
   end
 
   def self.clearing_offers(bids, asks)
-    puts "Total markets bid count #{bids.size} ask count #{asks.size}"
-    bids = bids.all
     best_bid_price = bids.first.price_with_fee
     usd_in_check = Balance.make_usd(0)
     usd_out_check = Balance.make_usd(0)
