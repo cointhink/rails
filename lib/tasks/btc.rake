@@ -1,9 +1,9 @@
 namespace :btc do
   desc 'Record stats about each market'
   task :snapshot => :environment do
+    # exchanges with internal markets
     Market.internal.map(&:exchange).uniq.each do |exchange|
       puts "* #{exchange.name} poll"
-      # hackish here
       ask_market = exchange.markets.internal.trading('btc','usd').first
       if ask_market
         data = ask_market.exchange.api.depth_poll(ask_market.from_currency,
