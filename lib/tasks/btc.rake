@@ -1,14 +1,15 @@
 namespace :btc do
   desc 'Record stats about each market'
   task :snapshot => :environment do
-    Exchange.all.each do |exchange|
-      puts "#{exchange.name}"
+    Market.internal.map(&:exchange).uniq.each do |exchange|
+      puts "* #{exchange.name} poll"
       # hackish here
-      markets = exchange.markets.internal.trading('btc','usd')
-      if markets.size > 0
-        puts "depth BTCUSD"
-        data = exchange.api.depth_poll('btc','usd')
-        [markets, exchange.markets.internal.trading('usd','btc')].flatten.each do |market|
+      ask_market = exchange.markets.internal.trading('btc','usd').first
+      if ask_market
+        data = ask_market.exchange.api.depth_poll(ask_market.from_currency,
+                                                  ask_market.to_currency)
+        puts "depth BTCUSD #{data["asks"].size + data["bids"].size}"
+        [ask_market, ask_market.pair].each do |market|
           puts "#{market.from_currency}/#{market.to_currency} filtering"
           offers = market.depth_filter(data)
           puts "Created #{offers.size} offers"

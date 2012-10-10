@@ -16,6 +16,13 @@ class Market < ActiveRecord::Base
     "Markets::#{exchange.name.classify}".constantize.new(self)
   end
 
+  def pair
+    Market.where(["to_exchange_id = ? and from_exchange_id = ?",
+           to_exchange_id, from_exchange_id]).
+           where(["from_currency = ? and to_currency = ?",
+                  to_currency, from_currency]).first
+  end
+
   def last_ticker
     tickers.last
   end
