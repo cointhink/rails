@@ -2,8 +2,6 @@
 
 one:
   name: MyString
-  fee_percentage: 9.99
 
 two:
   name: MyString
-  fee_percentage: 9.99

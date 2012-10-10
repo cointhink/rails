@@ -14,8 +14,8 @@ class Strategy < ActiveRecord::Base
     puts "Ask Markets: #{ask_markets.map{|m| "#{m.exchange.name} #{m.from_currency}/#{m.to_currency}"}.join(', ')}"
     puts "Bid Markets: #{bid_markets.map{|m| "#{m.exchange.name} #{m.from_currency}/#{m.to_currency}"}.join(', ')}"
 
-    asks = ask_markets.each{|market| market.offers.order("price asc")}.flatten
-    bids = bid_markets.each{|market| market.offers.order("price desc")}.flatten
+    asks = ask_markets.map{|market| market.offers.order("price asc")}.flatten
+    bids = bid_markets.map{|market| market.offers.order("price desc")}.flatten
 
     actions = clearing_offers(bids, asks)
 
@@ -75,7 +75,7 @@ class Strategy < ActiveRecord::Base
   end
 
   def self.clearing_offers(bids, asks)
-    best_bid_price = bids.first.price_with_fee
+    best_bid_price = bids.first.price_with_fee('usd')
     usd_in_check = Balance.make_usd(0)
     usd_out_check = Balance.make_usd(0)
     profit_check = Balance.make_usd(0)

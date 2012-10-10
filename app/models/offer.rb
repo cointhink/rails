@@ -6,43 +6,43 @@ class Offer < ActiveRecord::Base
   scope :asks, where(bidask: "ask")
   scope :bids, where(bidask: "bid")
 
-  def balance
-    Balance.new(amount: price, currency: depth_run.market.right_currency)
+  def balance(currency = nil)
+    currency ||= market.to_currency
+    currency_check!(currency)
+    Balance.new(amount: price_calc(currency), currency: currency)
   end
 
-  def balance_with_fee
-    Balance.new(amount: price_with_fee, currency: depth_run.market.right_currency)
+  def balance_with_fee(currency = nil)
+    balance(currency) * (1-market_fee)
   end
 
-  def price_with_fee
-    price * fee_factor
+  def market_fee
+    market.fee_percentage/100
   end
 
-  def quantity_with_fee
-    quantity / quantity_fee_factor
-  end
-
-  def fee
-    depth_run.market.exchange.fee_percentage/100
-  end
-
-  def fee_factor
-    if bidask == 'ask'
-      (1+fee)
-    elsif bidask == 'bid'
-      (1-fee)
+  private
+  def price_calc(currency)
+    if currency == market.from_currency
+    elsif currency == market.to_currency
+      price
     end
   end
 
-  def quantity_fee_factor
-    if bidask == 'ask'
-      (1-fee)
-    elsif bidask == 'bid'
-      (1+fee)
+  def fee_factor(currency)
+    if currency == market.from_currency
+      (1+market_fee)
+    elsif currency == market.to_currency
+      (1-market_fee)
     end
   end
 
-  def cost_with_fee(quantity=quantity)
-    price_with_fee*quantity
+  def market
+    depth_run.market
+  end
+
+  def currency_check!(currency)
+    if (currency != market.from_currency) && (currency != market.to_currency)
+      raise "Invalid currency - #{currency} for market #{market.from_currency}/#{market.to_currency}"
+    end
   end
 end
