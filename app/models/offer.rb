@@ -1,6 +1,6 @@
 class Offer < ActiveRecord::Base
-  attr_accessible :listed_at, :bidask, :price, :currency, :quantity
-
+  attr_accessible :listed_at, :bidask, :price, :quantity
+  validates :price, :quantity, :presence => true
   belongs_to :depth_run
 
   scope :asks, where(bidask: "ask")
