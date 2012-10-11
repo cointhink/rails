@@ -20,33 +20,29 @@ class Strategy < ActiveRecord::Base
     bids = Offer.trades(left_currency, right_currency).order("price desc")
 
     actions = clearing_offers(bids, asks)
+    puts actions.map{|a| ["ask ##{a[:buy].id} #{a[:buy].balance}", "#{a[:quantity]}@#{a[:sell].balance(right_currency)}"]}[0,2].inspect
 
     strategy = Strategy.create
     puts "Analyzing #{actions.size} trade groups"
     market_totals = {}
     actions.each do |action|
-      ask = action[0]
-      btc_spent = action[1]
-      buys = action[2]
-      market = market_totals[ask.depth_run.market.exchange.name] ||= Hash.new(0)
-      market[:usd] += ask.cost(btc_spent)
+      market = market_totals[ask.market.exchange.name] ||= Hash.new(0)
+      market[:usd] += ask.cost(action[:quantity])
+      market[:btc] += action[:quantity]
 
-      # even more crap
-      strategy.trades << Trade.new(balance_in: Balance.make_usd(ask.cost(btc_spent)),
-                                   balance_out: Balance.make_btc(btc_spent),
-                                   market: ask.depth_run.market,
-                                   expected_fee: ask.depth_run.market.exchange.fee_percentage,
-                                   expected_rate: ask.price)
+      # buy low
+      strategy.trades << Trade.new(balance_in: action[:offer].cost(action[:quantity]),
+                                   balance_out: action[:quantity],
+                                   market: action[:offer].market,
+                                   expected_fee: action[:offer].market.exchange.fee_percentage,
+                                   expected_rate: action[:offer].price)
 
-      buys.each do |bid|
-        bm = market_totals[bid[:offer].depth_run.market.exchange.name] ||= Hash.new(0)
-        bm[:btc] += bid[:quantity]
-        strategy.trades << Trade.new(balance_in: Balance.make_btc(bid[:quantity]),
-                                     balance_out: Balance.make_usd(bid[:offer].cost(bid[:quantity])),
-                                     market: bid[:offer].depth_run.market,
-                                     expected_fee: bid[:offer].depth_run.market.exchange.fee_percentage,
-                                     expected_rate: bid[:offer].price)
-      end
+      # sell high
+      strategy.trades << Trade.new(balance_in: action[:quantity],
+                                   balance_out: Balance.make_usd(0),
+                                   market: bid[:offer].depth_run.market,
+                                   expected_fee: bid[:offer].depth_run.market.exchange.fee_percentage,
+                                   expected_rate: bid[:offer].price)
     end
     strategy.balance_in = strategy.balance_in_calc
     strategy.balance_out = strategy.balance_out_calc
@@ -93,9 +89,8 @@ class Strategy < ActiveRecord::Base
       profit_total += usd_out-usd_in
       usd_in_total += usd_in
       usd_out_total += usd_out
-      actions << []# [ask, usd_in_total, bid_worksheet.last[:offer].balance]
+      actions << {buy:ask, quantity: btc_inout, sell: bid_worksheet.last[:offer]}
     end
-    puts
     puts "usd in: #{usd_in_total} usd out: #{usd_out_total} profit: #{profit_total}"
     actions
   end
@@ -110,7 +105,7 @@ class Strategy < ActiveRecord::Base
         spent = offer.spend!(remaining)
         remaining -= spent
         if spent > 0.00001
-          actions << {offer: offer, spent: spent }
+          actions << {offer: offer, spent: spent}
         end
       end
     end
