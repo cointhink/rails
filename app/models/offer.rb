@@ -1,7 +1,9 @@
 class Offer < ActiveRecord::Base
-  attr_accessible :listed_at, :bidask, :price, :quantity, :currency
+  attr_accessible :listed_at, :bidask, :price, :quantity, :currency,
+                  :market_id
   validates :price, :quantity, :presence => true
   belongs_to :depth_run
+  belongs_to :market
 
   scope :asks, where(bidask: "ask")
   scope :bids, where(bidask: "bid")
@@ -20,10 +22,6 @@ class Offer < ActiveRecord::Base
 
   def cost_with_fee(currency)
     balance_with_fee(currency)*quantity
-  end
-
-  def market
-    depth_run.market
   end
 
   def market_fee

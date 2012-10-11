@@ -35,6 +35,7 @@ class Market < ActiveRecord::Base
   def depth_filter(data, currency)
     depth_run = depth_runs.create
     offers = api.offers(data, currency)
+    offers.map!{|o| o.merge({market_id:id})}
     ActiveRecord::Base.transaction do
       depth_run.offers.create(offers)
     end
