@@ -78,20 +78,24 @@ class Strategy < ActiveRecord::Base
       bid_worksheet = consume_offers(good_bids, Balance.make_btc(ask.quantity))
       usd_in = Balance.make_usd(0)
       usd_out = Balance.make_usd(0)
+      btc_inout = Balance.make_btc(0)
       bid_worksheet.each do |bw|
-        puts "  #{bw[:offer].market.exchange.name} #{bw[:offer].bidask} ##{bw[:offer].id} $#{bw[:offer].balance} x#{"%0.5f"%bw[:offer].quantity}btc spent #{bw[:spent]} earned: #{ask.cost(bw[:spent].amount) - bw[:offer].produces(bw[:spent].amount)} "
-        usd_out += bw[:offer].produces(bw[:spent].amount)
-        usd_in += ask.cost(bw[:spent].amount)
-        mini_profit = usd_out - usd_in
-        puts "spent #{usd_in}. received #{usd_out}. profit #{mini_profit}"
-        profit_total += mini_profit
-        usd_in_total += usd_in
-        usd_out_total += usd_out
-        actions << [ask, bw[:spent], bw]
+        btc_inout += bw[:spent].amount
+        uout = bw[:offer].produces(bw[:spent].amount)
+        usd_out += uout
+        uin = ask.cost(bw[:spent].amount)
+        usd_in += uin
+        profit = uout - uin
+        puts "  #{bw[:offer].market.exchange.name} #{bw[:offer].bidask} ##{bw[:offer].id} $#{bw[:offer].balance} ($#{bw[:offer].balance('usd')}) x#{"%0.5f"%bw[:offer].quantity}btc spent #{bw[:spent]} earned: #{profit}"
       end
+      puts "  summary #{usd_in} => #{btc_inout} => #{usd_out}. profit #{usd_out-usd_in}"
+      profit_total += usd_out-usd_in
+      usd_in_total += usd_in
+      usd_out_total += usd_out
+      actions << []# [ask, usd_in_total, bid_worksheet.last[:offer].balance]
     end
     puts
-    puts "usd in check: #{usd_in_total} usd out check: #{usd_out_total} profit check: #{profit_total}"
+    puts "usd in: #{usd_in_total} usd out: #{usd_out_total} profit: #{profit_total}"
     actions
   end
 
