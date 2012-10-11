@@ -12,6 +12,11 @@ class Market < ActiveRecord::Base
   scope :trading, lambda { |from_currency, to_currency|
                     where(["from_currency = ? and to_currency = ?",
                            from_currency, to_currency]) }
+
+  def name
+    "#{exchange.name} #{from_currency}/#{to_currency}"
+  end
+
   def api
     "Markets::#{exchange.name.classify}".constantize.new(self)
   end
@@ -27,9 +32,9 @@ class Market < ActiveRecord::Base
     tickers.last
   end
 
-  def depth_filter(data)
+  def depth_filter(data, currency)
     depth_run = depth_runs.create
-    offers = api.offers(data)
+    offers = api.offers(data, currency)
     ActiveRecord::Base.transaction do
       depth_run.offers.create(offers)
     end

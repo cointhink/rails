@@ -4,14 +4,14 @@ namespace :btc do
     # exchanges with internal markets
     Market.internal.map(&:exchange).uniq.each do |exchange|
       puts "* #{exchange.name} poll"
-      ask_market = exchange.markets.internal.trading('btc','usd').first
-      if ask_market
-        data = ask_market.exchange.api.depth_poll(ask_market.from_currency,
-                                                  ask_market.to_currency)
+      bid_market = exchange.markets.internal.trading('btc','usd').first
+      if bid_market
+        data = bid_market.exchange.api.depth_poll(bid_market.from_currency,
+                                                  bid_market.to_currency)
         puts "depth BTCUSD #{data["asks"].size + data["bids"].size}"
-        [ask_market, ask_market.pair].each do |market|
+        [bid_market, bid_market.pair].each do |market|
           puts "#{market.from_currency}/#{market.to_currency} filtering"
-          offers = market.depth_filter(data)
+          offers = market.depth_filter(data, bid_market.to_currency)
           puts "Created #{offers.size} offers"
         end
       end

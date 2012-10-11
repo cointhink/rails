@@ -3,8 +3,8 @@ class Markets::Mtgox
     @market = market
   end
 
-  def offers(data)
-    if @market.from_currency == 'btc'
+  def offers(data, currency)
+    if @market.from_currency == currency
       offer_type = "ask"
     else
       offer_type = "bid"
@@ -13,7 +13,8 @@ class Markets::Mtgox
       { bidask: offer_type,
         listed_at: Time.at(offer["stamp"].to_i/1000000),
         price: offer["price"],
-        quantity: offer["amount"]
+        quantity: offer["amount"],
+        currency: currency
       }
     end
   end

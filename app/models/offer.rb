@@ -1,5 +1,5 @@
 class Offer < ActiveRecord::Base
-  attr_accessible :listed_at, :bidask, :price, :quantity
+  attr_accessible :listed_at, :bidask, :price, :quantity, :currency
   validates :price, :quantity, :presence => true
   belongs_to :depth_run
 
@@ -13,7 +13,9 @@ class Offer < ActiveRecord::Base
   end
 
   def balance_with_fee(currency = nil)
-    balance(currency) * (1-market_fee)
+    currency ||= market.to_currency
+    currency_check!(currency)
+    balance(currency) * fee_factor(currency)
   end
 
   def cost_with_fee(currency)
@@ -35,10 +37,10 @@ class Offer < ActiveRecord::Base
 
   private
   def price_calc(currency)
-    if currency == market.from_currency
-      1/price
-    elsif currency == market.to_currency
+    if currency == self.currency
       price
+    else
+      1/price
     end
   end
 

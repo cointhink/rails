@@ -10,8 +10,8 @@ class Markets::Btce
              :lowest_ask_usd => data["buy"]}
   end
 
-  def offers(data)
-    if @market.from_currency == 'btc'
+  def offers(data, currency)
+    if @market.from_currency == currency
       offer_type = "ask"
     else
       offer_type = "bid"
@@ -19,7 +19,8 @@ class Markets::Btce
     data[offer_type+"s"].map do |offer|
       { bidask: offer_type,
         price: offer.first,
-        quantity: offer.last
+        quantity: offer.last,
+        currency: currency
       }
     end
   end
