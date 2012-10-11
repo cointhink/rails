@@ -29,20 +29,20 @@ class Strategy < ActiveRecord::Base
       btc_spent = action[1]
       buys = action[2]
       market = market_totals[ask.depth_run.market.exchange.name] ||= Hash.new(0)
-      market[:usd] += ask.cost_with_fee(btc_spent)
+      market[:usd] += ask.cost(btc_spent)
 
       # even more crap
-      strategy.trades << Trade.new(balance_in: Balance.make_usd(ask.cost_with_fee(btc_spent)),
+      strategy.trades << Trade.new(balance_in: Balance.make_usd(ask.cost(btc_spent)),
                                    balance_out: Balance.make_btc(btc_spent),
                                    market: ask.depth_run.market,
                                    expected_fee: ask.depth_run.market.exchange.fee_percentage,
-                                   expected_rate: ask.price_with_fee)
+                                   expected_rate: ask.price)
 
       buys.each do |bid|
         bm = market_totals[bid[:offer].depth_run.market.exchange.name] ||= Hash.new(0)
         bm[:btc] += bid[:quantity]
         strategy.trades << Trade.new(balance_in: Balance.make_btc(bid[:quantity]),
-                                     balance_out: Balance.make_usd(bid[:offer].cost_with_fee(bid[:quantity])),
+                                     balance_out: Balance.make_usd(bid[:offer].cost(bid[:quantity])),
                                      market: bid[:offer].depth_run.market,
                                      expected_fee: bid[:offer].depth_run.market.exchange.fee_percentage,
                                      expected_rate: bid[:offer].price)
@@ -60,9 +60,9 @@ class Strategy < ActiveRecord::Base
   def self.clearing_offers(bids, asks)
     best_bid = bids.first
     best_ask = asks.first
-    usd_in_check = Balance.make_usd(0)
-    usd_out_check = Balance.make_usd(0)
-    profit_check = Balance.make_usd(0)
+    usd_in_total = Balance.make_usd(0)
+    usd_out_total = Balance.make_usd(0)
+    profit_total = Balance.make_usd(0)
     actions = []
 
     puts "Best of #{bids.size} bids: #{best_bid.market.name} #{best_bid.balance('usd')}"
@@ -74,38 +74,34 @@ class Strategy < ActiveRecord::Base
     puts "Checking asks for profitability"
 
     good_asks.each do |ask|
-      #puts "ask:#{ask.market.exchange.name}-#{ask.balance('usd').to_s},#{ask.quantity} #{good_bids.map{|b| "#{b.market.exchange.name}-#{b.balance.to_s},#{b.quantity}"}.inspect}"
+      puts "#{ask.market.exchange.name} #{ask.bidask} ##{ask.id} $#{ask.balance(best_bid.market.to_currency)} x#{"%0.5f"%ask.quantity}"
       bid_worksheet = consume_offers(good_bids, Balance.make_btc(ask.quantity))
-      puts "#{ask.market.exchange.name} #{ask.bidask} ##{ask.id} $#{ask.balance_with_fee(best_bid.market.to_currency)} (orig. $#{ask.price}) x#{"%0.5f"%ask.quantity} spent $#{ask.cost_with_fee(best_bid.market.to_currency)}"
-      btc_out = Balance.make_btc(0)
       usd_in = Balance.make_usd(0)
       usd_out = Balance.make_usd(0)
       bid_worksheet.each do |bw|
-        puts "  #{bw[:offer].market.exchange.name} #{bw[:offer].bidask} ##{bw[:offer].id} $#{bw[:offer].balance_with_fee} (orig. $#{bw[:offer].balance}) x#{"%0.5f"%bw[:offer].quantity}btc spent #{bw[:spent]} earned: #{} "
-        btc_out += bw[:spent]
-        usd_out += ask.cost_with_fee('usd',bw[:spent].amount)
-        usd_in += bw[:offer].cost_with_fee('usd', bw[:spent].amount)
+        puts "  #{bw[:offer].market.exchange.name} #{bw[:offer].bidask} ##{bw[:offer].id} $#{bw[:offer].balance} x#{"%0.5f"%bw[:offer].quantity}btc spent #{bw[:spent]} earned: #{ask.cost(bw[:spent].amount) - bw[:offer].produces(bw[:spent].amount)} "
+        usd_out += bw[:offer].produces(bw[:spent].amount)
+        usd_in += ask.cost(bw[:spent].amount)
         mini_profit = usd_out - usd_in
         puts "spent #{usd_in}. received #{usd_out}. profit #{mini_profit}"
-        profit_check += mini_profit
-        usd_in_check += usd_in
-        usd_out_check += usd_out
-        actions << [ask, btc_out, bid_worksheet]
+        profit_total += mini_profit
+        usd_in_total += usd_in
+        usd_out_total += usd_out
+        actions << [ask, bw[:spent], bw]
       end
     end
     puts
-    puts "usd in check: #{usd_in_check} usd out check: #{usd_out_check} profit check: #{profit_check}"
+    puts "usd in check: #{usd_in_total} usd out check: #{usd_out_total} profit check: #{profit_total}"
     actions
   end
 
   def self.consume_offers(offers, money)
-    puts "Buying the first #{money} from #{offers.size} offers"
+    puts "Buying the first #{money} from #{offers.size} offers."
     remaining = money.dup
     actions = []
     offers.each do |offer|
       if remaining > 0.00001 #floatingpoint
-        price = offer.balance_with_fee(money.currency)
-        spent = [remaining, price].min
+        spent = offer.spend!(remaining)
         remaining -= spent
         if spent > 0.00001
           actions << {offer: offer, spent: spent }

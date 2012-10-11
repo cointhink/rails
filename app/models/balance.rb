@@ -38,6 +38,15 @@ class Balance < ActiveRecord::Base
     Balance.new(amount: amount+value(num), currency: currency)
   end
 
+  def min(num)
+    answer = amount < value(num) ? self : num
+    if answer.is_a?(Balance)
+      answer
+    else
+      Balance.new(amount: answer, currency: currency)
+    end
+  end
+
   def value(num)
     if num.is_a?(Balance)
       currency_check!(num)

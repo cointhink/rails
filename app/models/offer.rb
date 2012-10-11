@@ -9,20 +9,36 @@ class Offer < ActiveRecord::Base
   scope :bids, where(bidask: "bid")
   scope :trades, lambda {|from_currency, to_currency| joins(:market).where(['markets.from_currency = ? and markets.to_currency = ?', from_currency, to_currency])}
 
-  def balance(currency = nil)
-    currency ||= market.to_currency
+  def balance(currency = market.from_currency)
     currency_check!(currency)
     Balance.new(amount: price_calc(currency), currency: currency)
   end
 
-  def balance_with_fee(currency = nil)
-    currency ||= market.to_currency
-    currency_check!(currency)
-    balance(currency) * fee_factor(currency)
+  def cost(quantity = quantity)
+    if currency == market.from_currency
+      balance*quantity
+    elsif currency == market.to_currency
+      Balance.new(amount: quantity, currency: market.from_currency)
+    end
   end
 
-  def cost_with_fee(currency,quantity = quantity)
-    balance_with_fee(currency)*quantity
+  def produces(quantity = quantity)
+    if currency == market.from_currency
+      Balance.new(amount: quantity, currency: market.to_currency)
+    elsif currency == market.to_currency
+      balance(currency)*quantity
+    end
+  end
+
+  def spend!(purse)
+    least = purse.min(cost)
+    if least.currency == market.to_currency
+      qty_spent = least
+    elsif least.currency == market.from_currency
+      qty_spent = least/price
+    end
+    self.quantity -= least.amount
+    least
   end
 
   def market_fee
