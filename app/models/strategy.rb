@@ -26,23 +26,23 @@ class Strategy < ActiveRecord::Base
     puts "Analyzing #{actions.size} trade groups"
     market_totals = {}
     actions.each do |action|
-      market = market_totals[ask.market.exchange.name] ||= Hash.new(0)
-      market[:usd] += ask.cost(action[:quantity])
-      market[:btc] += action[:quantity]
+      market = market_totals[action[:buy].market.exchange.name] ||= Hash.new(0)
+      market[:usd] += action[:buy].cost(action[:quantity].amount).amount
+      market[:btc] += action[:quantity].amount
 
       # buy low
-      strategy.trades << Trade.new(balance_in: action[:offer].cost(action[:quantity]),
-                                   balance_out: action[:quantity],
-                                   market: action[:offer].market,
-                                   expected_fee: action[:offer].market.exchange.fee_percentage,
-                                   expected_rate: action[:offer].price)
+      strategy.trades.create(balance_in: action[:buy].cost(action[:quantity].amount),
+                             balance_out: action[:quantity],
+                             market: action[:buy].market,
+                             expected_fee: action[:buy].market.fee_percentage,
+                             expected_rate: action[:buy].price)
 
       # sell high
-      strategy.trades << Trade.new(balance_in: action[:quantity],
-                                   balance_out: Balance.make_usd(0),
-                                   market: bid[:offer].depth_run.market,
-                                   expected_fee: bid[:offer].depth_run.market.exchange.fee_percentage,
-                                   expected_rate: bid[:offer].price)
+      strategy.trades.create(balance_in: action[:quantity],
+                             balance_out: action[:sell].produces(action[:quantity].amount),
+                             market: action[:sell].depth_run.market,
+                             expected_fee: action[:sell].depth_run.market.fee_percentage,
+                             expected_rate: action[:sell].price)
     end
     strategy.balance_in = strategy.balance_in_calc
     strategy.balance_out = strategy.balance_out_calc
