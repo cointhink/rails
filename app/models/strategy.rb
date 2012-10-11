@@ -7,15 +7,17 @@ class Strategy < ActiveRecord::Base
   has_many :trades, :dependent => :destroy
 
   # total opportunity
-  def self.opportunity(ask_markets, bid_markets)
+  def self.opportunity(left_currency, right_currency)
     # find all asks less than bids, fee adjusted
     # assume unlimited buying funds
+    bid_markets = Market.internal.trading(left_currency,right_currency)
+    ask_markets = Market.internal.trading(right_currency,left_currency)
 
     puts "Ask Markets: #{ask_markets.map{|m| "#{m.exchange.name} #{m.from_currency}/#{m.to_currency}"}.join(', ')}"
     puts "Bid Markets: #{bid_markets.map{|m| "#{m.exchange.name} #{m.from_currency}/#{m.to_currency}"}.join(', ')}"
 
-    asks = ask_markets.map{|market| market.offers.order("price asc")}.flatten
-    bids = bid_markets.map{|market| market.offers.order("price desc")}.flatten
+    asks = Offer.trades(right_currency,left_currency).order("price asc")
+    bids = Offer.trades(left_currency, right_currency).order("price desc")
 
     actions = clearing_offers(bids, asks)
 

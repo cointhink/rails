@@ -7,6 +7,7 @@ class Offer < ActiveRecord::Base
 
   scope :asks, where(bidask: "ask")
   scope :bids, where(bidask: "bid")
+  scope :trades, lambda {|from_currency, to_currency| joins(:market).where(['markets.from_currency = ? and markets.to_currency = ?', from_currency, to_currency])}
 
   def balance(currency = nil)
     currency ||= market.to_currency
