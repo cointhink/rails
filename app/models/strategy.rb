@@ -70,12 +70,12 @@ class Strategy < ActiveRecord::Base
     puts "Bids above #{best_ask.price} is size #{good_bids.size}"
     puts "Best of #{asks.size} asks: #{best_ask.market.name} #{best_ask.balance('usd')}"
     good_asks = asks.where(["price < ?", best_bid.price]).all #in-memory copy
-    puts "Asks above #{best_bid.price} is size #{good_asks.size}"
+    puts "Asks below #{best_bid.price} is size #{good_asks.size}"
     puts "Checking asks for profitability"
 
     good_asks.each do |ask|
       puts "#{ask.market.exchange.name} #{ask.bidask} ##{ask.id} $#{ask.balance(best_bid.market.to_currency)} x#{"%0.5f"%ask.quantity}"
-      bid_worksheet = consume_offers(good_bids, Balance.make_btc(ask.quantity))
+      bid_worksheet = consume_offers(good_bids, ask.produces, ask.balance)
       usd_in = Balance.make_usd(0)
       usd_out = Balance.make_usd(0)
       btc_inout = Balance.make_btc(0)
@@ -99,16 +99,18 @@ class Strategy < ActiveRecord::Base
     actions
   end
 
-  def self.consume_offers(offers, money)
+  def self.consume_offers(offers, money, price_limit)
     puts "Buying the first #{money} from #{offers.size} offers."
     remaining = money.dup
     actions = []
     offers.each do |offer|
       if remaining > 0.00001 #floatingpoint
-        spent = offer.spend!(remaining)
-        remaining -= spent
-        if spent > 0.00001
-          actions << {offer: offer, spent: spent }
+        if offer.balance(price_limit.currency) > price_limit
+          spent = offer.spend!(remaining)
+          remaining -= spent
+          if spent > 0.00001
+            actions << {offer: offer, spent: spent }
+          end
         end
       end
     end
