@@ -66,30 +66,31 @@ class Strategy < ActiveRecord::Base
     actions = []
 
     puts "Best of #{bids.size} bids: #{best_bid.market.name} #{best_bid.balance('usd')}"
+    good_bids = bids.where(["price > ?", best_ask.price]).all #in-memory copy
+    puts "Bids above #{best_ask.price} is size #{good_bids.size}"
     puts "Best of #{asks.size} asks: #{best_ask.market.name} #{best_ask.balance('usd')}"
-    asks.each_with_index do |ask, i|
-      print "#{i}. " if i%100==0 && i > 0
-      if best_bid.trade_profit(ask) > 0
-        good_bids = bids.select{|b| b.balance_with_fee('usd') > ask.balance_with_fee('usd') && b.quantity > 0}
-        puts "#{ask.balance('usd').to_s} #{good_bids.map{|b| [b.balance.to_s]}.inspect}"
-        puts "Profitable bid count #{good_bids.size}"
-        bid_worksheet = consume_offers(good_bids, Balance.make_btc(ask.quantity))
-        puts "#{ask.market.exchange.name} #{ask.bidask} $#{ask.balance_with_fee(best_bid.market.to_currency)} (orig. $#{ask.price}) x#{"%0.5f"%ask.quantity} $#{ask.cost_with_fee(best_bid.market.to_currency)}"
-        btc_in = Balance.make_btc(0)
-        usd_in = Balance.make_usd(0)
-        usd_out = Balance.make_usd(0)
-        bid_worksheet.each do |bw|
-          puts "  #{bw[:offer].market.exchange.name} #{bw[:offer].bidask} ##{bw[:offer].id} $#{bw[:offer].balance_with_fee} (orig. $#{bw[:offer].balance}) x#{"%0.5f"%bw[:offer].quantity}btc qty_to_buy #{"%0.5f"%bw[:quantity]} earned: #{bw[:spent]-(ask.balance_with_fee(bw[:spent].currency) * bw[:quantity])}"
-          btc_in +=  bw[:spent]
-          usd_out += ask.balance_with_fee('usd') * bw[:quantity]
-        end
-        usd_in = 1
+    good_asks = asks.where(["price < ?", best_bid.price]).all #in-memory copy
+    puts "Asks above #{best_bid.price} is size #{good_asks.size}"
+    puts "Checking asks for profitability"
+
+    good_asks.each do |ask|
+      #puts "ask:#{ask.market.exchange.name}-#{ask.balance('usd').to_s},#{ask.quantity} #{good_bids.map{|b| "#{b.market.exchange.name}-#{b.balance.to_s},#{b.quantity}"}.inspect}"
+      bid_worksheet = consume_offers(good_bids, Balance.make_btc(ask.quantity))
+      puts "#{ask.market.exchange.name} #{ask.bidask} ##{ask.id} $#{ask.balance_with_fee(best_bid.market.to_currency)} (orig. $#{ask.price}) x#{"%0.5f"%ask.quantity} spent $#{ask.cost_with_fee(best_bid.market.to_currency)}"
+      btc_out = Balance.make_btc(0)
+      usd_in = Balance.make_usd(0)
+      usd_out = Balance.make_usd(0)
+      bid_worksheet.each do |bw|
+        puts "  #{bw[:offer].market.exchange.name} #{bw[:offer].bidask} ##{bw[:offer].id} $#{bw[:offer].balance_with_fee} (orig. $#{bw[:offer].balance}) x#{"%0.5f"%bw[:offer].quantity}btc spent #{bw[:spent]} earned: #{} "
+        btc_out += bw[:spent]
+        usd_out += ask.cost_with_fee('usd',bw[:spent].amount)
+        usd_in += bw[:offer].cost_with_fee('usd', bw[:spent].amount)
         mini_profit = usd_out - usd_in
         puts "spent #{usd_in}. received #{usd_out}. profit #{mini_profit}"
         profit_check += mini_profit
         usd_in_check += usd_in
         usd_out_check += usd_out
-        actions << [ask, btc_in, bid_worksheet]
+        actions << [ask, btc_out, bid_worksheet]
       end
     end
     puts
@@ -104,12 +105,10 @@ class Strategy < ActiveRecord::Base
     offers.each do |offer|
       if remaining > 0.00001 #floatingpoint
         price = offer.balance_with_fee(money.currency)
-        quantity_to_buy = [(remaining / price).amount, offer.quantity].min
-        spent = price*quantity_to_buy
+        spent = [remaining, price].min
         remaining -= spent
-        if quantity_to_buy > 0.00001
-          actions << {offer: offer, quantity: quantity_to_buy,
-                      spent: spent }
+        if spent > 0.00001
+          actions << {offer: offer, spent: spent }
         end
       end
     end

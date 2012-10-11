@@ -21,7 +21,7 @@ class Offer < ActiveRecord::Base
     balance(currency) * fee_factor(currency)
   end
 
-  def cost_with_fee(currency)
+  def cost_with_fee(currency,quantity = quantity)
     balance_with_fee(currency)*quantity
   end
 
