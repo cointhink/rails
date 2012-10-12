@@ -16,4 +16,4 @@ Gemfile.lock
 /log
 /bin
 
-/config/datbase.yml
+/config/database.yml
