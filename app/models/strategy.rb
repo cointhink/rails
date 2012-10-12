@@ -22,12 +22,11 @@ class Strategy < ActiveRecord::Base
     actions = clearing_offers(bids, asks)
 
     strategy = Strategy.create
-    puts "Analyzing #{actions.size} trade groups"
+    puts "Saving #{actions.size} trade groups"
     market_totals = {}
     actions.each do |action|
       market = market_totals[action[:buy].market.exchange.name] ||= Hash.new(0)
       market[:usd] += action[:buy].cost(action[:quantity].amount).amount
-      market[:btc] += action[:quantity].amount
 
       # buy low
       strategy.trades.create(balance_in: action[:buy].cost(action[:quantity].amount),
@@ -37,11 +36,15 @@ class Strategy < ActiveRecord::Base
                              expected_rate: action[:buy].price)
 
       # sell high
-      strategy.trades.create(balance_in: action[:quantity],
-                             balance_out: action[:sell].produces(action[:quantity].amount),
-                             market: action[:sell].depth_run.market,
-                             expected_fee: action[:sell].depth_run.market.fee_percentage,
-                             expected_rate: action[:sell].price)
+      action[:sells].each do |sell|
+        market = market_totals[sell[:offer].market.exchange.name] ||= Hash.new(0)
+        market[:btc] += sell[:spent].amount
+        strategy.trades.create(balance_in: sell[:spent],
+                               balance_out: sell[:offer].produces(sell[:spent].amount),
+                               market: sell[:offer].market,
+                               expected_fee: sell[:offer].market.fee_percentage,
+                               expected_rate: sell[:offer].price)
+      end
     end
     strategy.balance_in = strategy.balance_in_calc
     strategy.balance_out = strategy.balance_out_calc
@@ -88,7 +91,7 @@ class Strategy < ActiveRecord::Base
       profit_total += usd_out-usd_in
       usd_in_total += usd_in
       usd_out_total += usd_out
-      actions << {buy:ask, quantity: btc_inout, sell: bid_worksheet.last[:offer]}
+      actions << {buy:ask, quantity: btc_inout, sells: bid_worksheet}
     end
     puts "usd in: #{usd_in_total} usd out: #{usd_out_total} profit: #{profit_total}"
     actions
