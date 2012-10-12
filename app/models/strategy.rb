@@ -17,8 +17,8 @@ class Strategy < ActiveRecord::Base
     puts "Ask Markets: #{ask_markets.map{|m| "#{m.exchange.name} #{m.from_currency}/#{m.to_currency}"}.join(', ')}"
     puts "Bid Markets: #{bid_markets.map{|m| "#{m.exchange.name} #{m.from_currency}/#{m.to_currency}"}.join(', ')}"
 
-    asks = Offer.trades(right_currency,left_currency).order("price asc")
-    bids = Offer.trades(left_currency, right_currency).order("price desc")
+    asks = Offer.where(['depth_run_id in (?)', ask_markets.map{|a| a.depth_runs.last}]).order("price asc")
+    bids = Offer.where(['depth_run_id in (?)', bid_markets.map{|a| a.depth_runs.last}]).order("price desc")
 
     actions = clearing_offers(bids, asks)
 
