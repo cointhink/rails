@@ -25,26 +25,28 @@ class Strategy < ActiveRecord::Base
     strategy = Strategy.create
     puts "Saving #{actions.size} trade groups"
     market_totals = {}
-    actions.each do |action|
-      market = market_totals[action[:buy].market.exchange.name] ||= Hash.new(0)
-      market[:usd] += action[:buy].cost(action[:quantity].amount).amount
+    ActiveRecord::Base.transaction do
+      actions.each do |action|
+        market = market_totals[action[:buy].market.exchange.name] ||= Hash.new(0)
+        market[:usd] += action[:buy].cost(action[:quantity].amount).amount
 
-      # buy low
-      strategy.trades.create(balance_in: action[:buy].cost(action[:quantity].amount),
-                             balance_out: action[:quantity],
-                             market: action[:buy].market,
-                             expected_fee: action[:buy].market.fee_percentage,
-                             expected_rate: action[:buy].price)
+        # buy low
+        strategy.trades.create(balance_in: action[:buy].cost(action[:quantity].amount),
+                               balance_out: action[:quantity],
+                               market: action[:buy].market,
+                               expected_fee: action[:buy].market.fee_percentage,
+                               expected_rate: action[:buy].price)
 
-      # sell high
-      action[:sells].each do |sell|
-        market = market_totals[sell[:offer].market.exchange.name] ||= Hash.new(0)
-        market[:btc] += sell[:spent].amount
-        strategy.trades.create(balance_in: sell[:spent],
-                               balance_out: sell[:offer].produces(sell[:spent].amount),
-                               market: sell[:offer].market,
-                               expected_fee: sell[:offer].market.fee_percentage,
-                               expected_rate: sell[:offer].price)
+        # sell high
+        action[:sells].each do |sell|
+          market = market_totals[sell[:offer].market.exchange.name] ||= Hash.new(0)
+          market[:btc] += sell[:spent].amount
+          strategy.trades.create(balance_in: sell[:spent],
+                                 balance_out: sell[:offer].produces(sell[:spent].amount),
+                                 market: sell[:offer].market,
+                                 expected_fee: sell[:offer].market.fee_percentage,
+                                 expected_rate: sell[:offer].price)
+        end
       end
     end
     strategy.balance_in = strategy.balance_in_calc
