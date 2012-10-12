@@ -15,3 +15,5 @@ Gemfile.lock
 /gems
 /log
 /bin
+
+/config/datbase.yml
