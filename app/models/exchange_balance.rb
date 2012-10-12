@@ -1,7 +1,8 @@
 class ExchangeBalance < ActiveRecord::Base
+  belongs_to :strategy
   belongs_to :exchange
-  attr_accessible :exchange
   has_many :balances, :as => :balanceable, :dependent => :destroy
+  attr_accessible :exchange, :balances
 
-  validates :exchange_id, :presence => true
+  validates :exchange_id, :strategy_id, :presence => true
 end

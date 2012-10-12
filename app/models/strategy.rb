@@ -5,6 +5,7 @@ class Strategy < ActiveRecord::Base
 
   # attr_accessible :title, :body
   has_many :trades, :dependent => :destroy
+  has_many :exchange_balances, :dependent => :destroy
 
   # total opportunity
   def self.opportunity(left_currency, right_currency)
@@ -50,9 +51,14 @@ class Strategy < ActiveRecord::Base
     strategy.balance_out = strategy.balance_out_calc
     strategy.potential = strategy.balance_out - strategy.balance_in
     strategy.save
-
     puts "#{strategy.trades.count} actions. Investment #{strategy.balance_in} Profit #{strategy.potential}"
-    market_totals.each {|k,v| puts "#{k} spends $#{"%0.2f"%v[:usd]} #{"%0.5f"%v[:btc]}btc"}
+
+    market_totals.each do |k,v|
+      puts "#{k} spends $#{"%0.2f"%v[:usd]} #{"%0.5f"%v[:btc]}btc"
+      strategy.exchange_balances.create(exchange: Exchange.find_by_name(k),
+                                        balances: [Balance.make_usd(v[:usd]),
+                                                   Balance.make_btc(v[:btc])])
+    end
   end
 
   def self.clearing_offers(bids, asks)
