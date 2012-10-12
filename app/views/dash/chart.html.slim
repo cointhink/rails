@@ -10,7 +10,7 @@ ul
         | #{link_to exchange.name}
         |  #{exchange.markets.internal[0,1].map{|market| "#{market.from_currency}/#{market.to_currency} = fee #{market.fee_percentage}%"}.join(' ')}
 
-div Chart
+div History
 
 div#chart
 
@@ -24,7 +24,7 @@ div.clearboth
     div
       | Summary: #{@strategy.trades.count} trades. #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential}
     div
-      | Initial Balance Requirements
+      | Maximum Initial Balance Requirements
       table
         - @strategy.exchange_balances.each do |eb|
           tr
