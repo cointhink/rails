@@ -20,7 +20,6 @@ class Strategy < ActiveRecord::Base
     bids = Offer.trades(left_currency, right_currency).order("price desc")
 
     actions = clearing_offers(bids, asks)
-    puts actions.map{|a| ["ask ##{a[:buy].id} #{a[:buy].balance}", "#{a[:quantity]}@#{a[:sell].balance(right_currency)}"]}[0,2].inspect
 
     strategy = Strategy.create
     puts "Analyzing #{actions.size} trade groups"
