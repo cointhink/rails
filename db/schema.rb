@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121012175936) do
+ActiveRecord::Schema.define(:version => 20121015162420) do
 
   create_table "balances", :force => true do |t|
     t.string   "currency"
@@ -22,11 +22,16 @@ ActiveRecord::Schema.define(:version => 20121012175936) do
     t.string   "balanceable_type"
   end
 
+  add_index "balances", ["balanceable_id"], :name => "index_balances_on_balanceable_id"
+  add_index "balances", ["balanceable_type"], :name => "index_balances_on_balanceable_type"
+
   create_table "depth_runs", :force => true do |t|
     t.integer  "market_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  add_index "depth_runs", ["market_id"], :name => "index_depth_runs_on_market_id"
 
   create_table "exchange_balances", :force => true do |t|
     t.integer  "strategy_id"
@@ -34,6 +39,9 @@ ActiveRecord::Schema.define(:version => 20121012175936) do
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
   end
+
+  add_index "exchange_balances", ["exchange_id"], :name => "index_exchange_balances_on_exchange_id"
+  add_index "exchange_balances", ["strategy_id"], :name => "index_exchange_balances_on_strategy_id"
 
   create_table "exchanges", :force => true do |t|
     t.string   "name"
@@ -53,6 +61,10 @@ ActiveRecord::Schema.define(:version => 20121012175936) do
     t.integer  "delay_ms"
   end
 
+  add_index "markets", ["exchange_id"], :name => "index_markets_on_exchange_id"
+  add_index "markets", ["from_exchange_id"], :name => "index_markets_on_from_exchange_id"
+  add_index "markets", ["to_exchange_id"], :name => "index_markets_on_to_exchange_id"
+
   create_table "offers", :force => true do |t|
     t.datetime "listed_at"
     t.string   "bidask"
@@ -65,6 +77,9 @@ ActiveRecord::Schema.define(:version => 20121012175936) do
     t.integer  "market_id"
   end
 
+  add_index "offers", ["depth_run_id"], :name => "index_offers_on_depth_run_id"
+  add_index "offers", ["market_id"], :name => "index_offers_on_market_id"
+
   create_table "strategies", :force => true do |t|
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
@@ -72,6 +87,10 @@ ActiveRecord::Schema.define(:version => 20121012175936) do
     t.integer  "balance_out_id"
     t.integer  "potential_id"
   end
+
+  add_index "strategies", ["balance_in_id"], :name => "index_strategies_on_balance_in_id"
+  add_index "strategies", ["balance_out_id"], :name => "index_strategies_on_balance_out_id"
+  add_index "strategies", ["potential_id"], :name => "index_strategies_on_potential_id"
 
   create_table "tickers", :force => true do |t|
     t.integer  "market_id"
@@ -98,6 +117,8 @@ ActiveRecord::Schema.define(:version => 20121012175936) do
     t.integer  "balance_out_id"
   end
 
+  add_index "trades", ["balance_in_id"], :name => "index_trades_on_balance_in_id"
+  add_index "trades", ["balance_out_id"], :name => "index_trades_on_balance_out_id"
   add_index "trades", ["market_id"], :name => "index_trades_on_market_id"
   add_index "trades", ["strategy_id"], :name => "index_trades_on_strategy_id"
 
