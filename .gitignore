@@ -16,3 +16,4 @@ Gemfile.lock
 /bin
 
 /config/database.yml
+/config/settings.yml
