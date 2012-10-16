@@ -11,9 +11,12 @@ class Trade < ActiveRecord::Base
 
   def calculated_out
     if balance_in.currency == market.to_currency
-      Balance.new(amount:balance_in.amount, currency:market.from_currency) / expected_rate
+      amount = Balance.new(amount:balance_in.amount,
+                  currency:market.from_currency) / expected_rate
     elsif balance_in.currency == market.from_currency
-      Balance.new(amount:balance_in.amount, currency:market.to_currency) * expected_rate
+      amount = Balance.new(amount:balance_in.amount,
+                  currency:market.to_currency) * expected_rate
     end
+    amount*(1-expected_fee/100)
   end
 end
