@@ -20,8 +20,15 @@ class Strategy < ActiveRecord::Base
     asks = Offer.where(['depth_run_id in (?)', ask_markets.map{|a| a.depth_runs.last}]).order("price asc")
     bids = Offer.where(['depth_run_id in (?)', bid_markets.map{|a| a.depth_runs.last}]).order("price desc")
 
-    actions = clearing_offers(bids, asks)
+    if bids.count > 0 && asks.count > 0
+      actions = clearing_offers(bids, asks)
+      Strategy.analyze(actions)
+    else
+      puts "#{bids.count} bids. #{asks.count} asks. Nothing actionable."
+    end
+  end
 
+  def self.analyze(actions)
     strategy = Strategy.create
     puts "Saving #{actions.size} trade groups"
     market_totals = {}
@@ -32,7 +39,6 @@ class Strategy < ActiveRecord::Base
 
         # buy low
         strategy.trades.create(balance_in: action[:buy].cost(action[:quantity].amount),
-                               balance_out: action[:quantity],
                                market: action[:buy].market,
                                expected_fee: action[:buy].market.fee_percentage,
                                expected_rate: action[:buy].price)
@@ -42,7 +48,6 @@ class Strategy < ActiveRecord::Base
           market = market_totals[sell[:offer].market.exchange.name] ||= Hash.new(0)
           market[:btc] += sell[:spent].amount
           strategy.trades.create(balance_in: sell[:spent],
-                                 balance_out: sell[:offer].produces(sell[:spent].amount),
                                  market: sell[:offer].market,
                                  expected_fee: sell[:offer].market.fee_percentage,
                                  expected_rate: sell[:offer].price)
