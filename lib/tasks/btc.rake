@@ -2,17 +2,24 @@ namespace :btc do
   desc 'Record stats about each market'
   task :snapshot => :environment do
     # exchanges with internal markets
+    super_http = Faraday.new(request:{timeout:5})
+
     Market.internal.map(&:exchange).uniq.each do |exchange|
       puts "* #{exchange.name} poll"
       bid_market = exchange.markets.internal.trading('btc','usd').first
       if bid_market
-        data = bid_market.exchange.api.depth_poll(bid_market.from_currency,
-                                                  bid_market.to_currency)
-        puts "depth BTCUSD #{data["asks"].size + data["bids"].size}"
-        [bid_market, bid_market.pair].each do |market|
-          puts "#{market.from_currency}/#{market.to_currency} filtering"
-          offers = market.depth_filter(data, bid_market.to_currency)
-          puts "Created #{offers.size} offers"
+        begin
+          data = exchange.api.depth_poll(super_http,
+                                         bid_market.from_currency,
+                                         bid_market.to_currency)
+          puts "depth BTCUSD #{data["asks"].size + data["bids"].size}"
+          [bid_market, bid_market.pair].each do |market|
+            puts "#{market.from_currency}/#{market.to_currency} filtering"
+            offers = market.depth_filter(data, bid_market.to_currency)
+            puts "Created #{offers.size} offers"
+          end
+        rescue Faraday::Error::TimeoutError => e
+          STDERR.puts "#{exchange.name} #{e}"
         end
       end
     end
