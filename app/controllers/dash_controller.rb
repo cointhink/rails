@@ -8,9 +8,9 @@ class DashController < ApplicationController
       usdbtc = exchange.markets.internal.trading('usd','btc')
       [ exchange.name,
         btcusd.first.depth_runs.where("created_at > ?", time).
-          map{|dr| o=dr.offers.order('price asc').last; [o.created_at.to_i*1000, o.price.to_f]},
+          map{|dr| o=dr.offers.order('price asc').last; [o.created_at.to_i*1000, o.price.to_f] if o},
         usdbtc.first.depth_runs.where("created_at > ?", time).
-          map{|dr| o=dr.offers.order('price desc').last; [o.created_at.to_i*1000, o.price.to_f]},
+          map{|dr| o=dr.offers.order('price desc').last; [o.created_at.to_i*1000, o.price.to_f] if o},
       ]
     end
 
