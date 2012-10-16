@@ -1,3 +1,5 @@
 ---
 google:
   analytics: 'UA-XXXXXX-X'
+net:
+  timeout: 15

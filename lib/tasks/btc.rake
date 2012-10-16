@@ -2,7 +2,7 @@ namespace :btc do
   desc 'Record stats about each market'
   task :snapshot => :environment do
     # exchanges with internal markets
-    super_http = Faraday.new(request:{timeout:5})
+    super_http = Faraday.new(request:{timeout:SETTINGS.net.timeout})
 
     Market.internal.map(&:exchange).uniq.each do |exchange|
       puts "* #{exchange.name} poll"
