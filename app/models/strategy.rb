@@ -86,7 +86,8 @@ class Strategy < ActiveRecord::Base
 
     good_asks.each do |ask|
       puts "#{ask.market.exchange.name} #{ask.bidask} ##{ask.id} $#{ask.balance(best_bid.market.to_currency)} x#{"%0.5f"%ask.quantity}"
-      bid_worksheet = consume_offers(good_bids, ask.produces, ask.balance)
+      left = ask.produces(ask.balance)*(1-ask.market.fee_percentage/100)
+      bid_worksheet = consume_offers(good_bids, left, ask.balance)
       break if bid_worksheet.empty?
       usd_in = Balance.make_usd(0)
       usd_out = Balance.make_usd(0)
