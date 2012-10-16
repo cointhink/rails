@@ -199,7 +199,6 @@ class Strategy < ActiveRecord::Base
 
   def balance_usd_out
     trades.reduce(Balance.make_usd(0)) do |total, trade|
-      puts trade.inspect
       trade.market.to_currency == 'usd' ? total + trade.calculated_out : total
     end
   end
