@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121015162420) do
+ActiveRecord::Schema.define(:version => 20121016172007) do
 
   create_table "balances", :force => true do |t|
     t.string   "currency"
@@ -45,8 +45,9 @@ ActiveRecord::Schema.define(:version => 20121015162420) do
 
   create_table "exchanges", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+    t.string   "country_code"
   end
 
   create_table "markets", :force => true do |t|

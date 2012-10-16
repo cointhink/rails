@@ -4,7 +4,7 @@ ul
   - Exchange.all.each do |exchange|
     - if exchange.markets.internal.size > 0
       li
-        | #{exchange.name}
+        | #{exchange.name} #{image_tag "/flags/#{exchange.country_code}.png"}
         |  #{exchange.markets.internal[0,1].map{|market| "#{market.from_currency}/#{market.to_currency} = fee #{market.fee_percentage}%"}.join(' ')}
 
 div History
