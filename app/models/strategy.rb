@@ -106,7 +106,7 @@ class Strategy < ActiveRecord::Base
   end
 
   def self.consume_offers(offers, money, price_limit)
-    puts "Buying the first #{money} from #{offers.size} offers."
+    puts "Buying the first #{money} over #{price_limit} from #{offers.size} offers."
     remaining = money.dup
     actions = []
     offers.each do |offer|

@@ -32,9 +32,9 @@ div.clearboth
     ul
       - @strategy.trades.each do |t|
         - if t.balance_in.btc?
-          li class="bid" #{t.market.exchange.name} sell #{t.balance_in}@#{"%0.3f"%t.expected_rate} fee #{"%0.3f"%t.expected_fee} out #{t.balance_out}
+          li class="bid" #{t.market.exchange.name} sell #{t.balance_in}@#{"%0.3f"%t.expected_rate} fee #{"%0.1f%"%t.expected_fee} out #{t.balance_out}
         - else
-          li  #{t.market.exchange.name} buy #{t.balance_out}@#{"%0.3f"%t.expected_rate} fee #{"%0.3f"%t.expected_fee} in #{t.balance_in}
+          li  #{t.market.exchange.name} buy #{t.balance_out}@#{"%0.3f"%t.expected_rate} fee #{"%0.1f%"%t.expected_fee} in #{t.balance_in}
 
 javascript:
   $(function(){setup(#{{JSON.pretty_generate(@chart_data)}}, #{{@strategy_data.to_json}}, #{{@strategy_ids.to_json}})})
