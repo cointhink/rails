@@ -55,7 +55,7 @@ class Strategy < ActiveRecord::Base
       end
     end
     strategy.balance_in = strategy.balance_in_calc
-    strategy.balance_out = strategy.balance_out_calc
+    strategy.balance_out = strategy.balance_usd_out
     strategy.potential = strategy.balance_out - strategy.balance_in
     strategy.save
     puts "#{strategy.trades.count} actions. Investment #{strategy.balance_in} Profit #{strategy.potential}"
@@ -197,9 +197,10 @@ class Strategy < ActiveRecord::Base
     end
   end
 
-  def balance_out_calc
+  def balance_usd_out
     trades.reduce(Balance.make_usd(0)) do |total, trade|
-      trade.balance_out.usd? ? total + trade.balance_out : total
+      puts trade.inspect
+      trade.market.to_currency == 'usd' ? total + trade.calculated_out : total
     end
   end
 end
