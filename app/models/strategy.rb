@@ -203,4 +203,8 @@ class Strategy < ActiveRecord::Base
       trade.market.to_currency == 'usd' ? total + trade.calculated_out : total
     end
   end
+
+  def profit_percentage
+    (potential/balance_in).amount*100
+  end
 end

@@ -19,7 +19,7 @@ div.clearboth
   div
     | Strategy ##{@strategy.id} #{@strategy.created_at}
     div
-      | Summary: #{@strategy.trades.count} trades. #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential} #{"%0.3f"%((@strategy.potential/@strategy.balance_in).amount*100)}%
+      | Summary: #{@strategy.trades.count} trades. #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%
     div
       | Maximum Initial Balance Requirements
       table

@@ -23,6 +23,17 @@ class DashController < ApplicationController
     else
       @strategy = Strategy.last
     end
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render :json => {balance_in: {amount:@strategy.balance_in.amount,
+                                                  currency:@strategy.balance_in.currency},
+                                     potential: {amount:@strategy.potential.amount,
+                                                 currency:@strategy.potential.currency},
+                                     profit_percentage: @strategy.profit_percentage,
+                                     created_at: @strategy.created_at,
+                                     strategy_id: @strategy.id}}
+    end
   end
 
   def pairs
