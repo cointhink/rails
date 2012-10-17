@@ -6,6 +6,7 @@ function setup(data, strategies, strategy_ids) {
         points: { show: true },
     },
     xaxis: { mode: 'time',
+             timezone: 'browser',
              timeformat: "%m/%d %I%p",
              tickSize: [1, "hour"]},
     legend: { position: 'nw',
