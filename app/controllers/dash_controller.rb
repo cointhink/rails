@@ -15,7 +15,7 @@ class DashController < ApplicationController
     end
 
     strategies = Strategy.where(["created_at > ?", time])
-    @strategy_data = strategies.map{|s| [s.created_at.to_i*1000, s.potential.amount.to_f]}
+    @strategy_data = strategies.map{|s| [s.created_at.to_i*1000, s.potential.amount.to_f] if s.potential}
     @strategy_ids = strategies.map{|s| s.id}
 
     if params[:strategy_id]
