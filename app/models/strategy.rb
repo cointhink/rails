@@ -86,8 +86,8 @@ class Strategy < ActiveRecord::Base
 
     good_asks.each do |ask|
       puts "#{ask.market.exchange.name} #{ask.bidask} ##{ask.id} $#{ask.balance(best_bid.market.to_currency)} x#{"%0.5f"%ask.quantity}"
-      left = ask.produces(ask.balance)*(1-ask.market.fee_percentage/100)
-      bid_worksheet = consume_offers(good_bids, left, ask.balance)
+      left = ask.produces(ask.balance)*(1-ask.market.fee)
+      bid_worksheet = consume_offers(good_bids, left, ask.balance*(1+ask.market.fee))
       break if bid_worksheet.empty?
       usd_in = Balance.make_usd(0)
       usd_out = Balance.make_usd(0)
@@ -117,7 +117,7 @@ class Strategy < ActiveRecord::Base
     actions = []
     offers.each do |offer|
       if remaining > 0.00001 #floatingpoint
-        break if offer.balance(price_limit.currency) < price_limit
+        break if offer.balance(price_limit.currency)*(1+offer.market.fee) < price_limit
         spent = offer.spend!(remaining)
         remaining -= spent
         if spent > 0.00001

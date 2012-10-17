@@ -17,6 +17,10 @@ class Market < ActiveRecord::Base
     "#{exchange.name} #{from_currency}/#{to_currency}"
   end
 
+  def fee
+    fee_percentage/100
+  end
+
   def api
     "Markets::#{exchange.name.classify}".constantize.new(self)
   end
