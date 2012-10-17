@@ -117,7 +117,7 @@ class Strategy < ActiveRecord::Base
     actions = []
     offers.each do |offer|
       if remaining > 0.00001 #floatingpoint
-        break if offer.balance(price_limit.currency)*(1+offer.market.fee) < price_limit
+        break if offer.balance(price_limit.currency)*(1-offer.market.fee) < price_limit
         spent = offer.spend!(remaining)
         remaining -= spent
         if spent > 0.00001
