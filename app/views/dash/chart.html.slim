@@ -3,9 +3,9 @@ h2 BTC Market Watch and Arbitrage Report
 - if @strategy
   div
     | Strategy ##{@strategy.id} #{@strategy.created_at}
-  div
-    | Summary: #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%
-  div
+  div style="font-size: 110%; font-weight:bold"
+    | #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%
+  div style="margin: 1em 0em"
     | Maximum Initial Balances
     table
       - @strategy.exchange_balances.each do |eb|
