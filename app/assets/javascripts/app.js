@@ -15,7 +15,7 @@ function setup(data, strategies, strategy_ids) {
   };
 
   var dset = []
-  dset.push({label: "potential",
+  dset.push({label: "strategy",
              data: strategies,
              yaxis: 2,
              color: 'grey',
