@@ -11,6 +11,7 @@ function setup(data, strategies, strategy_ids) {
              tickSize: [1, "hour"]},
     legend: { position: 'nw',
               container: '#legend'},
+    yaxis: { tickFormatter: formatter},
     grid: {clickable: true}
   };
 
@@ -66,4 +67,11 @@ function strategyClick(event, point, item, strategy_ids) {
       if(item.seriesIndex == 0) {
         window.location = "?strategy_id="+strategy_ids[item.dataIndex]
       }
+}
+
+function formatter(val, axis) {
+  if(axis.n == 1)
+    return val.toFixed(axis.tickDecimals);
+  if(axis.n == 2)
+    return "$"+val.toFixed(axis.tickDecimals);
 }
