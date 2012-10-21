@@ -1,13 +1,18 @@
 h2 BTC Market Watch and Arbitrage Report
 
-div Exchanges
-
-ul
-  - Exchange.all.each do |exchange|
-    - if exchange.markets.internal.size > 0
-      li
-        | #{exchange.name} #{image_tag "/flags/#{exchange.country_code}.png"}
-        |  #{exchange.markets.internal[0,1].map{|market| "#{market.from_currency}/#{market.to_currency} = fee #{market.fee_percentage}%"}.join(' ')}
+- if @strategy
+  div
+    | Strategy ##{@strategy.id} #{@strategy.created_at}
+  div
+    | Summary: #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%
+  div
+    | Maximum Initial Balance Requirements
+    table
+      - @strategy.exchange_balances.each do |eb|
+        tr
+          td #{eb.exchange.name}
+          - eb.balances.each do|b|
+            td #{b}
 
 div History
 
@@ -17,19 +22,17 @@ div#legend
 
 div.clearboth
 
+div Exchanges
+ul
+  - Exchange.all.each do |exchange|
+    - if exchange.markets.internal.size > 0
+      li
+        | #{exchange.name} #{image_tag "/flags/#{exchange.country_code}.png"}
+        |  #{exchange.markets.internal[0,1].map{|market| "#{market.from_currency}/#{market.to_currency} = fee #{market.fee_percentage}%"}.join(' ')}
+
 - if @strategy
   div
     | Strategy ##{@strategy.id} #{@strategy.created_at}
-    div
-      | Summary: #{@strategy.trades.count} trades. #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%
-    div
-      | Maximum Initial Balance Requirements
-      table
-        - @strategy.exchange_balances.each do |eb|
-          tr
-            td #{eb.exchange.name}
-            - eb.balances.each do|b|
-              td #{b}
     div Trades
     ul
       - @strategy.trades.each do |t|
