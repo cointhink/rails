@@ -6,7 +6,7 @@ h2 BTC Market Watch and Arbitrage Report
   div
     | Summary: #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%
   div
-    | Maximum Initial Balance Requirements
+    | Maximum Initial Balances
     table
       - @strategy.exchange_balances.each do |eb|
         tr
