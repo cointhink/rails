@@ -11,8 +11,8 @@ h2 BTC Market Watch and Arbitrage Report
       - @strategy.exchange_balances.each do |eb|
         tr
           td #{eb.exchange.name}
-          - eb.balances.each do|b|
-            td #{b}
+          - eb.balances.each do |b|
+            td #{b if b.amount > 0}
 
 div History
 
