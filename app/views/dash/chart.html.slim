@@ -1,3 +1,5 @@
+h2 BTC Market Watch and Arbitrage Report
+
 div Exchanges
 
 ul
@@ -38,4 +40,8 @@ div.clearboth
 
 javascript:
   $(function(){setup(#{{JSON.pretty_generate(@chart_data)}}, #{{@strategy_data.to_json}}, #{{@strategy_ids.to_json}})})
+
+div.footer
+  p.disclaimer
+    | All information is provided on a best-effort basis with NO WARRANTY. Data may be incorrect, invalid, or out of date.
 
