@@ -4,25 +4,28 @@ namespace :btc do
     # exchanges with internal markets
     super_http = Faraday.new(request:{timeout:SETTINGS.net.timeout})
 
-    Market.internal.map(&:exchange).uniq.each do |exchange|
-      puts "* #{exchange.name} poll"
-      bid_market = exchange.markets.internal.trading('btc','usd').first
-      if bid_market
-        begin
-          data = exchange.api.depth_poll(super_http,
-                                         bid_market.from_currency,
-                                         bid_market.to_currency)
-          puts "depth BTCUSD #{data["asks"].size + data["bids"].size}"
-          [bid_market, bid_market.pair].each do |market|
-            puts "#{market.from_currency}/#{market.to_currency} filtering"
-            offers = market.depth_filter(data, bid_market.to_currency)
-            puts "Created #{offers.size} offers"
+    Market.internal.map(&:exchange).uniq.map do |exchange|
+      Thread.new do
+        puts "* #{exchange.name} poll"
+        bid_market = exchange.markets.internal.trading('btc','usd').first
+        if bid_market
+          begin
+            start = Time.now
+            data = exchange.api.depth_poll(super_http,
+                                           bid_market.from_currency,
+                                           bid_market.to_currency)
+            puts "depth BTCUSD #{data["asks"].size + data["bids"].size} #{start.strftime("%T")} #{Time.now-start}s"
+            [bid_market, bid_market.pair].each do |market|
+              puts "#{market.from_currency}/#{market.to_currency} filtering"
+              offers = market.depth_filter(data, bid_market.to_currency)
+              puts "Created #{offers.size} offers"
+            end
+          rescue Faraday::Error::TimeoutError,Errno::EHOSTUNREACH => e
+            STDERR.puts "#{exchange.name} #{e}"
           end
-        rescue Faraday::Error::TimeoutError => e
-          STDERR.puts "#{exchange.name} #{e}"
         end
       end
-    end
+    end.each{|thread| thread.join}
   end
 
   namespace :strategy do
