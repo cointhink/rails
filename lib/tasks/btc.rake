@@ -20,7 +20,7 @@ namespace :btc do
               offers = market.depth_filter(data, bid_market.to_currency)
               puts "Created #{offers.size} offers"
             end
-          rescue Faraday::Error::TimeoutError,Errno::EHOSTUNREACH => e
+          rescue Faraday::Error::TimeoutError,Errno::EHOSTUNREACH,JSON::ParserError => e
             STDERR.puts "#{exchange.name} #{e}"
           end
         end
