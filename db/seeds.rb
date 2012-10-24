@@ -3,6 +3,7 @@
   [{name:'bitstamp', country_code: 'si'},   0.5],
   [{name:'intersango', country_code: 'gb'}, 0.65],
   [{name:'btce', country_code: 'ru'},       0.2],
+  [{name:'cryptoxchange', country_code: 'au'},   0.4],
   [{name:'bitfloor', country_code: 'us'},   0.4]
 ].each do |info|
   e = Exchange.create(info.first)
