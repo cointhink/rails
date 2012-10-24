@@ -5,27 +5,25 @@ namespace :btc do
     super_http = Faraday.new(request:{timeout:SETTINGS.net.timeout})
 
     Market.internal.map(&:exchange).uniq.map do |exchange|
-      Thread.new do
-        puts "* #{exchange.name} poll"
-        bid_market = exchange.markets.internal.trading('btc','usd').first
-        if bid_market
-          begin
-            start = Time.now
-            data = exchange.api.depth_poll(super_http,
-                                           bid_market.from_currency,
-                                           bid_market.to_currency)
-            puts "depth BTCUSD #{data["asks"].size + data["bids"].size} #{start.strftime("%T")} #{Time.now-start}s"
-            [bid_market, bid_market.pair].each do |market|
-              puts "#{market.from_currency}/#{market.to_currency} filtering"
-              offers = market.depth_filter(data, bid_market.to_currency)
-              puts "Created #{offers.size} offers"
-            end
-          rescue Faraday::Error::TimeoutError,Errno::EHOSTUNREACH,JSON::ParserError => e
-            STDERR.puts "#{exchange.name} #{e}"
+      puts "* #{exchange.name} poll"
+      bid_market = exchange.markets.internal.trading('btc','usd').first
+      if bid_market
+        begin
+          start = Time.now
+          data = exchange.api.depth_poll(super_http,
+                                         bid_market.from_currency,
+                                         bid_market.to_currency)
+          puts "depth BTCUSD #{data["asks"].size + data["bids"].size} #{start.strftime("%T")} #{Time.now-start}s"
+          [bid_market, bid_market.pair].each do |market|
+            puts "#{market.from_currency}/#{market.to_currency} filtering"
+            offers = market.depth_filter(data, bid_market.to_currency)
+            puts "Created #{offers.size} offers"
           end
+        rescue Faraday::Error::TimeoutError,Errno::EHOSTUNREACH,JSON::ParserError => e
+          STDERR.puts "#{exchange.name} #{e}"
         end
       end
-    end.each{|thread| thread.join}
+    end
   end
 
   namespace :strategy do
