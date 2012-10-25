@@ -4,7 +4,7 @@ namespace :btc do
     # exchanges with internal markets
     super_http = Faraday.new(request:{timeout:SETTINGS["net"]["timeout"]})
 
-    Market.internal.map(&:exchange).uniq.map do |exchange|
+    Market.internal.map(&:exchange).uniq.select(&:active).map do |exchange|
       puts "* #{exchange.name} poll"
       bid_market = exchange.markets.internal.trading('btc','usd').first
       if bid_market
