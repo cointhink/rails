@@ -42,7 +42,7 @@ ul
           li  #{t.market.exchange.name} buy #{t.balance_in}@#{"%0.3f"%t.expected_rate} fee #{"%0.1f%"%t.expected_fee} in #{t.balance_in}
 
 javascript:
-  $(function(){setup(#{{JSON.pretty_generate(@chart_data)}}, #{{@strategy_data.to_json}}, #{{@strategy_ids.to_json}})})
+  $(function(){setup(#{{JSON.pretty_generate(@chart_data)}}, #{{@strategy_percentages.to_json}}, #{{@strategy_data.to_json}}, #{{@strategy_ids.to_json}})})
 
 div.footer
   p.disclaimer
