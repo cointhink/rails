@@ -28,6 +28,8 @@ ul
     - if exchange.markets.internal.size > 0
       li
         | #{exchange.name} #{image_tag "/flags/#{exchange.country_code}.png"}
+        - unless exchange.active
+          | (disabled)
         |  #{exchange.markets.internal[0,1].map{|market| "#{market.from_currency}/#{market.to_currency} = fee #{market.fee_percentage}%"}.join(' ')}
 
 - if @strategy

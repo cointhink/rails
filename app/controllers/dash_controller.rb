@@ -3,7 +3,7 @@ class DashController < ApplicationController
     time = 8.hours.ago
     exchanges = Market.internal.trading('btc','usd').map{|m| m.exchange}
 
-    @chart_data = exchanges.map do |exchange|
+    @chart_data = exchanges.select(&:active).map do |exchange|
       btcusd = exchange.markets.internal.trading('btc','usd')
       usdbtc = exchange.markets.internal.trading('usd','btc')
       [ exchange.name,
