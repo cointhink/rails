@@ -13,6 +13,12 @@ class Market < ActiveRecord::Base
                     where(["from_currency = ? and to_currency = ?",
                            from_currency, to_currency]) }
 
+  def self.path(from_exchange, to_exchange, currency)
+    where('from_exchange_id = ?', from_exchange.id).
+    where('to_exchange_id = ?', to_exchange.id).
+    where('from_currency = ? and to_currency = ?', currency, currency)
+  end
+
   def name
     "#{exchange.name} #{from_currency}/#{to_currency}"
   end
