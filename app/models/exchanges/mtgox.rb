@@ -1,4 +1,4 @@
-class Exchanges::Mtgox
+class Exchanges::Mtgox < Exchanges::Base
   def ticker_poll(from_currency, to_currency)
     url = "https://mtgox.com/api/1/#{from_currency.upcase}#{to_currency.upcase}/ticker"
     data = JSON.parse(Faraday.get(url).body)["return"]

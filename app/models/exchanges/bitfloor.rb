@@ -1,4 +1,4 @@
-class Exchanges::Bitfloor
+class Exchanges::Bitfloor < Exchanges::Base
   def depth_poll(conn, from_currency, to_currency)
     # covers two markets, from/to and to/from
     url = 'https://api.bitfloor.com/book/L2/1'
