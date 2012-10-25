@@ -15,12 +15,17 @@
   e.balances.create({currency:"btc", amount: 0})
 end
 
+# bitcoin client
+e = Exchange.create(name:'bitcoin')
+e.balances.create({currency:"btc", amount: 0})
+
+# web-banks
+e = Exchange.create(name:'dwolla')
+e.balances.create({currency:"usd", amount: 0})
+
 # Money Changers
 e = Exchange.create(name:'bitinstant')
 e.markets.create(from_exchange: Exchange.find_by_name('dwolla'), from_currency:'usd',
                    to_exchange: Exchange.find_by_name('btce'),   to_currency:'usd',
                  fee_percentage: 2.0, delay_ms: 1000 * 60 * 60 * 12)
 
-# bitcoin client
-e = Exchange.create(name:'bitcoin')
-e.balances.create({currency:"btc", amount: 0})
