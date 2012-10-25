@@ -1,7 +1,7 @@
 class Exchange < ActiveRecord::Base
   has_many :markets, :dependent => :destroy
   has_many :balances, :as => :balanceable, :dependent => :destroy
-  attr_accessible :fee_percentage, :name, :country_code
+  attr_accessible :fee_percentage, :name, :country_code, :active
 
   def api
     @api ||= "Exchanges::#{name.classify}".constantize.new
