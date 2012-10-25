@@ -1,2 +1,2 @@
-SETTINGS = Hashie::Mash.new(YAML.load(File.open(Rails.root+"config/settings.yml")))
+SETTINGS = YAML.load(File.open(Rails.root+"config/settings.yml"))
 
