@@ -38,10 +38,9 @@ ul
     div Trades
     ul
       - @strategy.trades.each do |t|
-        - if t.balance_in.btc?
-          li class="bid" #{t.market.exchange.name} sell #{t.balance_in}@#{"%0.3f"%t.expected_rate} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out}
-        - else
-          li  #{t.market.exchange.name} buy #{t.balance_in}@#{"%0.3f"%t.expected_rate} fee #{"%0.1f%"%t.expected_fee} in #{t.balance_in}
+          li class="#{t.balance_in.btc? ? "bid" : ""}"
+            | #{t.market.exchange.name} #{t.market.from_currency}/#{t.market.to_currency} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.expected_rate} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out}
+
 
 javascript:
   $(function(){setup(#{{JSON.pretty_generate(@chart_data)}}, #{{@strategy_percentages.to_json}}, #{{@strategy_data.to_json}}, #{{@strategy_ids.to_json}})})
