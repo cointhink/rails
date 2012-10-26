@@ -28,6 +28,9 @@ e = Exchange.create(name:'bitinstant')
 e.markets.create(from_exchange: Exchange.find_by_name('dwolla'), from_currency:'usd',
                    to_exchange: Exchange.find_by_name('btce'),   to_currency:'usd',
                  fee_percentage: 2.0, delay_ms: 1000 * 60 * 60 * 12)
+e.markets.create(from_exchange: Exchange.find_by_name('mtgox'), from_currency:'usd',
+                   to_exchange: Exchange.find_by_name('btce'),   to_currency:'usd',
+                 fee_percentage: 1.49, delay_ms: 1000 * 20)
 
 # Exchange's in-house transfer services
 e=Exchange.find_by_name('mtgox')
