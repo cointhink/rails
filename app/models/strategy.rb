@@ -43,18 +43,17 @@ class Strategy < ActiveRecord::Base
 
         # buy low
         strategy.trades.create(balance_in: action[:buy].cost(action[:quantity].amount),
-                               market: action[:buy].market,
-                               expected_fee: action[:buy].market.fee_percentage,
-                               expected_rate: action[:buy].price)
+                               offer: action[:buy],
+                               expected_fee: action[:buy].market.fee_percentage)
 
         # sell high
         action[:sells].each do |sell|
           market = market_totals[sell[:offer].market.exchange.name] ||= Hash.new(0)
           market[:btc] += sell[:spent].amount
           strategy.trades.create(balance_in: sell[:spent],
-                                 market: sell[:offer].market,
-                                 expected_fee: sell[:offer].market.fee_percentage,
-                                 expected_rate: sell[:offer].price)
+                                 offer: sell[:offer],
+                                 expected_fee: sell[:offer].market.fee_percentage)
+
         end
       end
     end
@@ -211,7 +210,7 @@ class Strategy < ActiveRecord::Base
 
   def balance_usd_out
     trades.reduce(Balance.make_usd(0)) do |total, trade|
-      trade.market.to_currency == 'usd' ? total + trade.calculated_out : total
+      trade.offer.market.to_currency == 'usd' ? total + trade.calculated_out : total
     end
   end
 

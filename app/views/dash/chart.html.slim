@@ -40,7 +40,7 @@ ul
     ul
       - @strategy.trades.each do |t|
           li class="#{t.balance_in.btc? ? "bid" : ""}"
-            | #{t.market.exchange.name} #{t.market.from_currency}/#{t.market.to_currency} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.expected_rate} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out}
+            | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out}
 
 
 javascript:

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121025201214) do
+ActiveRecord::Schema.define(:version => 20121029214202) do
 
   create_table "balances", :force => true do |t|
     t.string   "currency"
@@ -105,11 +105,9 @@ ActiveRecord::Schema.define(:version => 20121025201214) do
   add_index "tickers", ["market_id"], :name => "index_tickers_on_market_id"
 
   create_table "trades", :force => true do |t|
-    t.integer  "market_id"
     t.integer  "strategy_id"
     t.decimal  "expected_fee"
     t.decimal  "fee"
-    t.decimal  "expected_rate"
     t.decimal  "rate"
     t.boolean  "executed"
     t.string   "order_id"
@@ -117,11 +115,12 @@ ActiveRecord::Schema.define(:version => 20121025201214) do
     t.datetime "updated_at",     :null => false
     t.integer  "balance_in_id"
     t.integer  "balance_out_id"
+    t.integer  "offer_id"
   end
 
   add_index "trades", ["balance_in_id"], :name => "index_trades_on_balance_in_id"
   add_index "trades", ["balance_out_id"], :name => "index_trades_on_balance_out_id"
-  add_index "trades", ["market_id"], :name => "index_trades_on_market_id"
+  add_index "trades", ["offer_id"], :name => "index_trades_on_offer_id"
   add_index "trades", ["strategy_id"], :name => "index_trades_on_strategy_id"
 
 end
