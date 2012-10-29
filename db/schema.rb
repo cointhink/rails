@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121029214202) do
+ActiveRecord::Schema.define(:version => 20121029223100) do
 
   create_table "balances", :force => true do |t|
     t.string   "currency"
@@ -82,6 +82,21 @@ ActiveRecord::Schema.define(:version => 20121029214202) do
   add_index "offers", ["depth_run_id"], :name => "index_offers_on_depth_run_id"
   add_index "offers", ["market_id"], :name => "index_offers_on_market_id"
 
+  create_table "stages", :force => true do |t|
+    t.integer  "sequence"
+    t.integer  "strategy_id"
+    t.integer  "balance_in_id"
+    t.integer  "balance_out_id"
+    t.integer  "potential_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "stages", ["balance_in_id"], :name => "index_stages_on_balance_in_id"
+  add_index "stages", ["balance_out_id"], :name => "index_stages_on_balance_out_id"
+  add_index "stages", ["potential_id"], :name => "index_stages_on_potential_id"
+  add_index "stages", ["strategy_id"], :name => "index_stages_on_strategy_id"
+
   create_table "strategies", :force => true do |t|
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
@@ -105,7 +120,6 @@ ActiveRecord::Schema.define(:version => 20121029214202) do
   add_index "tickers", ["market_id"], :name => "index_tickers_on_market_id"
 
   create_table "trades", :force => true do |t|
-    t.integer  "strategy_id"
     t.decimal  "expected_fee"
     t.decimal  "fee"
     t.decimal  "rate"
@@ -116,11 +130,11 @@ ActiveRecord::Schema.define(:version => 20121029214202) do
     t.integer  "balance_in_id"
     t.integer  "balance_out_id"
     t.integer  "offer_id"
+    t.integer  "stage_id"
   end
 
   add_index "trades", ["balance_in_id"], :name => "index_trades_on_balance_in_id"
   add_index "trades", ["balance_out_id"], :name => "index_trades_on_balance_out_id"
   add_index "trades", ["offer_id"], :name => "index_trades_on_offer_id"
-  add_index "trades", ["strategy_id"], :name => "index_trades_on_strategy_id"
 
 end

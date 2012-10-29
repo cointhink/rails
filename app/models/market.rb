@@ -21,7 +21,13 @@ class Market < ActiveRecord::Base
   end
 
   def name
-    "#{exchange.name} #{from_currency}/#{to_currency}"
+    if from_exchange != exchange
+      from_exchange_name = "#{from_exchange.name}-"
+    end
+    if to_exchange != exchange
+      to_exchange_name = "#{to_exchange.name}-"
+    end
+    "#{exchange.name} #{from_exchange_name}#{from_currency}/#{to_exchange_name}#{to_currency}"
   end
 
   def fee

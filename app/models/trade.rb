@@ -2,6 +2,7 @@ class Trade < ActiveRecord::Base
   belongs_to :balance_in, :class_name => :Balance, :dependent => :destroy
   belongs_to :balance_out, :class_name => :Balance, :dependent => :destroy
   belongs_to :offer
+  belongs_to :stage
   attr_accessible :executed, :order_id, :fee, :rate,
                   :balance_in, :balance_out, :offer,
                   :expected_fee

@@ -37,10 +37,12 @@ ul
   div
     | Strategy ##{@strategy.id} #{@strategy.created_at}
     div Trades
-    ul
-      - @strategy.trades.each do |t|
-          li class="#{t.balance_in.btc? ? "bid" : ""}"
-            | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out}
+    - @strategy.stages.order('sequence').each do |stage|
+      div Stage #{stage.sequence} #{stage.balance_in} in => #{stage.balance_out} out. profit $#{stage.potential}
+      ul
+        - stage.trades.each do |t|
+            li class="#{t.balance_in.btc? ? "bid" : ""}"
+              | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out}
 
 
 javascript:

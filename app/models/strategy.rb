@@ -3,8 +3,7 @@ class Strategy < ActiveRecord::Base
   belongs_to :balance_out, :class_name => :Balance, :dependent => :destroy
   belongs_to :potential, :class_name => :Balance, :dependent => :destroy
 
-  # attr_accessible :title, :body
-  has_many :trades, :dependent => :destroy
+  has_many :stages, :dependent => :destroy
   has_many :exchange_balances, :dependent => :destroy
 
   # total opportunity
@@ -35,6 +34,7 @@ class Strategy < ActiveRecord::Base
   def self.analyze(actions)
     strategy = Strategy.create
     puts "Saving #{actions.size} trade groups"
+    stage = strategy.stages.create(sequence: 2)
     market_totals = {}
     ActiveRecord::Base.transaction do
       actions.each do |action|
@@ -42,7 +42,7 @@ class Strategy < ActiveRecord::Base
         market[:usd] += action[:buy].cost(action[:quantity].amount).amount
 
         # buy low
-        strategy.trades.create(balance_in: action[:buy].cost(action[:quantity].amount),
+        stage.trades.create(balance_in: action[:buy].cost(action[:quantity].amount),
                                offer: action[:buy],
                                expected_fee: action[:buy].market.fee_percentage)
 
@@ -50,32 +50,49 @@ class Strategy < ActiveRecord::Base
         action[:sells].each do |sell|
           market = market_totals[sell[:offer].market.exchange.name] ||= Hash.new(0)
           market[:btc] += sell[:spent].amount
-          strategy.trades.create(balance_in: sell[:spent],
+          stage.trades.create(balance_in: sell[:spent],
                                  offer: sell[:offer],
                                  expected_fee: sell[:offer].market.fee_percentage)
 
         end
       end
     end
-    strategy.balance_in = strategy.balance_in_calc
-    strategy.balance_out = strategy.balance_usd_out
-    strategy.potential = strategy.balance_out - strategy.balance_in
-    strategy.save
-    puts "#{strategy.trades.count} actions. Investment #{strategy.balance_in} Profit #{strategy.potential}"
+    stage.balance_in = stage.balance_in_calc
+    stage.balance_out = stage.balance_usd_out
+    stage.potential = stage.balance_out - stage.balance_in
+    stage.save
+    puts "stage ##{stage.sequence} #{stage.trades.count} actions. Investment #{stage.balance_in} Profit #{stage.potential}"
 
+    stage = strategy.stages.create(sequence: 1)
     market_totals.each do |k,v|
       exchange = Exchange.find_by_name(k)
       puts "#{k} spends $#{"%0.2f"%v[:usd]} #{"%0.5f"%v[:btc]}btc"
       if v[:usd] > 0
         changer = exchange.best_changer(Exchange.find_by_name('mtgox'), 'usd')
         if changer
-          puts "#{changer.name} #{v[:usd] * (1+changer.fee)}"
+          v[:usd] *= (1+changer.fee)
+          puts " -> #{changer.name} #{v[:usd]}"
+          stage.trades.create(balance_in: Balance.make_usd(v[:usd]),
+                       offer: changer.offers.first,
+                       expected_fee: changer.fee_percentage)
+
         end
       end
       strategy.exchange_balances.create(exchange: exchange,
                                         balances: [Balance.make_usd(v[:usd]),
                                                    Balance.make_btc(v[:btc])])
     end
+    stage.balance_in = stage.balance_in_calc
+    stage.balance_out = stage.balance_usd_out
+    stage.potential = stage.balance_out - stage.balance_in
+    stage.save
+
+    strategy.balance_in = strategy.stages.where(sequence:1).first.balance_in_calc
+    strategy.balance_out = strategy.stages.where(sequence:1).last.balance_usd_out
+    strategy.potential = strategy.balance_out - strategy.balance_in
+    strategy.save
+    puts "#{strategy.stages.count} stages. Investment #{strategy.balance_in} Profit #{strategy.potential}"
+
   end
 
   def self.clearing_offers(bids, asks)
@@ -198,20 +215,12 @@ class Strategy < ActiveRecord::Base
     puts strategy.trades.inspect
   end
 
-  def self.potential_since(time)
-    trades = Strategy.where(["created_at > ?", time]).sum(&:potential)
-  end
-
   def balance_in_calc
-    trades.reduce(Balance.make_usd(0)) do |total, trade|
-      trade.balance_in.usd? ? total + trade.balance_in : total
-    end
+    stages.order('sequence').first.balance_in
   end
 
   def balance_usd_out
-    trades.reduce(Balance.make_usd(0)) do |total, trade|
-      trade.offer.market.to_currency == 'usd' ? total + trade.calculated_out : total
-    end
+    stages.order('sequence').last.balance_usd_out
   end
 
   def profit_percentage

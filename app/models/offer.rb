@@ -1,6 +1,6 @@
 class Offer < ActiveRecord::Base
   attr_accessible :listed_at, :bidask, :price, :quantity, :currency,
-                  :market_id
+                  :market_id, :market
   validates :price, :quantity, :presence => true
   belongs_to :depth_run
   belongs_to :market
