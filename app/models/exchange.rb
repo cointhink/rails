@@ -14,4 +14,9 @@ class Exchange < ActiveRecord::Base
   def btc
     balances.btc.last
   end
+
+  def best_changer(from_exchange, balance)
+    Market.transfers(from_exchange, self, balance).first
+  end
+
 end

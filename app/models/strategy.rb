@@ -65,8 +65,15 @@ class Strategy < ActiveRecord::Base
     puts "#{strategy.trades.count} actions. Investment #{strategy.balance_in} Profit #{strategy.potential}"
 
     market_totals.each do |k,v|
+      exchange = Exchange.find_by_name(k)
       puts "#{k} spends $#{"%0.2f"%v[:usd]} #{"%0.5f"%v[:btc]}btc"
-      strategy.exchange_balances.create(exchange: Exchange.find_by_name(k),
+      if v[:usd] > 0
+        changer = exchange.best_changer(Exchange.find_by_name('mtgox'), 'usd')
+        if changer
+          puts "#{changer.name} #{v[:usd] * (1+changer.fee)}"
+        end
+      end
+      strategy.exchange_balances.create(exchange: exchange,
                                         balances: [Balance.make_usd(v[:usd]),
                                                    Balance.make_btc(v[:btc])])
     end
