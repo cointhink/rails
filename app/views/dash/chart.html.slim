@@ -14,12 +14,6 @@ h2 BTC Market Watch and Arbitrage Strategy Report
           - eb.balances.each do |b|
             td
               | #{b if b.amount > 0}
-              - if b.usd? && market = Market.path(Exchange.find_by_name('dwolla'), eb.exchange, b.currency)
-                - if market.count > 0
-                  |  #{market.first.exchange.name} #{market.first.fee_percentage}%
-              - if b.btc? && market = Market.path(eb.exchange, Exchange.find_by_name('dwolla'), b.currency)
-                - if market.count > 0
-                  |  #{market.first.exchange.name} #{market.first.fee_percentage}%
 
 div Strategy History
 
