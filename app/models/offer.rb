@@ -15,6 +15,7 @@ class Offer < ActiveRecord::Base
   end
 
   def cost(quantity = quantity)
+    quantity_check!(quantity)
     if currency == market.from_currency
       balance*quantity
     elsif currency == market.to_currency
@@ -23,6 +24,7 @@ class Offer < ActiveRecord::Base
   end
 
   def produces(quantity = quantity)
+    quantity_check!(quantity)
     if currency == market.from_currency
       Balance.new(amount: quantity, currency: market.to_currency)
     elsif currency == market.to_currency
@@ -71,5 +73,9 @@ class Offer < ActiveRecord::Base
     if (currency != market.from_currency) && (currency != market.to_currency)
       raise "Invalid currency - #{currency} for market #{market.from_currency}/#{market.to_currency}"
     end
+  end
+
+  def quantity_check!(qty)
+    raise "Invalid quantity. #{qty} excceds quantity #{quantity}" if qty > quantity
   end
 end
