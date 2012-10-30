@@ -87,8 +87,9 @@ class Strategy < ActiveRecord::Base
     stage.potential = stage.balance_out - stage.balance_in
     stage.save
 
-    strategy.balance_in = strategy.stages.where(sequence:1).first.balance_in_calc
-    strategy.balance_out = strategy.stages.where(sequence:1).last.balance_usd_out
+    stages = strategy.stages.order('sequence')
+    strategy.balance_in = stages.first.balance_in_calc
+    strategy.balance_out = stages.last.balance_usd_out
     strategy.potential = strategy.balance_out - strategy.balance_in
     strategy.save
     puts "#{strategy.stages.count} stages. Investment #{strategy.balance_in} Profit #{strategy.potential}"
