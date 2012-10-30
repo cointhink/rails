@@ -31,14 +31,15 @@ ul
         | #{exchange.name} #{image_tag "/flags/#{exchange.country_code}.png"}
         - unless exchange.active
           | (disabled)
-        |  #{exchange.markets.internal[0,1].map{|market| "#{market.from_currency}/#{market.to_currency} = fee #{market.fee_percentage}%"}.join(' ')}
+        |  #{exchange.markets.internal[0,1].map{|market| "#{market.from_currency}/#{market.to_currency} = fee #{market.fee_percentage}%"}.join(' ')}.
+        |  http #{exchange.last_http_duration_ms}ms
 
 - if @strategy
   div
     | Strategy ##{@strategy.id} #{@strategy.created_at}
     div Trades
     - @strategy.stages.order('sequence').each do |stage|
-      div Stage #{stage.sequence} #{stage.balance_in} in => #{stage.balance_out} out. profit $#{stage.potential}
+      div Stage #{stage.sequence} #{stage.balance_in} in => #{stage.balance_out} out. profit $#{stage.potential} #{"%0.3f"%((stage.potential/stage.balance_out).amount*100)}%
       ul
         - stage.trades.each do |t|
             li class="#{t.balance_in.btc? ? "bid" : ""}"

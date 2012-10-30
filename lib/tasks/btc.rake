@@ -13,6 +13,7 @@ namespace :btc do
           data = exchange.api.depth_poll(super_http,
                                          bid_market.from_currency,
                                          bid_market.to_currency)
+          exchange.update_attribute :last_http_duration_ms, ((Time.now-start)*1000).to_i
           puts "depth BTCUSD #{data["asks"].size + data["bids"].size} #{start.strftime("%T")} #{Time.now-start}s"
           [bid_market, bid_market.pair].each do |market|
             puts "#{market.from_currency}/#{market.to_currency} filtering"
