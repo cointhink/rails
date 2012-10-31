@@ -40,11 +40,6 @@ class Offer < ActiveRecord::Base
     market.fee_percentage/100
   end
 
-  def trade_profit(offer)
-    raise "Incompatible offers. #{market.from_currency}=>#{market.to_currency} cannot trade with #{offer.market.from_currency}=>#{offer.market.to_currency} " unless market.to_currency == offer.market.from_currency
-    offer.balance_with_fee(market.to_currency) - balance_with_fee
-  end
-
   private
   def price_calc(currency)
     if currency == self.currency
