@@ -25,18 +25,20 @@ e.balances.create({currency:"usd", amount: 0})
 
 # Money Changers
 e = Exchange.create(name:'bitinstant')
-m=e.markets.create(from_exchange: Exchange.find_by_name('dwolla'), from_currency:'usd',
+m1=e.markets.create(from_exchange: Exchange.find_by_name('dwolla'), from_currency:'usd',
                    to_exchange: Exchange.find_by_name('btce'),   to_currency:'usd',
                    fee_percentage: 2.0, delay_ms: 1000 * 60 * 60 * 12)
-d=m.depth_runs.create
-d.offers.create(bidask: 'ask', price: 1, market: m,
-                quantity: 1000000, currency: 'usd')
-m=e.markets.create(from_exchange: Exchange.find_by_name('mtgox'), from_currency:'usd',
+m2=e.markets.create(from_exchange: Exchange.find_by_name('mtgox'), from_currency:'usd',
                    to_exchange: Exchange.find_by_name('btce'),   to_currency:'usd',
                    fee_percentage: 1.49, delay_ms: 1000 * 20)
-d=m.depth_runs.create
-d.offers.create(bidask: 'ask', price: 1, market: m,
-                quantity: 1000000, currency: 'usd')
+m3=e.markets.create(from_exchange: Exchange.find_by_name('mtgox'), from_currency:'usd',
+                   to_exchange: Exchange.find_by_name('bitstamp'),   to_currency:'usd',
+                   fee_percentage: 1.29, delay_ms: 1000 * 20)
+[m1,m2,m3].each do |m|
+  d=m.depth_runs.create
+  d.offers.create(bidask: 'ask', price: 1, market: m,
+                  quantity: 1000000, currency: 'usd')
+end
 
 # Exchange's in-house transfer services
 e=Exchange.find_by_name('mtgox')

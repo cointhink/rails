@@ -11,7 +11,7 @@ class Trade < ActiveRecord::Base
   # amount_in, expected_fee, expected_rate
 
   def calculated_out
-    amount = offer.produces(balance_in.amount)
+    amount = offer.cost(balance_in)
     amount*(1-offer.market_fee)
   end
 end

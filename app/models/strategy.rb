@@ -39,10 +39,10 @@ class Strategy < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       actions.each do |action|
         market = market_totals[action[:buy].market.exchange.name] ||= Hash.new(0)
-        market[:usd] += action[:buy].cost(action[:quantity].amount).amount
+        market[:usd] += action[:buy].cost(action[:quantity]).amount
 
         # buy low
-        stage.trades.create(balance_in: action[:buy].cost(action[:quantity].amount),
+        stage.trades.create(balance_in: action[:buy].cost(action[:quantity]),
                                offer: action[:buy],
                                expected_fee: action[:buy].market.fee_percentage)
 
@@ -104,30 +104,30 @@ class Strategy < ActiveRecord::Base
     profit_total = Balance.make_usd(0)
     actions = []
 
-    puts "Best of #{bids.size} bids: #{best_bid.market.name} #{best_bid.balance('usd')}"
+    puts "Best of #{bids.size} bids: #{best_bid.market.name} #{best_bid.rate('usd')}"
     good_bids = bids.where(["price > ?", best_ask.price]).all #in-memory copy
     puts "Bids above #{best_ask.price} is size #{good_bids.size}"
-    puts "Best of #{asks.size} asks: #{best_ask.market.name} #{best_ask.balance('usd')}"
+    puts "Best of #{asks.size} asks: #{best_ask.market.name} #{best_ask.rate('usd')}"
     good_asks = asks.where(["price < ?", best_bid.price]).all #in-memory copy
     puts "Asks below #{best_bid.price} is size #{good_asks.size}"
     puts "Checking asks for profitability"
 
     good_asks.each do |ask|
-      puts "#{ask.market.exchange.name} #{ask.bidask} ##{ask.id} $#{ask.balance(best_bid.market.to_currency)} x#{"%0.5f"%ask.quantity}"
-      left = ask.produces(ask.balance)*(1-ask.market.fee)
-      bid_worksheet = consume_offers(good_bids, left, ask.balance*(1+ask.market.fee))
+      puts "#{ask.market.exchange.name} #{ask.bidask} ##{ask.id} #{ask.rate(best_bid.market.to_currency)} x#{"%0.5f"%ask.quantity}"
+      left = ask.cost(ask.cost)*(1-ask.market.fee)
+      bid_worksheet = consume_offers(good_bids, left, ask.rate*(1+ask.market.fee))
       break if bid_worksheet.empty?
       usd_in = Balance.make_usd(0)
       usd_out = Balance.make_usd(0)
       btc_inout = Balance.make_btc(0)
       bid_worksheet.each do |bw|
         btc_inout += bw[:spent].amount
-        uout = bw[:offer].produces(bw[:spent].amount)
+        uout = bw[:offer].cost(bw[:spent])
         usd_out += uout
-        uin = ask.cost(bw[:spent].amount)
+        uin = ask.cost(bw[:spent])
         usd_in += uin
         profit = uout - uin
-        puts "  #{bw[:offer].market.exchange.name} #{bw[:offer].bidask} ##{bw[:offer].id} $#{bw[:offer].balance} ($#{bw[:offer].balance('usd')}) x#{"%0.5f"%bw[:offer].quantity}btc spent #{bw[:spent]} earned: #{profit}"
+        puts "  #{bw[:offer].market.exchange.name} #{bw[:offer].bidask} ##{bw[:offer].id} $#{bw[:offer].rate('usd')} x#{"%0.5f"%bw[:offer].quantity}btc spent #{bw[:spent]} earned: #{profit}"
       end
       puts "  summary #{usd_in} => #{btc_inout} => #{usd_out}. profit #{usd_out-usd_in}"
       profit_total += usd_out-usd_in
@@ -140,12 +140,12 @@ class Strategy < ActiveRecord::Base
   end
 
   def self.consume_offers(offers, money, price_limit)
-    puts "Buying the first #{money} over #{price_limit} from #{offers.size} offers."
+    puts "Buying up #{money} worth of #{offers.size} offers better than #{price_limit}"
     remaining = money.dup
     actions = []
     offers.each do |offer|
       if remaining > 0.00001 #floatingpoint
-        break if offer.balance(price_limit.currency)*(1-offer.market.fee) < price_limit
+        break if offer.rate(price_limit.currency)*(1-offer.market.fee) < price_limit
         spent = offer.spend!(remaining)
         remaining -= spent
         if spent > 0.00001
@@ -166,8 +166,8 @@ class Strategy < ActiveRecord::Base
 
     fee_percentage = bid.depth_run.market.exchange.fee_percentage
     remaining_factor = 1-(fee_percentage/100.0)
-    bid_after_fee = bid.balance*remaining_factor
-    puts "Finding asks above #{bid_after_fee.amount}#{bid_after_fee.currency} (#{bid.balance.amount}#{bid.balance.currency} original, #{fee_percentage}% fee)"
+    bid_after_fee = bid.rate*remaining_factor
+    puts "Finding asks above #{bid_after_fee.amount}#{bid_after_fee.currency} (#{bid.rate.amount}#{bid.rate.currency} original, #{fee_percentage}% fee)"
     matching_asks = asks.where('price < ?', bid_after_fee.amount)
     action_asks = consume_offers(matching_asks, cash)
 

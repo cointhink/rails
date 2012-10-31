@@ -9,37 +9,30 @@ class Offer < ActiveRecord::Base
   scope :bids, where(bidask: "bid")
   scope :trades, lambda {|from_currency, to_currency| joins(:market).where(['markets.from_currency = ? and markets.to_currency = ?', from_currency, to_currency])}
 
-  def balance(currency = market.from_currency)
+  def rate(currency = market.from_currency)
     currency_check!(currency)
     Balance.new(amount: price_calc(currency), currency: currency)
   end
 
-  def cost(quantity = quantity)
-    quantity_check!(quantity)
-    if currency == market.from_currency
-      balance*quantity
-    elsif currency == market.to_currency
-      Balance.new(amount: quantity, currency: market.from_currency)
+  def cost(amount = nil)
+    if amount
+      currency_check!(amount.currency)
+    else
+      amount = Balance.new(amount: quantity, currency: market.to_currency)
     end
+    if amount.currency == market.from_currency
+      currency = market.to_currency
+    else
+      currency = market.from_currency
+    end
+    rate(currency)*amount.amount
   end
 
-  def produces(quantity = quantity)
-    quantity_check!(quantity)
-    if currency == market.from_currency
-      Balance.new(amount: quantity, currency: market.to_currency)
-    elsif currency == market.to_currency
-      balance(currency)*quantity
-    end
-  end
-
-  def spend!(purse)
-    least = purse.min(cost)
-    if least.currency == market.to_currency
-      qty_spent = least
-    elsif least.currency == market.from_currency
-      qty_spent = least/price
-    end
-    self.quantity -= least.amount
+  def spend!(amount)
+    raise "Invalid currency " if amount.currency != market.from_currency
+    least = amount.min(cost)
+    spent = Balance.new(amount: (least / rate).amount, currency: market.to_currency)
+    self.quantity -= spent.amount
     least
   end
 
