@@ -18,4 +18,11 @@ class Stage < ActiveRecord::Base
     end
   end
 
+  def profit_percentage
+    if balance_in && balance_in > 0
+      (potential/balance_in).amount*100
+    else
+      0
+    end
+  end
 end

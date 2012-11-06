@@ -39,7 +39,7 @@ ul
     | Strategy ##{@strategy.id} #{@strategy.created_at}
     div Trades
     - @strategy.stages.order('sequence').each do |stage|
-      div Stage #{stage.sequence} #{stage.balance_in} in => #{stage.balance_out} out. profit $#{stage.potential} #{"%0.3f"%((stage.potential/stage.balance_out).amount*100)}%
+      div Stage #{stage.sequence} #{stage.balance_in} in => #{stage.balance_out} out. profit $#{stage.potential} #{"%0.3f"%stage.profit_percentage}%
       ul
         - stage.trades.each do |t|
             li class="#{t.balance_in.btc? ? "bid" : ""}"
