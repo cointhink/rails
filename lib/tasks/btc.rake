@@ -27,11 +27,12 @@ namespace :btc do
 
     desc 'Total opportunity'
     task :opportunity, [:markets] => :environment do |task, args|
-      if args[:markets]
-        markets &= args[:markets].split('-').map{|name| Exchange.find_by_name(name).markets}.flatten
+      snapshot = Snapshot.order('created_at desc').last
+      if snapshot
+        opportunity = Strategy.opportunity('btc', 'usd', snapshot)
+      else
+        puts "No snapshots in system"
       end
-      opportunity = Strategy.opportunity('btc', 'usd')
-      #puts opportunity.inspect
     end
 
     desc 'Best pair of markets'

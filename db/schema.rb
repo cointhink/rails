@@ -94,8 +94,9 @@ ActiveRecord::Schema.define(:version => 20121107194719) do
   add_index "offers", ["market_id"], :name => "index_offers_on_market_id"
 
   create_table "snapshots", :force => true do |t|
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.integer  "strategy_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "stages", :force => true do |t|

@@ -7,25 +7,26 @@ class Strategy < ActiveRecord::Base
   has_many :exchange_balances, :dependent => :destroy
 
   # total opportunity
-  def self.opportunity(left_currency, right_currency)
+  def self.opportunity(left_currency, right_currency, snapshot)
     # find all asks less than bids, fee adjusted
     # assume unlimited buying funds
-    bid_markets = Market.internal.trading(left_currency,right_currency)
-    ask_markets = Market.internal.trading(right_currency,left_currency)
+    depth_runs = snapshot.exchange_runs.map{|er| er.depth_runs}.flatten
+    bid_markets = depth_runs.select{|dr| dr.market.from_currency == left_currency &&
+                                         dr.market.to_currency == right_currency}
+    ask_markets = depth_runs.select{|dr| dr.market.from_currency == right_currency &&
+                                         dr.market.to_currency == left_currency}
 
-    puts "Ask Markets: #{ask_markets.map{|m| "#{m.exchange.name} #{m.from_currency}/#{m.to_currency}"}.join(', ')}"
-    puts "Bid Markets: #{bid_markets.map{|m| "#{m.exchange.name} #{m.from_currency}/#{m.to_currency}"}.join(', ')}"
+    puts "Ask Markets: #{ask_markets.map{|dr| "#{dr.exchange_run.exchange.name} #{dr.market.name}"}.join(', ')}"
+    puts "Bid Markets: #{bid_markets.map{|dr| "#{dr.exchange_run.exchange.name} #{dr.market.name}"}.join(', ')}"
 
-    asks = Offer.where(['depth_run_id in (?)',
-                        ask_markets.select{|m| m.exchange.active}.map{|a| a.depth_runs.last}]).
-                 order("price asc")
-    bids = Offer.where(['depth_run_id in (?)',
-                        bid_markets.select{|m| m.exchange.active}.map{|a| a.depth_runs.last}]).
-                 order("price desc")
+    bids = Offer.where(['depth_run_id in (?)', bid_markets]).order("price desc")
+    asks = Offer.where(['depth_run_id in (?)', ask_markets]).order("price asc")
 
     if bids.count > 0 && asks.count > 0
       actions = clearing_offers(bids, asks)
-      Strategy.analyze(actions)
+      strategy = Strategy.analyze(actions)
+      snapshot.update_attribute :strategy, strategy
+      puts "Linked strategy ##{strategy.id} to snapshot ##{snapshot.id} #{snapshot.created_at}"
     else
       puts "#{bids.count} bids. #{asks.count} asks. Nothing actionable."
     end
@@ -93,7 +94,7 @@ class Strategy < ActiveRecord::Base
     strategy.potential = strategy.balance_out - strategy.balance_in
     strategy.save
     puts "#{strategy.stages.count} stages. Investment #{strategy.balance_in} Profit #{strategy.potential}"
-
+    strategy
   end
 
   def self.clearing_offers(bids, asks)

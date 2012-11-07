@@ -1,7 +1,8 @@
 class Snapshot < ActiveRecord::Base
-  # attr_accessible :title, :body
   has_many :exchange_runs, :dependent => :destroy
   belongs_to :strategy
+
+  attr_accessible :strategy
 
   def exchanges
     exchange_runs.map(&:exchange)
