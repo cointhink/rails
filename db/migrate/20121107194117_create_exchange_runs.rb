@@ -5,7 +5,6 @@ class CreateExchangeRuns < ActiveRecord::Migration
     create_table :exchange_runs do |t|
       t.references :exchange
       t.references :snapshot
-      t.references :depth_run
       t.integer :duration_ms
       t.timestamp :start_at
       t.timestamps

@@ -1,7 +1,7 @@
 class ExchangeRun < ActiveRecord::Base
   belongs_to :snapshot
   belongs_to :exchange
-  belongs_to :depth_run
+  has_many :depth_runs
 
-  attr_accessible :snapshot, :exchange, :depth_run, :duration_ms, :start_at
+  attr_accessible :snapshot, :exchange, :duration_ms, :start_at
 end

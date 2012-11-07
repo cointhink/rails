@@ -32,7 +32,6 @@ ul
         - unless exchange.active
           | (disabled)
         |  #{exchange.markets.internal[0,1].map{|market| "#{market.from_currency}/#{market.to_currency} = fee #{market.fee_percentage}%"}.join(' ')}.
-        |  http #{exchange.last_http_duration_ms}ms
 
 - if @strategy
   div

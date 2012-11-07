@@ -1,6 +1,11 @@
 class Snapshot < ActiveRecord::Base
   # attr_accessible :title, :body
   has_many :exchange_runs, :dependent => :destroy
+  belongs_to :strategy
+
+  def exchanges
+    exchange_runs.map(&:exchange)
+  end
 
   def poll(http, exchanges)
     exchanges.map do |exchange|
@@ -22,7 +27,7 @@ class Snapshot < ActiveRecord::Base
               puts "#{market.from_currency}/#{market.to_currency} filtering"
               depth_run = market.depth_filter(data, bid_market.to_currency)
               puts "Created #{depth_run.offers.count} offers"
-              exchange_run.update_attribute :depth_run, depth_run
+              depth_run.update_attribute :exchange_run, exchange_run
             end
           rescue Faraday::Error::TimeoutError,Errno::EHOSTUNREACH,JSON::ParserError => e
             STDERR.puts "#{exchange.name} #{e}"
