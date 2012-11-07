@@ -35,6 +35,14 @@ namespace :btc do
       end
     end
 
+    desc 'Backfill Total opportunity'
+    task :backfill, [:markets] => :environment do |task, args|
+      snapshots = Snapshot.where('strategy_id is null')
+      snapshots.each do |snapshot|
+        Strategy.opportunity('btc', 'usd', snapshot)
+      end
+    end
+
     desc 'Best pair of markets'
     task :bestpair => :environment do
       puts "Calculating best pair"

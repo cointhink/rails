@@ -27,10 +27,10 @@ class DashController < ApplicationController
       data
     end
 
-    @strategy_data = snapshots.map{|s| [s.strategy.created_at.to_i*1000,
+    @strategy_data = snapshots.map{|s| [s.created_at.to_i*1000,
                                         s.strategy.potential.amount.to_f] if s.strategy}
     @strategy_ids = snapshots.map{|s| s.strategy.id if s.strategy}
-    @strategy_percentages = snapshots.map{|s| [s.strategy.created_at.to_i*1000,
+    @strategy_percentages = snapshots.map{|s| [s.created_at.to_i*1000,
                                                 s.strategy.profit_percentage.to_f] if s.strategy}
 
     if params[:strategy_id]
