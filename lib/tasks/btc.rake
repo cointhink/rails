@@ -27,7 +27,7 @@ namespace :btc do
 
     desc 'Total opportunity'
     task :opportunity, [:markets] => :environment do |task, args|
-      snapshot = Snapshot.order('created_at desc').last
+      snapshot = Snapshot.order('created_at desc').first
       if snapshot
         opportunity = Strategy.opportunity('btc', 'usd', snapshot)
       else
