@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121030203733) do
+ActiveRecord::Schema.define(:version => 20121107194719) do
 
   create_table "balances", :force => true do |t|
     t.string   "currency"
@@ -27,8 +27,9 @@ ActiveRecord::Schema.define(:version => 20121030203733) do
 
   create_table "depth_runs", :force => true do |t|
     t.integer  "market_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+    t.integer  "exchange_run_id"
   end
 
   add_index "depth_runs", ["market_id"], :name => "index_depth_runs_on_market_id"
@@ -43,13 +44,22 @@ ActiveRecord::Schema.define(:version => 20121030203733) do
   add_index "exchange_balances", ["exchange_id"], :name => "index_exchange_balances_on_exchange_id"
   add_index "exchange_balances", ["strategy_id"], :name => "index_exchange_balances_on_strategy_id"
 
+  create_table "exchange_runs", :force => true do |t|
+    t.integer  "exchange_id"
+    t.integer  "snapshot_id"
+    t.integer  "depth_run_id"
+    t.integer  "duration_ms"
+    t.datetime "start_at"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
   create_table "exchanges", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at",            :null => false
-    t.datetime "updated_at",            :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
     t.string   "country_code"
     t.boolean  "active"
-    t.integer  "last_http_duration_ms"
   end
 
   create_table "markets", :force => true do |t|
@@ -82,6 +92,11 @@ ActiveRecord::Schema.define(:version => 20121030203733) do
 
   add_index "offers", ["depth_run_id"], :name => "index_offers_on_depth_run_id"
   add_index "offers", ["market_id"], :name => "index_offers_on_market_id"
+
+  create_table "snapshots", :force => true do |t|
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "stages", :force => true do |t|
     t.integer  "sequence"

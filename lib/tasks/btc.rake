@@ -4,29 +4,8 @@ namespace :btc do
     # exchanges with internal markets
     super_http = Faraday.new(request:{timeout:SETTINGS["net"]["timeout"]})
 
-    Market.internal.map(&:exchange).uniq.select(&:active).map do |exchange|
-      puts "* #{exchange.name} poll"
-      bid_market = exchange.markets.internal.trading('btc','usd').first
-      if bid_market
-        Thread.new do
-          begin
-            start = Time.now
-            data = exchange.api.depth_poll(super_http,
-                                           bid_market.from_currency,
-                                           bid_market.to_currency)
-            exchange.update_attribute :last_http_duration_ms, ((Time.now-start)*1000).to_i
-            puts "depth BTCUSD #{data["asks"].size + data["bids"].size} #{start.strftime("%T")} #{Time.now-start}s"
-            [bid_market, bid_market.pair].each do |market|
-              puts "#{market.from_currency}/#{market.to_currency} filtering"
-              offers = market.depth_filter(data, bid_market.to_currency)
-              puts "Created #{offers.size} offers"
-            end
-          rescue Faraday::Error::TimeoutError,Errno::EHOSTUNREACH,JSON::ParserError => e
-            STDERR.puts "#{exchange.name} #{e}"
-          end
-        end
-      end
-    end.select{|t| t}.each{|t| t.join}
+    snapshot = Snapshot.create
+    snapshot.poll(super_http, Exchange.actives)
   end
 
   namespace :strategy do

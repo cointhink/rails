@@ -56,6 +56,7 @@ class Market < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       depth_run.offers.create(offers)
     end
+    depth_run
   end
 
   def ticker
