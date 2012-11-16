@@ -6,7 +6,7 @@ class DashController < ApplicationController
     snapshots = Snapshot.where(
                     ['created_at > ? and created_at < ?', start, stop])
                  .order('created_at desc')
-    snapshot = snapshots.last
+    snapshot = snapshots.first
     exchanges = snapshot ? snapshot.exchanges : []
 
     @chart_data = exchanges.map do |exchange|
