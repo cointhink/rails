@@ -1,9 +1,13 @@
 class DashController < ApplicationController
   def chart
-    cutoff = 8.hours.ago
-    snapshots = Snapshot.where('created_at > ?', cutoff).order('created_at desc')
+    hours = params[:duration] ? params[:duration].to_i : 8
+    start = params[:start] ? Time.parse(params[:start]) : Time.now - hours.hours
+    stop = start + hours.hours
+    snapshots = Snapshot.where(
+                    ['created_at > ? and created_at < ?', start, stop])
+                 .order('created_at desc')
     snapshot = snapshots.last
-    exchanges = snapshot.exchanges
+    exchanges = snapshot ? snapshot.exchanges : []
 
     @chart_data = exchanges.map do |exchange|
       data = [ exchange.name, [], [] ]
@@ -36,7 +40,7 @@ class DashController < ApplicationController
     if params[:strategy_id]
       @strategy = Strategy.find(params[:strategy_id])
     else
-      @strategy = snapshot.strategy
+      @strategy = snapshot.strategy if snapshot
     end
 
     respond_to do |format|
