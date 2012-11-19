@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121107194719) do
+ActiveRecord::Schema.define(:version => 20121119195211) do
 
   create_table "balances", :force => true do |t|
     t.string   "currency"
@@ -105,8 +105,11 @@ ActiveRecord::Schema.define(:version => 20121107194719) do
     t.integer  "balance_in_id"
     t.integer  "balance_out_id"
     t.integer  "potential_id"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.integer  "parent_id"
+    t.boolean  "children_concurrent"
+    t.string   "name"
   end
 
   add_index "stages", ["balance_in_id"], :name => "index_stages_on_balance_in_id"

@@ -3,7 +3,7 @@ class Strategy < ActiveRecord::Base
   belongs_to :balance_out, :class_name => :Balance, :dependent => :destroy
   belongs_to :potential, :class_name => :Balance, :dependent => :destroy
 
-  has_many :stages, :dependent => :destroy
+  has_one :stage, :dependent => :destroy
   has_many :exchange_balances, :dependent => :destroy
 
   # total opportunity
@@ -35,15 +35,18 @@ class Strategy < ActiveRecord::Base
   def self.analyze(actions)
     strategy = Strategy.create
     puts "Saving #{actions.size} trade groups"
-    stage = strategy.stages.create(sequence: 2)
+    parent = strategy.create_stage
+    stage2 = parent.children.create(sequence: 2, name: "trades",
+                                   children_concurrent: true)
     market_totals = {}
     ActiveRecord::Base.transaction do
       actions.each do |action|
+        substage = stage2.children.create
         market = market_totals[action[:buy].market.exchange.name] ||= Hash.new(0)
         market[:usd] += action[:buy].cost(action[:quantity]).amount
 
         # buy low
-        stage.trades.create(balance_in: action[:buy].cost(action[:quantity]),
+        substage.trades.create(balance_in: action[:buy].cost(action[:quantity]),
                                offer: action[:buy],
                                expected_fee: action[:buy].market.fee_percentage)
 
@@ -51,20 +54,26 @@ class Strategy < ActiveRecord::Base
         action[:sells].each do |sell|
           market = market_totals[sell[:offer].market.exchange.name] ||= Hash.new(0)
           market[:btc] += sell[:spent].amount
-          stage.trades.create(balance_in: sell[:spent],
+          substage.trades.create(balance_in: sell[:spent],
                                  offer: sell[:offer],
                                  expected_fee: sell[:offer].market.fee_percentage)
 
         end
+        substage.balance_in = substage.balance_in_calc
+        substage.balance_out = substage.balance_usd_out
+        substage.potential = substage.balance_out - substage.balance_in
+        substage.save
       end
     end
-    stage.balance_in = stage.balance_in_calc
-    stage.balance_out = stage.balance_usd_out
-    stage.potential = stage.balance_out - stage.balance_in
-    stage.save
-    puts "stage ##{stage.sequence} #{stage.trades.count} actions. Investment #{stage.balance_in} Profit #{stage.potential}"
+    stage2.balance_in = stage2.children.sum(&:balance_in)
+    stage2.balance_out = stage2.children.sum(&:balance_usd_out)
+    stage2.potential = stage2.balance_out - stage2.balance_in
+    stage2.save
+    puts "stage ##{stage2.name} #{stage2.children.count} actions. Investment #{stage2.balance_in} Profit #{stage2.potential}"
 
-    stage = strategy.stages.create(sequence: 1)
+    stage1 = parent.children.create(sequence: 1,
+                                   name: "balance moves",
+                                   children_concurrent: true)
     market_totals.each do |k,v|
       exchange = Exchange.find_by_name(k)
       puts "#{k} spends $#{"%0.2f"%v[:usd]} #{"%0.5f"%v[:btc]}btc"
@@ -73,7 +82,7 @@ class Strategy < ActiveRecord::Base
         if changer
           v[:usd] *= (1+changer.fee)
           puts " -> #{changer.name} #{v[:usd]}"
-          stage.trades.create(balance_in: Balance.make_usd(v[:usd]),
+          stage1.trades.create(balance_in: Balance.make_usd(v[:usd]),
                        offer: changer.offers.first,
                        expected_fee: changer.fee_percentage)
 
@@ -83,17 +92,22 @@ class Strategy < ActiveRecord::Base
                                         balances: [Balance.make_usd(v[:usd]),
                                                    Balance.make_btc(v[:btc])])
     end
-    stage.balance_in = stage.balance_in_calc
-    stage.balance_out = stage.balance_usd_out
-    stage.potential = stage.balance_out - stage.balance_in
-    stage.save
+    stage1.balance_in = stage1.balance_in_calc
+    stage1.balance_out = stage1.balance_usd_out
+    stage1.potential = stage1.balance_out - stage1.balance_in
+    stage1.save
 
-    stages = strategy.stages.order('sequence')
-    strategy.balance_in = stages.first.balance_in_calc
-    strategy.balance_out = stages.last.balance_usd_out
+    parent.balance_in = stage1.balance_in
+    parent.balance_out = stage2.balance_out
+    parent.potential = parent.balance_out - parent.balance_in
+    parent.save
+
+    strategy.balance_in = parent.balance_in
+    strategy.balance_out = parent.balance_out
     strategy.potential = strategy.balance_out - strategy.balance_in
     strategy.save
-    puts "#{strategy.stages.count} stages. Investment #{strategy.balance_in} Profit #{strategy.potential}"
+
+    puts "#{strategy.stage.children.count} stages. Investment #{strategy.balance_in} Profit #{strategy.potential}"
     strategy
   end
 
