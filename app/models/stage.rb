@@ -6,7 +6,7 @@ class Stage < ActiveRecord::Base
 
   has_many :trades, :dependent => :destroy
 
-  attr_accessible :sequence
+  attr_accessible :name, :sequence
 
   acts_as_tree order: "sequence"
 
