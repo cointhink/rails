@@ -37,10 +37,14 @@ ul
   div
     | Strategy ##{@strategy.id} #{@strategy.created_at}
     div Trades
-    - @strategy.stages.order('sequence').each do |stage|
-      div Stage #{stage.sequence} #{stage.balance_in} in => #{stage.balance_out} out. profit $#{stage.potential} #{"%0.3f"%stage.profit_percentage}%
+    - @strategy.stage.children.each do |stage|
+      div Stage #{stage.name} ##{stage.sequence} #{stage.balance_in} in => #{stage.balance_out} out. profit $#{stage.potential} #{"%0.3f"%stage.profit_percentage}%
       ul
         - stage.trades.each do |t|
+            li class="#{t.balance_in.btc? ? "bid" : ""}"
+              | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out}
+        - stage.children.each do |stage|
+          - stage.trades.each do |t|
             li class="#{t.balance_in.btc? ? "bid" : ""}"
               | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out}
 
