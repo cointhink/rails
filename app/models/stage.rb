@@ -10,6 +10,10 @@ class Stage < ActiveRecord::Base
 
   acts_as_tree order: "sequence"
 
+  def buy
+    trades.select{|t| t.balance_in.usd?}.first
+  end
+
   def balance_in_calc
     trades.reduce(Balance.make_usd(0)) do |total, trade|
       trade.balance_in.usd? ? total + trade.balance_in : total

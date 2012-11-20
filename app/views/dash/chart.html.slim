@@ -44,9 +44,10 @@ ul
             li class="#{t.balance_in.btc? ? "bid" : ""}"
               | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out}
         - stage.children.each do |stage|
+          - buy = stage.buy
           - stage.trades.each do |t|
             li class="#{t.balance_in.btc? ? "bid" : ""}"
-              | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out}
+              | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out} #{"(profit $%0.2f)" % ((t.offer.price - buy.offer.price)*t.balance_in.amount) if t.balance_in.btc?}
 
 
 javascript:
