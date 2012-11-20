@@ -65,8 +65,12 @@ class Strategy < ActiveRecord::Base
         substage.save
       end
     end
-    stage2.balance_in = stage2.children.sum(&:balance_in)
-    stage2.balance_out = stage2.children.sum(&:balance_usd_out)
+    stage2.balance_in = stage2.children.reduce(Balance.make_usd(0)) do |total, trade|
+      total + trade.balance_in
+    end
+    stage2.balance_out = stage2.children.reduce(Balance.make_usd(0)) do |total, trade|
+      total + trade.balance_usd_out
+    end
     stage2.potential = stage2.balance_out - stage2.balance_in
     stage2.save
     puts "stage ##{stage2.name} #{stage2.children.count} actions. Investment #{stage2.balance_in} Profit #{stage2.potential}"
