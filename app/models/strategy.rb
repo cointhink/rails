@@ -16,8 +16,8 @@ class Strategy < ActiveRecord::Base
     ask_markets = depth_runs.select{|dr| dr.market.from_currency == right_currency &&
                                          dr.market.to_currency == left_currency}
 
-    puts "Ask Markets: #{ask_markets.map{|dr| "#{dr.exchange_run.exchange.name} #{dr.market.name}"}.join(', ')}"
-    puts "Bid Markets: #{bid_markets.map{|dr| "#{dr.exchange_run.exchange.name} #{dr.market.name}"}.join(', ')}"
+    puts "Ask Markets: #{ask_markets.map{|dr| "#{dr.market.name}"}.join(', ')}"
+    puts "Bid Markets: #{bid_markets.map{|dr| "#{dr.market.name}"}.join(', ')}"
 
     bids = Offer.where(['depth_run_id in (?)', bid_markets]).order("price desc")
     asks = Offer.where(['depth_run_id in (?)', ask_markets]).order("price asc")
@@ -124,15 +124,15 @@ class Strategy < ActiveRecord::Base
     actions = []
 
     puts "Best of #{bids.size} bids: #{best_bid.market.name} #{best_bid.rate('usd')}"
-    good_bids = bids.where(["price > ?", best_ask.price]).all #in-memory copy
-    puts "Bids above #{best_ask.price} is size #{good_bids.size}"
     puts "Best of #{asks.size} asks: #{best_ask.market.name} #{best_ask.rate('usd')}"
+    good_bids = bids.where(["price > ?", best_ask.price]).all #in-memory copy
+    puts "#{good_bids.size} bids above best ask $#{best_ask.price}"
     good_asks = asks.where(["price < ?", best_bid.price]).all #in-memory copy
-    puts "Asks below #{best_bid.price} is size #{good_asks.size}"
-    puts "Checking asks for profitability"
+    puts "#{good_asks.size} asks below best bid $#{best_bid.price}"
+    puts "Checking #{good_asks.size} asks for profitability:"
 
     good_asks.each do |ask|
-      puts "#{ask.market.exchange.name} #{ask.bidask} ##{ask.id} #{ask.rate(best_bid.market.to_currency)} x#{"%0.5f"%ask.quantity}"
+      puts "#{ask.market.exchange.name} #{ask.bidask} ##{ask.id} #{ask.rate(best_bid.market.to_currency)} (#{ask.rate*(1+ask.market.fee)} w/ fee) x#{"%0.5f"%ask.quantity}"
       left = ask.cost(ask.cost)*(1-ask.market.fee)
       bid_worksheet = consume_offers(good_bids, left, ask.rate*(1+ask.market.fee))
       break if bid_worksheet.empty?
