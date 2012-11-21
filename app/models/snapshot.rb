@@ -9,32 +9,44 @@ class Snapshot < ActiveRecord::Base
   end
 
   def poll(http, exchanges)
-    exchanges.map do |exchange|
+    exchange_list = exchanges.map do |exchange|
       bid_market = exchange.markets.internal.trading('btc','usd').first
       if bid_market
-        exchange_run = exchange_runs.create(exchange: exchange)
         puts "* #{exchange.name} poll"
-        Thread.new do
-          begin
-            start = Time.now
-            data = exchange.api.depth_poll(http,
-                                           bid_market.from_currency,
-                                           bid_market.to_currency)
-            duration = Time.now-start
-            exchange_run.update_attributes(duration_ms: (duration*1000).to_i,
-                                           start_at: start)
-            puts "depth BTCUSD #{data["asks"].size + data["bids"].size} #{start.strftime("%T")} #{duration}s"
-            [bid_market, bid_market.pair].each do |market|
-              puts "#{market.from_currency}/#{market.to_currency} filtering"
-              depth_run = market.depth_filter(data, bid_market.to_currency)
-              puts "Created #{depth_run.offers.count} offers"
-              depth_run.update_attribute :exchange_run, exchange_run
-            end
-          rescue Faraday::Error::TimeoutError,Errno::EHOSTUNREACH,JSON::ParserError => e
-            STDERR.puts "#{exchange.name} #{e}"
-          end
+        exchange_run = exchange_runs.create(exchange: exchange)
+        {bid_market:bid_market, exchange_run:exchange_run}
+      end
+    end.select{|t| t}
+
+    edata = []
+    exchange_list.map do |erun|
+      Thread.new do
+        begin
+          start = Time.now
+          data = erun[:exchange_run].exchange.api.depth_poll(http,
+                                       erun[:bid_market].from_currency,
+                                       erun[:bid_market].to_currency)
+          duration = Time.now-start
+          edata << {erun:erun, start:start, data:data, duration:duration}
+        rescue Faraday::Error::TimeoutError,Errno::EHOSTUNREACH,JSON::ParserError => e
+          STDERR.puts "#{exchange.name} #{e}"
         end
       end
-    end.select{|t| t}.each{|t| t.join}
+    end.each{|t| t.join if t}
+
+    edata.map do |edat|
+      edat[:erun][:exchange_run].update_attributes(
+                                     duration_ms: (edat[:duration]*1000).to_i,
+                                     start_at: edat[:start])
+      puts "depth BTCUSD #{edat[:data]["asks"].size + edat[:data]["bids"].size} "+
+           "#{edat[:start].strftime("%T")} #{edat[:duration]}s"
+      [edat[:erun][:bid_market], edat[:erun][:bid_market].pair].each do |market|
+        puts "#{market.from_currency}/#{market.to_currency} filtering"
+        depth_run = market.depth_filter(edat[:data], edat[:erun][:bid_market].to_currency)
+        puts "Created #{depth_run.offers.count} offers"
+        depth_run.update_attribute :exchange_run, edat[:erun][:exchange_run]
+      end
+      edat[:erun][:exchange_run]
+    end
   end
 end
