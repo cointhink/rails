@@ -45,13 +45,19 @@ class DashController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render :json => {balance_in: {amount:@strategy.balance_in.amount,
-                                                  currency:@strategy.balance_in.currency},
-                                     potential: {amount:@strategy.potential.amount,
-                                                 currency:@strategy.potential.currency},
-                                     profit_percentage: @strategy.profit_percentage,
-                                     created_at: @strategy.created_at,
-                                     strategy_id: @strategy.id}}
+      format.json do
+        if @strategy
+         render :json => {balance_in: {amount:@strategy.balance_in.amount,
+                                       currency:@strategy.balance_in.currency},
+                          potential: {amount:@strategy.potential.amount,
+                                      currency:@strategy.potential.currency},
+                          profit_percentage: @strategy.profit_percentage,
+                          created_at: @strategy.created_at,
+                          strategy_id: @strategy.id}
+        else
+         render :json => {}
+        end
+      end
     end
   end
 
