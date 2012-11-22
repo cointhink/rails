@@ -8,49 +8,32 @@ namespace :btc do
     snapshot.poll(super_http, Exchange.actives)
   end
 
-  namespace :strategy do
-    desc 'Operate on the best bid'
-    task :bestbid, [:amount] => :environment do |task, args|
-      actions = Strategy.best_bid(Balance.make_usd(args[:amount]||100))
-      actions.each do |action|
-        bid = action.first
-        actions = action.last
-        puts "bid #{bid.depth_run.market.exchange.name} #{bid.balance.amount}#{bid.balance.currency} x#{bid.quantity}"
-        actions.each do |action|
-          puts "ask #{action[:ask].depth_run.market.exchange.name} #{action[:ask].balance.amount}#{action[:ask].balance.currency} x#{action[:ask].quantity} qty #{"%0.5f"%action[:quantity]}. subtotal #{"%0.2f"%action[:subtotal]}"
-        end
-        action_coins = actions.sum{|a| a[:quantity]}
-        bid_sale = action_coins*bid.price
-        puts "Coin balance after purchase run: #{"%0.5f"%action_coins}, selling at bid = #{"%0.2f"%bid_sale}"
-      end
+  desc 'Total opportunity'
+  task :opportunity, [:markets] => :environment do |task, args|
+    snapshot = Snapshot.order('created_at desc').first
+    if snapshot
+      puts "Snapshot ##{snapshot.id} #{snapshot.created_at}"
+      opportunity = Strategy.opportunity('btc', 'usd', snapshot)
+    else
+      puts "No snapshots in system"
     end
+  end
 
-    desc 'Total opportunity'
-    task :opportunity, [:markets] => :environment do |task, args|
-      snapshot = Snapshot.order('created_at desc').first
-      if snapshot
-        opportunity = Strategy.opportunity('btc', 'usd', snapshot)
-      else
-        puts "No snapshots in system"
-      end
+  desc 'Backfill Total opportunity'
+  task :backfill, [:markets] => :environment do |task, args|
+    snapshots = Snapshot.where('strategy_id is null')
+    snapshots.each do |snapshot|
+      Strategy.opportunity('btc', 'usd', snapshot)
     end
+  end
 
-    desc 'Backfill Total opportunity'
-    task :backfill, [:markets] => :environment do |task, args|
-      snapshots = Snapshot.where('strategy_id is null')
-      snapshots.each do |snapshot|
-        Strategy.opportunity('btc', 'usd', snapshot)
-      end
-    end
-
-    desc 'Best pair of markets'
-    task :bestpair => :environment do
-      puts "Calculating best pair"
-      pairs = Strategy.pair_spreads
-      if pairs.size > 0
-        best_pair = pairs.first
-        Strategy.create_two_trades(best_pair)
-      end
+  desc 'Best pair of markets'
+  task :bestpair => :environment do
+    puts "Calculating best pair"
+    pairs = Strategy.pair_spreads
+    if pairs.size > 0
+      best_pair = pairs.first
+      Strategy.create_two_trades(best_pair)
     end
   end
 end

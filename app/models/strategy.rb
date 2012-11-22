@@ -1,3 +1,4 @@
+require 'exchanges/base'
 class Strategy < ActiveRecord::Base
   belongs_to :balance_in, :class_name => :Balance, :dependent => :destroy
   belongs_to :balance_out, :class_name => :Balance, :dependent => :destroy
@@ -73,7 +74,7 @@ class Strategy < ActiveRecord::Base
     end
     stage2.potential = stage2.balance_out - stage2.balance_in
     stage2.save
-    puts "stage ##{stage2.name} #{stage2.children.count} actions. Investment #{stage2.balance_in} Profit #{stage2.potential}"
+    puts "Stage ##{stage2.name} #{stage2.children.count} actions. Investment #{stage2.balance_in} Profit #{stage2.potential}"
 
     stage1 = parent.children.create(sequence: 1,
                                    name: "balance moves",
