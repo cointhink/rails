@@ -47,7 +47,7 @@ class Strategy < ActiveRecord::Base
         market[:usd] += action[:buy].cost(action[:quantity]).amount
 
         # buy low
-        substage.trades.create(balance_in: action[:buy].cost(action[:quantity]),
+        substage.trades.create(balance_in: action[:buy].cost(action[:quantity])*(1+action[:buy].market.fee),
                                offer: action[:buy],
                                expected_fee: action[:buy].market.fee_percentage)
 
@@ -138,7 +138,7 @@ class Strategy < ActiveRecord::Base
 
     good_asks.each do |ask|
       puts "#{ask.market.exchange.name} #{ask.bidask} ##{ask.id} #{ask.rate(best_bid.market.to_currency)} x#{"%0.5f"%ask.quantity} #{ask.market.fee_percentage}% fee"
-      left = ask.cost(ask.cost)*(1-ask.market.fee)
+      left = ask.cost(ask.cost)
       bid_worksheet = consume_offers(good_bids, left, ask.rate)
       break if bid_worksheet.empty?
       usd_in = Balance.make_usd(0)
