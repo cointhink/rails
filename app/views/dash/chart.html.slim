@@ -25,13 +25,18 @@ div.clearboth
 
 div Exchanges
 ul
-  - Exchange.all.each do |exchange|
-    - if exchange.markets.internal.size > 0
-      li
-        | #{exchange.name} #{image_tag "/flags/#{exchange.country_code}.png"}
-        - unless exchange.active
-          | (disabled)
-        |  #{exchange.markets.internal[0,1].map{|market| "#{market.from_currency}/#{market.to_currency} = fee #{market.fee_percentage}%"}.join(' ')}.
+  table
+    - Exchange.all.each do |exchange|
+      - if exchange.markets.internal.size > 0
+        tr
+          td
+            | #{exchange.name} #{image_tag "/flags/#{exchange.country_code}.png"}
+            - unless exchange.active
+              | (disabled)
+          td
+            |  #{exchange.markets.internal[0,1].map{|market| "#{market.from_currency}/#{market.to_currency} fee #{market.fee_percentage}%"}.join(' ')}
+          td
+            | #{etime=exchange.exchange_runs.last; "#{etime.start_at.strftime("%a %H:%M:%S")} #{"%0.1f"%(etime.duration_ms/1000)}s" if etime}
 
 - if @strategy
   div
