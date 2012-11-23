@@ -19,7 +19,7 @@ function setup(data, percentages, strategies, strategy_ids) {
   dset.push({label: "strategy",
              data: strategies,
              yaxis: 2,
-             color: 'grey',
+             color: 'black',
              bars: {show: false},
              lines: {show: false},
              points: {radius: 8}})
