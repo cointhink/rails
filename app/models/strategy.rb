@@ -79,19 +79,21 @@ class Strategy < ActiveRecord::Base
     stage1 = parent.children.create(sequence: 1,
                                    name: "balance moves",
                                    children_concurrent: true)
+    puts "Finding changers for #{market_totals.keys.size} markets"
     market_totals.each do |k,v|
       exchange = Exchange.find_by_name(k)
       puts "#{k} spends $#{"%0.2f"%v[:usd]} #{"%0.5f"%v[:btc]}btc"
       if v[:usd] > 0
         changer = exchange.best_changer(Exchange.find_by_name('mtgox'), 'usd')
-        if changer
-          v[:usd] *= (1+changer.fee)
-          puts " -> #{changer.name} #{v[:usd]}"
-          stage1.trades.create(balance_in: Balance.make_usd(v[:usd]),
-                       offer: changer.offers.first,
-                       expected_fee: changer.fee_percentage)
-
+        unless changer
+          puts "Warning: No changer found for mtgox to #{k}. Using btce"
+          changer = Exchange.find_by_name('btce').best_changer(Exchange.find_by_name('mtgox'), 'usd')
         end
+        v[:usd] *= (1+changer.fee)
+        puts " -> #{changer.name} $#{"%0.2f"%v[:usd]} #{changer.fee_percentage} fee"
+        stage1.trades.create(balance_in: Balance.make_usd(v[:usd]),
+                     offer: changer.offers.first,
+                     expected_fee: changer.fee_percentage)
       end
       strategy.exchange_balances.create(exchange: exchange,
                                         balances: [Balance.make_usd(v[:usd]),
@@ -101,12 +103,14 @@ class Strategy < ActiveRecord::Base
     stage1.balance_out = stage1.balance_usd_out
     stage1.potential = stage1.balance_out - stage1.balance_in
     stage1.save
+    puts "Stage ##{stage1.name} Investment #{stage1.balance_in} Profit #{stage1.potential}"
 
     parent.balance_in = stage1.balance_in
     parent.balance_out = stage2.balance_out
     parent.potential = parent.balance_out - parent.balance_in
     parent.save
 
+    # duplicate parent amounts into stage (remove?)
     strategy.balance_in = parent.balance_in
     strategy.balance_out = parent.balance_out
     strategy.potential = strategy.balance_out - strategy.balance_in
@@ -133,9 +137,9 @@ class Strategy < ActiveRecord::Base
     puts "Checking #{good_asks.size} asks for profitability:"
 
     good_asks.each do |ask|
-      puts "#{ask.market.exchange.name} #{ask.bidask} ##{ask.id} #{ask.rate(best_bid.market.to_currency)} (#{ask.rate*(1+ask.market.fee)} w/ fee) x#{"%0.5f"%ask.quantity}"
+      puts "#{ask.market.exchange.name} #{ask.bidask} ##{ask.id} #{ask.rate(best_bid.market.to_currency)} x#{"%0.5f"%ask.quantity} #{ask.market.fee_percentage}% fee"
       left = ask.cost(ask.cost)*(1-ask.market.fee)
-      bid_worksheet = consume_offers(good_bids, left, ask.rate*(1+ask.market.fee))
+      bid_worksheet = consume_offers(good_bids, left, ask.rate)
       break if bid_worksheet.empty?
       usd_in = Balance.make_usd(0)
       usd_out = Balance.make_usd(0)
@@ -160,7 +164,7 @@ class Strategy < ActiveRecord::Base
   end
 
   def self.consume_offers(offers, money, price_limit)
-    puts "Buying up #{money} worth of #{offers.size} offers better than #{price_limit}"
+    puts "Buying #{money} worth of #{offers.size} offers better than #{price_limit}"
     remaining = money.dup
     actions = []
     offers.each do |offer|
