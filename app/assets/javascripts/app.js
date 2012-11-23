@@ -16,10 +16,10 @@ function setup(data, percentages, strategies, strategy_ids) {
   };
 
   var dset = []
-  dset.push({label: "strategy",
+  dset.push({label: "profit $",
              data: strategies,
              yaxis: 2,
-             color: 'black',
+             color: 'grey',
              bars: {show: false},
              lines: {show: false},
              points: {radius: 8}})
