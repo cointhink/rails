@@ -85,10 +85,6 @@ class Strategy < ActiveRecord::Base
       puts "#{k} spends $#{"%0.2f"%v[:usd]} #{"%0.5f"%v[:btc]}btc"
       if v[:usd] > 0
         changer = exchange.best_changer(Exchange.find_by_name('mtgox'), 'usd')
-        unless changer
-          puts "Warning: No changer found for mtgox to #{k}. Using btce"
-          changer = Exchange.find_by_name('btce').best_changer(Exchange.find_by_name('mtgox'), 'usd')
-        end
         v[:usd] *= (1+changer.fee)
         puts " -> #{changer.name} $#{"%0.2f"%v[:usd]} #{changer.fee_percentage} fee"
         stage1.trades.create(balance_in: Balance.make_usd(v[:usd]),
