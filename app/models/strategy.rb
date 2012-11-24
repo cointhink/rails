@@ -36,7 +36,7 @@ class Strategy < ActiveRecord::Base
     strategy = Strategy.create
     puts "Saving #{actions.size} trade groups"
     parent = strategy.create_stage
-    stage2 = parent.children.create(sequence: 2, name: "trades",
+    stage2 = parent.children.create(sequence: 2, name: "Trades",
                                    children_concurrent: true)
     market_totals = {}
     ActiveRecord::Base.transaction do
@@ -76,7 +76,7 @@ class Strategy < ActiveRecord::Base
     puts "Stage ##{stage2.name} #{stage2.children.count} actions. Investment #{stage2.balance_in} Profit #{stage2.potential} #{"%0.2f"%stage2.profit_percentage}%"
 
     stage1 = parent.children.create(sequence: 1,
-                                   name: "balance moves",
+                                   name: "Moves",
                                    children_concurrent: true)
     puts "Finding changers for #{market_totals.keys.size} markets"
     market_totals.each do |k,v|
@@ -98,7 +98,7 @@ class Strategy < ActiveRecord::Base
     stage1.balance_out = stage1.balance_usd_out
     stage1.potential = stage1.balance_out - stage1.balance_in
     stage1.save
-    puts "Stage ##{stage1.name} Investment #{stage1.balance_in} Profit #{stage1.potential}"
+    puts "Stage ##{stage1.name} Investment #{stage1.balance_in} Profit #{stage1.potential} #{"%0.2f"%stage1.profit_percentage}%"
 
     parent.balance_in = stage1.balance_in
     parent.balance_out = stage2.balance_out
