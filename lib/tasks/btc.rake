@@ -1,6 +1,8 @@
 namespace :btc do
   desc 'Record stats about each market'
   task :snapshot => :environment do
+    #autoloader hack
+    require 'exchanges/base'
     # exchanges with internal markets
     super_http = Faraday.new(request:{timeout:SETTINGS["net"]["timeout"]})
 

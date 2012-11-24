@@ -1,4 +1,3 @@
-require 'exchanges/base'
 class Strategy < ActiveRecord::Base
   belongs_to :balance_in, :class_name => :Balance, :dependent => :destroy
   belongs_to :balance_out, :class_name => :Balance, :dependent => :destroy
