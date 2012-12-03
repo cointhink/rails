@@ -36,7 +36,9 @@ ul
           td
             |  #{exchange.markets.internal[0,1].map{|market| "#{market.from_currency}/#{market.to_currency} fee #{market.fee_percentage}%"}.join(' ')}
           td
-            | #{etime=exchange.exchange_runs.last; "#{etime.start_at.strftime("%a %H:%M")}:#{"%0.3f"%(etime.start_at.sec+(etime.start_at.nsec/1000000000.0))} #{"%0.1f"%(etime.duration_ms/1000)}s" if etime && exchange.active}
+            - etime=exchange.exchange_runs.last
+            - if etime && exchange.active
+              | #{"#{etime.start_at.strftime("%a %H:%M")}:#{"%0.3f"%(etime.start_at.sec+(etime.start_at.nsec/1000000000.0))} #{"%0.1f"%(etime.duration_ms/1000)}s"}
 
 - if @strategy
   div
