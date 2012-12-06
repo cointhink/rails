@@ -45,7 +45,7 @@ class StageTest < ActiveSupport::TestCase
   test "profit" do
     sells = @stage.sells
     profits = sells.map do |trade|
-      @stage.profit(trade).to_f
+      @stage.profit(trade)
     end
 
     buy_usd_in = @buy_trade.balance_in

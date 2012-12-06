@@ -47,7 +47,7 @@ class Stage < ActiveRecord::Base
     sello = sell.offer
     amount = sell.balance_in
     (sello.rate('usd')*sello.fee_factor('usd') -
-       buyo.rate('usd'))* #raw buy price, market fee is represented in amount
+       buyo.rate('usd')*buyo.fee_factor('usd'))*
     amount.amount
   end
 end

@@ -53,7 +53,7 @@ ul
         - stage.children.each do |stage|
           - stage.trades.each do |t|
             li class="#{t.balance_in.btc? ? "bid" : ""}"
-              | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out} #{"(profit #{stage.profit(t)})" if t.balance_in.btc?}
+              | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out} #{"(profit #{"%0.3f"%stage.profit(t).amount})" if t.balance_in.btc?}
 
 
 javascript:

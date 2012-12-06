@@ -73,7 +73,7 @@ class Strategy < ActiveRecord::Base
     end
     stage2.potential = stage2.balance_out - stage2.balance_in
     stage2.save
-    puts "Stage ##{stage2.name} #{stage2.children.count} actions. Investment #{stage2.balance_in} Profit #{stage2.potential} #{"%0.2f"%stage2.profit_percentage}%"
+    puts "Stage #{stage2.name} ##{stage2.id} #{stage2.children.count} actions. Investment #{stage2.balance_in} Profit #{stage2.potential} #{"%0.2f"%stage2.profit_percentage}%"
 
     stage1 = parent.children.create(sequence: 1,
                                    name: "Moves",
@@ -98,7 +98,7 @@ class Strategy < ActiveRecord::Base
     stage1.balance_out = stage1.balance_usd_out
     stage1.potential = stage1.balance_out - stage1.balance_in
     stage1.save
-    puts "Stage ##{stage1.name} Investment #{stage1.balance_in} Profit #{stage1.potential} #{"%0.2f"%stage1.profit_percentage}%"
+    puts "Stage #{stage1.name} ##{stage1.id} Investment #{stage1.balance_in} Profit #{stage1.potential} #{"%0.2f"%stage1.profit_percentage}%"
 
     parent.balance_in = stage1.balance_in
     parent.balance_out = stage2.balance_out
