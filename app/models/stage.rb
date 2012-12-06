@@ -11,7 +11,11 @@ class Stage < ActiveRecord::Base
   acts_as_tree order: "sequence"
 
   def buy
-    trades.select{|t| t.balance_in.usd?}.first
+    buys.first
+  end
+
+  def buys
+    trades.select{|t| t.balance_in.usd?}
   end
 
   def sells
@@ -19,14 +23,14 @@ class Stage < ActiveRecord::Base
   end
 
   def balance_in_calc
-    trades.reduce(Balance.make_usd(0)) do |total, trade|
-      trade.balance_in.usd? ? total + trade.balance_in : total
+    buys.reduce(Balance.make_usd(0)) do |total, trade|
+      total + trade.balance_in
     end
   end
 
   def balance_usd_out
-    trades.reduce(Balance.make_usd(0)) do |total, trade|
-      trade.offer.market.to_currency == 'usd' ? total + trade.calculated_out : total
+    sells.reduce(Balance.make_usd(0)) do |total, trade|
+      total + trade.calculated_out
     end
   end
 
