@@ -6,12 +6,16 @@ class Stage < ActiveRecord::Base
 
   has_many :trades
 
-  attr_accessible :name, :sequence, :children_concurrent
+  attr_accessible :name, :sequence, :children_concurrent, :potential, :balance_in
 
   acts_as_tree order: "sequence"
 
   def buy
     trades.select{|t| t.balance_in.usd?}.first
+  end
+
+  def sells
+    trades.select{|t| t.balance_in.btc?}
   end
 
   def balance_in_calc
@@ -32,5 +36,14 @@ class Stage < ActiveRecord::Base
     else
       0
     end
+  end
+
+  def profit(sell)
+    buyo = buy.offer
+    sello = sell.offer
+    amount = sell.balance_in
+    (sello.rate('usd')*sello.fee_factor('usd') -
+       buyo.rate('usd'))* #raw buy price, market fee is represented in amount
+    amount.amount
   end
 end

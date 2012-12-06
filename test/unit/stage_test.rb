@@ -11,17 +11,17 @@ class StageTest < ActiveSupport::TestCase
       :balance_in => Balance.make_usd(21),
       :potential => Balance.make_usd(0.5)
       })
-    buy_trade = @stage.trades.create({
+    @buy_trade = @stage.trades.create({
       :balance_in => Balance.make_usd(20)
       })
-    buy_trade.create_offer({
+    @buy_trade.create_offer({
       price: 11, quantity: 3,
       market: ask_market, currency: 'usd'
       })
-    sell1_trade = @stage.trades.create({
+    @sell1_trade = @stage.trades.create({
       :balance_in => Balance.make_btc(1.809090)
       })
-    sell1_trade.create_offer({
+    @sell1_trade.create_offer({
       price: 12.5, quantity: 3.1,
       market: bid_market, currency: 'usd'
       })
@@ -40,5 +40,23 @@ class StageTest < ActiveSupport::TestCase
   test "profit_percentage" do
     percentage = @stage.profit_percentage
     assert_equal 2, percentage.floor
+  end
+
+  test "profit" do
+    sells = @stage.sells
+    profits = sells.map do |trade|
+      @stage.profit(trade).to_f
+    end
+
+    buy_usd_in = @buy_trade.balance_in
+    buy_btc_out = @buy_trade.calculated_out
+    puts "sale nets #{buy_btc_out}"
+    sell_fee = @sell1_trade.offer.fee_factor(buy_usd_in.currency)
+    sell_price = @sell1_trade.offer.rate(buy_usd_in.currency)
+    sell_price_with_fee = sell_price * sell_fee
+    puts "sell_fee #{sell_fee} sell_price #{sell_price} sell_price_with_fee #{sell_price_with_fee}"
+
+    sell1_profit = buy_btc_out * sell_price_with_fee
+    assert_equal [sell1_profit.to_s], profits
   end
 end

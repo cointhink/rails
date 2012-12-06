@@ -40,20 +40,22 @@ class Offer < ActiveRecord::Base
     market.fee_percentage/100
   end
 
+  def fee_factor(currency)
+    if currency == market.from_currency
+      (1+market_fee)
+    elsif currency == market.to_currency
+      (1-market_fee)
+    else
+      raise "Invalid currency - #{currency} is not #{market.from_currency} or #{market.to_currency}"
+    end
+  end
+
   private
   def price_calc(currency)
     if currency == self.currency
       price
     else
       1/price
-    end
-  end
-
-  def fee_factor(currency)
-    if currency == market.from_currency
-      (1+market_fee)
-    elsif currency == market.to_currency
-      (1-market_fee)
     end
   end
 
