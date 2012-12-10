@@ -9,10 +9,16 @@ h2 Bitcoin/USD Arbitrage Strategy Report
     | Total Opportunity
 
   div
-    ' With transfer fees
+    - trade_stage = @strategy.stage.children.select{|s| s.name=="Trades"}.first
+    ' Including market fees
     span style="font-size: 110%; font-weight:bold"
+      ' #{trade_stage.balance_in} in => #{trade_stage.balance_out}
+    | (profit $#{trade_stage.potential} #{"%0.3f"%trade_stage.profit_percentage}%)
+  div
+    ' Including transfer fees
+    span style="font-size: 110%; font-weight:bold; color:#{@strategy.potential < 0 ? "#e00" : "black"}"
       ' #{@strategy.balance_in} in => #{@strategy.balance_out} out
-    | ($#{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%)
+    | (profit $#{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%)
 
   div style="margin: 1em 0em"
     | Optimal Trade Amounts
