@@ -1,4 +1,4 @@
-h2 BTC Market Watch and Arbitrage Strategy Report
+h2 Bitcoin/USD Arbitrage Strategy Report
 
 - if @strategy
   div#strategy
@@ -8,8 +8,12 @@ h2 BTC Market Watch and Arbitrage Strategy Report
   div
     | Total Opportunity
 
-  div style="font-size: 110%; font-weight:bold"
-    | #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%
+  div
+    ' With transfer fees
+    span style="font-size: 110%; font-weight:bold"
+      ' #{@strategy.balance_in} in => #{@strategy.balance_out} out
+    | ($#{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%)
+
   div style="margin: 1em 0em"
     | Optimal Trade Amounts
     div
@@ -58,9 +62,9 @@ ul
 
 - if @strategy
   div
-    div Strategy
+    div Strategy Details
     - @strategy.stage.children.each do |stage|
-      div Stage #{stage.name}: #{stage.balance_in} in => #{stage.balance_out} out. profit $#{stage.potential} #{"%0.3f"%stage.profit_percentage}%
+      div Stage "#{stage.name}": #{stage.balance_in} in => #{stage.balance_out} out. profit $#{stage.potential} #{"%0.3f"%stage.profit_percentage}%
       ul
         - stage.trades.each do |t|
             li class="#{t.balance_in.btc? ? "bid" : ""}"
