@@ -1,4 +1,4 @@
-h2 Bitcoin/USD Arbitrage Strategy Report
+h2 CoinThink Bitcoin/USD Arbitrage Strategy Report
 
 - if @strategy
   div#strategy
@@ -64,7 +64,8 @@ ul
           td
             - etime=exchange.exchange_runs.last
             - if etime && exchange.active
-              | #{"#{etime.start_at.strftime("%a %H:%M")}:#{"%0.3f"%(etime.start_at.sec+(etime.start_at.nsec/1000000000.0))} #{"%0.1f"%(etime.duration_ms/1000)}s"}
+              time datetime="#{etime.start_at.iso8601}" data-format="ddd HH:mm"
+              | :#{"%0.3f"%(etime.start_at.sec+(etime.start_at.nsec/1000000000.0))} #{"%0.3f"%(etime.duration_ms/1000)}s
 
 - if @strategy
   div
@@ -91,14 +92,17 @@ javascript:
     // fixup the timestamps with the browser's timezone
     $('time').each(function(){
       var datetime = new XDate($(this).attr('datetime'))
-      var timezone_name = datetime.toString().slice(-5) //hack to get the full timezone name
-      var formatted = datetime.toString($(this).attr('data-format'))+" "+timezone_name
+      var formatted = datetime.toString($(this).attr('data-format'))
       $(this).html(formatted)
     })
-
+    var timezone_name = (new XDate()).toString().slice(-4,-1) //hack to get the full timezone name
+    $('#working_timezone').html(timezone_name)
   })
 
 div.footer
   p.disclaimer
+    ' Times are displayed in
+    span#working_timezone
+    br
     | All information is provided on a best-effort basis with NO WARRANTY. Data may be incorrect, invalid, or out of date.
 
