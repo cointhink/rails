@@ -1,8 +1,10 @@
 h2 BTC Market Watch and Arbitrage Strategy Report
 
 - if @strategy
-  div
-    | Strategy ##{@strategy.id} #{@strategy.created_at}
+  div#strategy
+    ' Strategy ##{@strategy.id}
+    time datetime="#{@strategy.created_at.iso8601}" data-format="yyyy-MMM-dd HH:mm"
+
   div style="font-size: 110%; font-weight:bold"
     | #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%
   div style="margin: 1em 0em"
@@ -42,10 +44,9 @@ ul
 
 - if @strategy
   div
-    | Strategy ##{@strategy.id} #{@strategy.created_at}
-    div Trades
+    div Strategy
     - @strategy.stage.children.each do |stage|
-      div Stage #{stage.name} ##{stage.sequence} #{stage.balance_in} in => #{stage.balance_out} out. profit $#{stage.potential} #{"%0.3f"%stage.profit_percentage}%
+      div Stage #{stage.name}: #{stage.balance_in} in => #{stage.balance_out} out. profit $#{stage.potential} #{"%0.3f"%stage.profit_percentage}%
       ul
         - stage.trades.each do |t|
             li class="#{t.balance_in.btc? ? "bid" : ""}"
@@ -57,7 +58,21 @@ ul
 
 
 javascript:
-  $(function(){setup(#{{JSON.pretty_generate(@chart_data)}}, #{{@strategy_percentages.to_json}}, #{{@strategy_data.to_json}}, #{{@strategy_ids.to_json}})})
+  $(function() {
+    setup(#{{JSON.pretty_generate(@chart_data)}},
+          #{{@strategy_percentages.to_json}},
+          #{{@strategy_data.to_json}},
+          #{{@strategy_ids.to_json}})
+
+    // fixup the timestamps with the browser's timezone
+    $('time').each(function(){
+      var datetime = new XDate($(this).attr('datetime'))
+      var timezone_name = datetime.toString().slice(-5) //hack to get the full timezone name
+      var formatted = datetime.toString($(this).attr('data-format'))+" "+timezone_name
+      $(this).html(formatted)
+    })
+
+  })
 
 div.footer
   p.disclaimer
