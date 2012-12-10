@@ -8,7 +8,7 @@ h2 BTC Market Watch and Arbitrage Strategy Report
   div style="font-size: 110%; font-weight:bold"
     | #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%
   div style="margin: 1em 0em"
-    | Maximum Initial Balances
+    | Balance Movements
     table
       - @strategy.exchange_balances.each do |eb|
         tr
