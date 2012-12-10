@@ -5,17 +5,31 @@ h2 BTC Market Watch and Arbitrage Strategy Report
     ' Strategy ##{@strategy.id}
     time datetime="#{@strategy.created_at.iso8601}" data-format="yyyy-MMM-dd HH:mm"
 
+  div
+    | Total Opportunity
+
   div style="font-size: 110%; font-weight:bold"
     | #{@strategy.balance_in} in => #{@strategy.balance_out} out. profit $#{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%
   div style="margin: 1em 0em"
-    | Balance Movements
-    table
-      - @strategy.exchange_balances.each do |eb|
-        tr
-          td #{eb.exchange.name}
-          - eb.balances.each do |b|
-            td
-              | #{b if b.amount > 0}
+    | Optimal Trade Amounts
+    div
+      table style="float:left"
+        - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.usd? && b>0}.any?}.each do |eb|
+          tr
+            td #{eb.exchange.name}
+            - eb.balances.each do |b|
+              td
+                | #{b if b>0}
+      div style="float:left"
+        | ---- to ---->
+      table style="float:left"
+        - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.btc? && b>0}.any?}.each do |eb|
+          tr
+            td #{eb.exchange.name}
+            - eb.balances.each do |b|
+              td
+                | #{b if b>0}
+div.clearboth
 
 div Strategy History
 
