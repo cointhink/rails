@@ -22,28 +22,33 @@ h2 CoinThink Bitcoin/USD Arbitrage Strategy Report
       | (profit $#{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%)
 
   div style="margin: 1em 0em"
-    | Optimal Trade Amounts
+    | Trade Summary
     div
+      div style="float:left"
+        i
+          | ---- move USD ---->
       table style="float:left"
         - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.usd? && b>0}.any?}.each do |eb|
           tr
             td #{eb.exchange.name}
             - eb.balances.each do |b|
               td
-                | #{b if b>0}
+                - if b > 0
+                  | buy #{b}
       div style="float:left"
         i
-          | ---- to ---->
+          | ---- move BTC ---->
       table style="float:left"
         - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.btc? && b>0}.any?}.each do |eb|
           tr
             td #{eb.exchange.name}
             - eb.balances.each do |b|
               td
-                | #{b if b>0}
+                - if b > 0
+                  | sell #{b}
 div.clearboth
 
-div Strategy History
+div Opportunity History
 
 div#chart
 
