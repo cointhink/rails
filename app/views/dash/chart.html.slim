@@ -3,7 +3,9 @@ h2 Bitcoin/USD Arbitrage Strategy Report
 - if @strategy
   div#strategy
     ' Strategy ##{@strategy.id}
-    time datetime="#{@strategy.created_at.iso8601}" data-format="yyyy-MMM-dd HH:mm"
+    time datetime="#{@strategy.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
+    '
+    span.local_timezone
 
   div
     | Total Opportunity
@@ -96,13 +98,5 @@ javascript:
           #{{@strategy_data.to_json}},
           #{{@strategy_ids.to_json}})
 
-    // fixup the timestamps with the browser's timezone
-    $('time').each(function(){
-      var datetime = new XDate($(this).attr('datetime'))
-      var formatted = datetime.toString($(this).attr('data-format'))
-      $(this).html(formatted)
-    })
-    var timezone_name = (new XDate()).toString().slice(-4,-1) //hack to get the full timezone name
-    $('#working_timezone').html(timezone_name)
   })
 

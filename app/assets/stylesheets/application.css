@@ -15,8 +15,12 @@
 body#cointhink {
 }
 
+.navbar .realtime {
+  color: #ddd;
+}
+
 H2:first-child {
-  margin-top: 0
+  /*margin-top: 0*/
 }
 
 .footer {

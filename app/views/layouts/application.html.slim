@@ -6,12 +6,22 @@ html lang="en"
     = javascript_include_tag "application"
 
   body#cointhink
-    div.container-fluid
-      div.navbar
-        div.navbar-inner
-          a.brand href="#" CoinThink
+    div.navbar
+      div.navbar-inner
+        a.brand href="#" CoinThink
+        div.nav-collapse
+          div.realtime.pull-right
+            time datetime="#{Time.now.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
+            '
+            span.local_timezone
 
+    div.container-fluid
       = yield
 
       = render partial: "layouts/footer"
       = render partial: "layouts/adsense"
+
+    javascript:
+      $(function() {
+        time_fixups();
+      })
