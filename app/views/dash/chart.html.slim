@@ -14,8 +14,8 @@ h2 Bitcoin/USD Arbitrage Strategy Report
     div
       - trade_stage = @strategy.stage.children.select{|s| s.name=="Trades"}.first
       ' Including market fees
-      span style="font-size: 110%; font-weight:bold"
-        ' #{trade_stage.balance_in} in => #{trade_stage.balance_out}
+      span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
+        ' #{trade_stage.balance_in} in => #{trade_stage.balance_out} out
       | (profit $#{trade_stage.potential} #{"%0.3f"%trade_stage.profit_percentage}%)
     div
       ' Including transfer fees
