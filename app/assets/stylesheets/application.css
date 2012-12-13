@@ -12,10 +12,13 @@
  *= require_tree .
  */
 
+body#cointhink {
+}
+
 H2:first-child {
   margin-top: 0
 }
 
 .footer {
-  font-size: 80%;
+
 }

@@ -1,9 +1,17 @@
 doctype html
-html
+html lang="en"
   head
-    title BTC Market Watch
+    title CoinThink - Bitcoin Market Data for the New Economy.
     = stylesheet_link_tag    "application", :media => "all"
     = javascript_include_tag "application"
-  body
-    = yield
-    = render partial: "layouts/adsense"
+
+  body#cointhink
+    div.container-fluid
+      div.navbar
+        div.navbar-inner
+          a.brand href="#" CoinThink
+
+      = yield
+
+      = render partial: "layouts/footer"
+      = render partial: "layouts/adsense"
