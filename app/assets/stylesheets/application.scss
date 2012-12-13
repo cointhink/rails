@@ -13,6 +13,9 @@
  */
 
 body#cointhink {
+  .navbar {
+    margin-bottom: 0;
+  }
 }
 
 .navbar .realtime {
@@ -20,7 +23,7 @@ body#cointhink {
 }
 
 H2:first-child {
-  /*margin-top: 0*/
+  margin-top: 0
 }
 
 .footer {

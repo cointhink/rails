@@ -1,53 +1,51 @@
 h2 Bitcoin/USD Arbitrage Strategy Report
 
 - if @strategy
-  div#strategy
-    ' Strategy ##{@strategy.id}
-    time datetime="#{@strategy.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
-    '
-    span.local_timezone
+  section#strategy
+    h4
+      ' Strategy ##{@strategy.id}
+      time datetime="#{@strategy.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
+      '
+      span.local_timezone
 
-  div
-    | Total Opportunity
-
-  div
+  section#opportunity
+    h4 Total Opportunity
     div
       - trade_stage = @strategy.stage.children.select{|s| s.name=="Trades"}.first
       ' Including market fees
       span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
         ' #{trade_stage.balance_in} in => #{trade_stage.balance_out} out
-      | (profit $#{trade_stage.potential} #{"%0.3f"%trade_stage.profit_percentage}%)
+      | profit #{trade_stage.potential} #{"%0.3f"%trade_stage.profit_percentage}%
     div
       ' Including transfer fees
       span style="font-size: 110%; font-weight:bold; color:#{@strategy.potential < 0 ? "#e00" : "black"}"
         ' #{@strategy.balance_in} in => #{@strategy.balance_out} out
-      | (profit $#{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%)
+      | profit #{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%
 
-  div style="margin: 1em 0em"
-    | Trade Summary
-    div
-      div style="float:left"
-        i
-          | ---- move USD ---->
-      table style="float:left"
-        - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.usd? && b>0}.any?}.each do |eb|
-          tr
-            td #{eb.exchange.name}
-            - eb.balances.each do |b|
-              td
-                - if b > 0
-                  | buy #{b}
-      div style="float:left"
-        i
-          | ---- move BTC ---->
-      table style="float:left"
-        - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.btc? && b>0}.any?}.each do |eb|
-          tr
-            td #{eb.exchange.name}
-            - eb.balances.each do |b|
-              td
-                - if b > 0
-                  | sell #{b}
+  section#trade_summary
+    h4 Trade Summary
+    div style="float:left"
+      i
+        | ---- transfer USD ---->
+    table style="float:left"
+      - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.usd? && b>0}.any?}.each do |eb|
+        tr
+          td #{eb.exchange.name}
+          - eb.balances.each do |b|
+            td
+              - if b > 0
+                | buy #{b}
+    div style="float:left"
+      i
+        | ---- transfer BTC ---->
+    table style="float:left"
+      - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.btc? && b>0}.any?}.each do |eb|
+        tr
+          td #{eb.exchange.name}
+          - eb.balances.each do |b|
+            td
+              - if b > 0
+                | sell #{b}
 div.clearboth
 
 div Opportunity History
@@ -76,19 +74,6 @@ ul
               time datetime="#{etime.start_at.iso8601}" data-format="ddd HH:mm"
               | :#{"%0.3f"%(etime.start_at.sec+(etime.start_at.nsec/1000000000.0))} #{"%0.3f"%(etime.duration_ms/1000)}s
 
-- if @strategy
-  div
-    div Strategy Details
-    - @strategy.stage.children.each do |stage|
-      div Stage "#{stage.name}": #{stage.balance_in} in => #{stage.balance_out} out. profit $#{stage.potential} #{"%0.3f"%stage.profit_percentage}%
-      ul
-        - stage.trades.each do |t|
-            li class="#{t.balance_in.btc? ? "bid" : ""}"
-              | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out}
-        - stage.children.each do |stage|
-          - stage.trades.each do |t|
-            li class="#{t.balance_in.btc? ? "bid" : ""}"
-              | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out} #{"(profit #{"%0.3f"%stage.profit(t).amount})" if t.balance_in.btc?}
 
 
 javascript:
