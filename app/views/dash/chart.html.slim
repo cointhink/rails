@@ -74,7 +74,7 @@ section#exchanges
               - etime=exchange.exchange_runs.last
               - if etime && exchange.active
                 time datetime="#{etime.start_at.iso8601}" data-format="ddd HH:mm"
-                | :#{"%0.3f"%(etime.start_at.sec+(etime.start_at.nsec/1000000000.0))} #{"%0.3f"%(etime.duration_ms/1000)}s
+                | :#{"%0.3f"%(etime.start_at.sec+(etime.start_at.nsec/1000000000.0))} #{"%0.3f"%(etime.duration_ms/1000.0)}s
 
 
 
