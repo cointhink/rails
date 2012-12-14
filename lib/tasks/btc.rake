@@ -7,7 +7,7 @@ namespace :btc do
     super_http = Faraday.new(request:{timeout:SETTINGS["net"]["timeout"]})
 
     snapshot = Snapshot.create
-    snapshot.poll(super_http, Exchange.actives)
+    snapshot.poll(super_http, Exchange.with_markets('btc','usd'))
   end
 
   desc 'Total opportunity'

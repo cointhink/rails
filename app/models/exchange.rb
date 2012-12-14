@@ -7,6 +7,15 @@ class Exchange < ActiveRecord::Base
 
   scope :actives, where('active is true')
 
+  def self.with_markets(from_currency, to_currency)
+    actives.map do |exchange|
+      bid_market = exchange.markets.internal.trading(from_currency, to_currency).first
+      if bid_market
+        { exchange:exchange, bid_market:bid_market, ask_market: bid_market.pair}
+      end
+    end.select{|t| t}
+  end
+
   def api
     @api ||= "Exchanges::#{name.classify}".constantize.new
   end
