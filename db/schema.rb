@@ -48,11 +48,10 @@ ActiveRecord::Schema.define(:version => 20121217182537) do
   create_table "exchange_runs", :force => true do |t|
     t.integer  "exchange_id"
     t.integer  "snapshot_id"
-    t.integer  "depth_run_id"
     t.integer  "duration_ms"
     t.datetime "start_at"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "exchanges", :force => true do |t|
