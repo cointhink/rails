@@ -11,12 +11,11 @@ class DashController < ApplicationController
     if stale?(snapshot)
       data = {}
       snapshots.each do |snapshot|
-logger.info "snapshot #{snapshot} has #{snapshot.exchange_runs.count} exchange_runs"
         snapshot.exchange_runs.each do |ex_run|
           data[ex_run.exchange] ||= [ ex_run.exchange.name, [], [] ]
 
           if ex_run.depth_runs.count == 2
-logger.info "adding two to #{ex_run.exchange.name}"
+            # tofix: bid/ask detection
             o=ex_run.depth_runs.first
             op = o.best_offer ? o.best_offer.price : nil
             data[ex_run.exchange][1] << [o.created_at.to_i*1000, op]
@@ -27,8 +26,6 @@ logger.info "adding two to #{ex_run.exchange.name}"
         end
       end
       @chart_data = data.map{|k,v| v}
-      logger.info "snapshots count #{snapshots.size}"
-      logger.info @chart_data.to_json
 
       @strategy_data = snapshots.map{|s| [s.created_at.to_i*1000,
                                           s.strategy.potential.amount.to_f] if s.strategy}
