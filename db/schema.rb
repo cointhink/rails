@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121119195211) do
+ActiveRecord::Schema.define(:version => 20121217182537) do
 
   create_table "balances", :force => true do |t|
     t.string   "currency"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20121119195211) do
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
     t.integer  "exchange_run_id"
+    t.integer  "best_offer_id"
   end
 
   add_index "depth_runs", ["market_id"], :name => "index_depth_runs_on_market_id"
