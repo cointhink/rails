@@ -1,6 +1,6 @@
 class DashController < ApplicationController
   def chart
-    hours = params[:duration] ? params[:duration].to_i : 8
+    hours = (params[:hours] || 8).to_i
     start = params[:start] ? Time.parse(params[:start]) : Time.now - hours.hours
     stop = start + hours.hours
     snapshots = Snapshot.joins(:exchange_runs => :exchange).where(
