@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121217182537) do
+ActiveRecord::Schema.define(:version => 20121217220415) do
 
   create_table "balances", :force => true do |t|
     t.string   "currency"
@@ -54,6 +54,9 @@ ActiveRecord::Schema.define(:version => 20121217182537) do
     t.datetime "updated_at",  :null => false
   end
 
+  add_index "exchange_runs", ["exchange_id"], :name => "index_exchange_runs_on_exchange_id"
+  add_index "exchange_runs", ["snapshot_id"], :name => "index_exchange_runs_on_snapshot_id"
+
   create_table "exchanges", :force => true do |t|
     t.string   "name"
     t.datetime "created_at",   :null => false
@@ -92,12 +95,15 @@ ActiveRecord::Schema.define(:version => 20121217182537) do
 
   add_index "offers", ["depth_run_id"], :name => "index_offers_on_depth_run_id"
   add_index "offers", ["market_id"], :name => "index_offers_on_market_id"
+  add_index "offers", ["price"], :name => "index_offers_on_price", :order => {"price"=>:desc}
 
   create_table "snapshots", :force => true do |t|
     t.integer  "strategy_id"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
   end
+
+  add_index "snapshots", ["strategy_id"], :name => "index_snapshots_on_strategy_id"
 
   create_table "stages", :force => true do |t|
     t.integer  "sequence"
