@@ -3,56 +3,73 @@ h2 Bitcoin/USD Arbitrage Strategy Report
 section#ads style="float: right"
   = render "layouts/adsense"
 
-- if @strategy
-  section#strategy
+section#strategy
+  - if @strategy
     h4
       ' Strategy ##{@strategy.id}
       time datetime="#{@strategy.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
       '
       span.local_timezone
 
-  section#opportunity
-    h4 Total Opportunity
-    div
-      - trade_stage = @strategy.stage.children.select{|s| s.name=="Trades"}.first
-      ' Including market fees
-      span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
-        ' #{trade_stage.balance_in} in => #{trade_stage.balance_out} out
-      | profit #{trade_stage.potential} #{"%0.3f"%trade_stage.profit_percentage}%
-    div
-      - trade_stage_moves = @strategy.stage.children.select{|s| s.name=="Moves"}.first
-      ' Including transfer fees of #{trade_stage_moves.balance_in - trade_stage.balance_in}
-      span style="font-size: 110%; font-weight:bold; color:#{@strategy.potential < 0 ? "#e00" : "black"}"
-        ' profit #{@strategy.potential} #{"%0.3f"%@strategy.profit_percentage}%
+    section#opportunity
+      h4 Total Opportunity
+      div
+        - trade_stage = @strategy.stage.children.select{|s| s.name=="Trades"}.first
+        ' For the #{Exchange.actives.count} exchanges being monitored, the total volume of offers
+        br
+        ' that have immediate buyers is
+        span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
+          ' #{trade_stage.balance_in}.
+        ' Selling immediately,
+        br
+        ' including market fees, earns
+        span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
+          '  #{trade_stage.balance_out}
 
-  section#trade_summary
-    h4 Trade Summary
-    div style="float:left"
-      i
-        | ---- transfer USD ---->
-    table style="float:left"
-      - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.usd? && b>0}.any?}.each do |eb|
-        tr
-          td #{eb.exchange.name}
-          - eb.balances.each do |b|
-            td
-              - if b > 0
-                | buy #{b}
-    div style="float:left"
-      i
-        | ---- transfer BTC ---->
-    table style="float:left"
-      - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.btc? && b>0}.any?}.each do |eb|
-        tr
-          td #{eb.exchange.name}
-          - eb.balances.each do |b|
-            td
-              - if b > 0
-                | sell #{b}
+        ' for a profit of
+        span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
+          ' #{trade_stage.potential} (#{"%0.3f"%trade_stage.profit_percentage}%).
+        br
+        - trade_stage_moves = @strategy.stage.children.select{|s| s.name=="Moves"}.first
+        ' When market transfer fees of
+        span style="font-size: 110%; font-weight:bold"
+          ' #{trade_stage_moves.balance_in - trade_stage.balance_in}
+        ' are included,
+        br
+        ' total profit is
+        span style="font-size: 110%; font-weight:bold; color:#{@strategy.potential < 0 ? "#e00" : "black"}"
+          ' #{@strategy.potential} (#{"%0.3f"%@strategy.profit_percentage}%)
+
+    section#trade_summary
+      h4 Trade Summary
+      div style="float:left"
+        i
+          | ---- transfer USD ---->
+      table style="float:left"
+        - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.usd? && b>0}.any?}.each do |eb|
+          tr
+            td #{eb.exchange.name}
+            - eb.balances.each do |b|
+              td
+                - if b > 0
+                  | buy #{b}
+      div style="float:left"
+        i
+          | ---- transfer BTC ---->
+      table style="float:left"
+        - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.btc? && b>0}.any?}.each do |eb|
+          tr
+            td #{eb.exchange.name}
+            - eb.balances.each do |b|
+              td
+                - if b > 0
+                  | sell #{b}
+  - else
+    | No strategy available
 div.clearboth
 
 section#history
-  h4 Opportunity History
+  h4 Strategy History
 
   div#chart
 
