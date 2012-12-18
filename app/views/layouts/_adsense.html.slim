@@ -1,0 +1,8 @@
+- adsense = SETTINGS[:google][:adsense]
+javascript:
+  google_ad_client = #{adsense[:client]};
+  /* cointhink header */
+  google_ad_slot = #{adsense[:slot]};
+  google_ad_width = #{adsense[:width]};
+  google_ad_height = #{adsense[:height]};
+= javascript_include_tag "http://pagead2.googlesyndication.com/pagead/show_ads.js"
