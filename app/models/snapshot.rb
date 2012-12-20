@@ -20,7 +20,7 @@ class Snapshot < ActiveRecord::Base
           duration = Time.now-start
           edata << {erun:erun, start:start, data:data, duration:duration}
         rescue Faraday::Error::TimeoutError,Errno::EHOSTUNREACH,JSON::ParserError => e
-          STDERR.puts "#{exchange.name} #{e}"
+          STDERR.puts "#{erun[:exchange].name} #{e}"
         end
       end
     end.each{|t| t.join if t}
