@@ -5,6 +5,7 @@ function time_fixups() {
     var formatted = datetime.toString($(this).attr('data-format'))
     $(this).html(formatted)
   })
-  var timezone_name = (new XDate()).toString().slice(-4,-1) //hack to get the full timezone name
+  var timezone_letters = (new XDate()).toString().match(/\(([A-Z]).*([A-Z]).*([A-Z]).*\)/)
+  var timezone_name = timezone_letters[1]+timezone_letters[2]+timezone_letters[3] //hack to get the full timezone name
   $('.local_timezone').html(timezone_name)
 }
