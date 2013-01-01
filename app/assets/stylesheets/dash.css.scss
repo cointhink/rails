@@ -3,7 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 #chart {
-  width: 90%;
+  width: 900px;
   height: 400px;
   float: left;
   font-family: Calibri, Candara, Arial, sans-serif;
@@ -14,5 +14,9 @@
 }
 
 .bid {
+  margin-left: 1em
+}
+
+section#opportunity {
   margin-left: 1em
 }
