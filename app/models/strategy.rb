@@ -135,7 +135,7 @@ class Strategy < ActiveRecord::Base
     puts "Checking #{good_asks.size} asks for profitability:"
 
     good_asks.each do |ask|
-      puts "#{ask.market.exchange.name} #{ask.bidask} ##{ask.id} #{ask.rate(best_bid.market.to_currency)} x#{"%0.5f"%ask.quantity} #{ask.market.fee_percentage}% fee"
+      puts "Buying #{ask.market.exchange.name} #{ask.bidask} ##{ask.id} #{ask.rate(best_bid.market.to_currency)} x#{"%0.5f"%ask.quantity} #{ask.market.fee_percentage}% fee"
       left = ask.cost(ask.cost)
       bid_worksheet = consume_offers(good_bids, left, ask.rate)
       break if bid_worksheet.empty?
@@ -157,12 +157,12 @@ class Strategy < ActiveRecord::Base
       usd_out_total += usd_out
       actions << {buy:ask, quantity: btc_inout, sells: bid_worksheet}
     end
-    puts "usd in: #{usd_in_total} usd out: #{usd_out_total} profit: #{profit_total}"
+    puts "Total usd in: #{usd_in_total} usd out: #{usd_out_total} profit: #{profit_total}"
     actions
   end
 
   def self.consume_offers(offers, money, price_limit)
-    puts "Buying #{money} worth of #{offers.size} offers better than #{price_limit}"
+    puts "Selling #{money} to #{offers.size} offers better than #{price_limit}"
     remaining = money.dup
     actions = []
     offers.each do |offer|
