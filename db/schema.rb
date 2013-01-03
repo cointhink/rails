@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130103220404) do
+ActiveRecord::Schema.define(:version => 20130103223200) do
 
   create_table "balances", :force => true do |t|
     t.string   "currency"
@@ -94,9 +94,9 @@ ActiveRecord::Schema.define(:version => 20130103220404) do
     t.integer  "market_id"
   end
 
+  add_index "offers", ["depth_run_id", "price"], :name => "index_offers_on_depth_run_id_and_price"
   add_index "offers", ["depth_run_id"], :name => "index_offers_on_depth_run_id"
   add_index "offers", ["market_id"], :name => "index_offers_on_market_id"
-  add_index "offers", ["price"], :name => "index_offers_on_price", :order => {"price"=>:desc}
 
   create_table "snapshots", :force => true do |t|
     t.integer  "strategy_id"
