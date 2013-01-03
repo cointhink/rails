@@ -5,7 +5,7 @@ class DashController < ApplicationController
     stop = start + hours.hours
 
     if stale?(Snapshot.latest)
-      snapshots = Snapshot.includes(:exchange_runs => :exchange).where(
+      snapshots = Snapshot.includes(:exchange_runs => [:exchange, :depth_runs]).where(
                       ['snapshots.created_at > ? and snapshots.created_at < ?', start, stop])
                    .order('created_at desc')
 
@@ -14,11 +14,12 @@ class DashController < ApplicationController
         snapshot.exchange_runs.each do |ex_run|
           chart_data[ex_run.exchange] ||= [ ex_run.exchange.name, [], [] ]
 
-          if ex_run.depth_runs.count == 2
-            o=ex_run.depth_runs.first # tofix: bid/ask detection
+          depth_runs = ex_run.depth_runs.includes(:best_offer).all
+          if depth_runs.size == 2
+            o=depth_runs.first # tofix: bid/ask detection
             op = o.best_offer ? o.best_offer.price : nil
             chart_data[ex_run.exchange][1] << [o.created_at.to_i*1000, op]
-            o=ex_run.depth_runs.last # tofix: bid/ask detection
+            o=depth_runs.last # tofix: bid/ask detection
             op = o.best_offer ? o.best_offer.price : nil
             chart_data[ex_run.exchange][2] << [o.created_at.to_i*1000, op]
           end
