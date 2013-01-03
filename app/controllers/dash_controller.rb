@@ -5,7 +5,7 @@ class DashController < ApplicationController
     stop = start + hours.hours
 
     if stale?(Snapshot.latest)
-      snapshots = Snapshot.includes(:exchange_runs => {:exchange => nil, :depth_runs => :offers}).where(
+      snapshots = Snapshot.includes(:exchange_runs => :exchange).where(
                       ['snapshots.created_at > ? and snapshots.created_at < ?', start, stop])
                    .order('created_at desc')
       snapshot = snapshots.first
