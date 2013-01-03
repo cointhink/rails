@@ -15,7 +15,7 @@ section#strategy
       h4 Total Opportunity
       div style="width: 30em"
         - trade_stage = @strategy.stage.children.select{|s| s.name=="Trades"}.first
-        ' For the #{Exchange.actives.count} exchanges being monitored, the total volume of offers
+        ' For the #{Exchange.actives.count} exchanges being monitored, the total value of offers
         ' that have immediate buyers is
         span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
           ' #{trade_stage.balance_in}.
@@ -33,7 +33,7 @@ section#strategy
           span style="font-size: 110%; font-weight:bold"
             ' #{trade_stage_moves.balance_in - trade_stage.balance_in}
           ' are included,
-          ' total profit is
+          ' the total profit is
           span style="font-size: 110%; font-weight:bold; color:#{@strategy.potential < 0 ? "#e00" : "black"}"
             ' #{@strategy.potential} (#{"%0.3f"%@strategy.profit_percentage}%)
         - else
