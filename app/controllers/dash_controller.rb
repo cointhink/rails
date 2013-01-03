@@ -10,23 +10,23 @@ class DashController < ApplicationController
                    .order('created_at desc')
       snapshot = snapshots.first
 
-      data = {}
+      chart_data = {}
       snapshots.each do |snapshot|
         snapshot.exchange_runs.each do |ex_run|
-          data[ex_run.exchange] ||= [ ex_run.exchange.name, [], [] ]
+          chart_data[ex_run.exchange] ||= [ ex_run.exchange.name, [], [] ]
 
           if ex_run.depth_runs.count == 2
             # tofix: bid/ask detection
             o=ex_run.depth_runs.first
             op = o.best_offer ? o.best_offer.price : nil
-            data[ex_run.exchange][1] << [o.created_at.to_i*1000, op]
+            chart_data[ex_run.exchange][1] << [o.created_at.to_i*1000, op]
             o=ex_run.depth_runs.last
             op = o.best_offer ? o.best_offer.price : nil
-            data[ex_run.exchange][2] << [o.created_at.to_i*1000, op]
+            chart_data[ex_run.exchange][2] << [o.created_at.to_i*1000, op]
           end
         end
       end
-      @chart_data = data.map{|k,v| v}
+      @chart_data = chart_data.map{|k,v| v}
 
       @strategy_data = snapshots.map{|s| [s.created_at.to_i*1000,
                                           s.strategy.potential.amount.to_f] if s.strategy}
