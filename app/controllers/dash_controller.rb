@@ -8,7 +8,6 @@ class DashController < ApplicationController
       snapshots = Snapshot.includes(:exchange_runs => :exchange).where(
                       ['snapshots.created_at > ? and snapshots.created_at < ?', start, stop])
                    .order('created_at desc')
-      snapshot = snapshots.first
 
       chart_data = {}
       snapshots.each do |snapshot|
@@ -16,11 +15,10 @@ class DashController < ApplicationController
           chart_data[ex_run.exchange] ||= [ ex_run.exchange.name, [], [] ]
 
           if ex_run.depth_runs.count == 2
-            # tofix: bid/ask detection
-            o=ex_run.depth_runs.first
+            o=ex_run.depth_runs.first # tofix: bid/ask detection
             op = o.best_offer ? o.best_offer.price : nil
             chart_data[ex_run.exchange][1] << [o.created_at.to_i*1000, op]
-            o=ex_run.depth_runs.last
+            o=ex_run.depth_runs.last # tofix: bid/ask detection
             op = o.best_offer ? o.best_offer.price : nil
             chart_data[ex_run.exchange][2] << [o.created_at.to_i*1000, op]
           end
@@ -37,7 +35,7 @@ class DashController < ApplicationController
       if params[:strategy_id]
         @strategy = Strategy.find(params[:strategy_id])
       else
-        @strategy = snapshot.strategy if snapshot
+        @strategy = snapshots.first.strategy if snapshots.size > 0
       end
 
       respond_to do |format|
