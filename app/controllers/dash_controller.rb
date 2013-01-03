@@ -3,12 +3,13 @@ class DashController < ApplicationController
     hours = (params[:hours] || 8).to_i
     start = params[:start] ? Time.parse(params[:start]) : Time.now - hours.hours
     stop = start + hours.hours
-    snapshots = Snapshot.includes(:exchange_runs => {:exchange => nil, :depth_runs => :offers}).where(
-                    ['snapshots.created_at > ? and snapshots.created_at < ?', start, stop])
-                 .order('created_at desc')
-    snapshot = snapshots.first
 
-    if stale?(snapshot)
+    if stale?(Snapshot.latest)
+      snapshots = Snapshot.includes(:exchange_runs => {:exchange => nil, :depth_runs => :offers}).where(
+                      ['snapshots.created_at > ? and snapshots.created_at < ?', start, stop])
+                   .order('created_at desc')
+      snapshot = snapshots.first
+
       data = {}
       snapshots.each do |snapshot|
         snapshot.exchange_runs.each do |ex_run|

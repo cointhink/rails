@@ -4,6 +4,10 @@ class Snapshot < ActiveRecord::Base
 
   attr_accessible :strategy
 
+  def self.latest
+    order('created_at desc').first
+  end
+
   def exchanges
     exchange_runs.map(&:exchange)
   end
