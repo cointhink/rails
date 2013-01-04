@@ -3,7 +3,7 @@ div
 
 - @exchange.markets.each do |market|
   ul
-    li #{market.left_currency}/#{market.right_currency} #{number_to_currency(market.ticker.lowest_ask_usd)} - #{number_to_currency(market.ticker.highest_bid_usd)}
+    li #{market.from_currency}/#{market.to_currency}
 
   div Top 5 asks
   table
