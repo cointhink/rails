@@ -9,6 +9,7 @@ gem 'pry-rails'
 gem 'slim'
 gem 'thin'
 gem 'acts_as_tree'
+gem 'friendly_id'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130103223200) do
+ActiveRecord::Schema.define(:version => 20130104193251) do
 
   create_table "balances", :force => true do |t|
     t.string   "currency"
@@ -64,7 +64,10 @@ ActiveRecord::Schema.define(:version => 20130103223200) do
     t.datetime "updated_at",   :null => false
     t.string   "country_code"
     t.boolean  "active"
+    t.string   "slug"
   end
+
+  add_index "exchanges", ["slug"], :name => "index_exchanges_on_slug", :unique => true
 
   create_table "markets", :force => true do |t|
     t.datetime "created_at",       :null => false

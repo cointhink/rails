@@ -7,6 +7,9 @@ class Exchange < ActiveRecord::Base
 
   scope :actives, where('active is true')
 
+  extend FriendlyId
+  friendly_id :name, use: :slugged
+
   def self.with_markets(from_currency, to_currency)
     actives.map do |exchange|
       bid_market = exchange.markets.internal.trading(from_currency, to_currency).first

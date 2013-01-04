@@ -84,7 +84,7 @@ section#exchanges
         - if exchange.markets.internal.size > 0
           tr
             td
-              | #{exchange.name} #{image_tag "/flags/#{exchange.country_code}.png"}
+              | #{link_to exchange.name, exchange} #{image_tag "/flags/#{exchange.country_code}.png"}
               - unless exchange.active
                 | (disabled)
             td
