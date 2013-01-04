@@ -1,5 +1,8 @@
 div
-  | #{@exchange.name}
+  h3 style="margin-bottom: 0"
+    | #{@exchange.name}
+  - if @exchange.url
+    | #{link_to URI.parse(@exchange.url).hostname, @exchange.url}
 
   - if @exchange.active
     div style="margin-bottom: 2em"
@@ -10,11 +13,11 @@ div
     div
     - @exchange.markets.select{|m| m.from_currency != m.to_currency}.each do |market|
       section.pull-left style="margin-left: 1em"
-        div #{market.from_currency.upcase}/#{market.to_currency.upcase}
+        div  #{market.from_currency == 'usd' ? 'Buying' : 'Selling'}
 
         div Top 5 offers
         table
-          - market.offers.asks.order('price').limit(5).each do |bid|
+          - market.offers.order('price').limit(5).each do |bid|
             tr
               td style="text-align:right" #{"%0.3f"%bid.quantity}
               td @
