@@ -1,20 +1,27 @@
 div
   | #{@exchange.name}
 
-- @exchange.markets.each do |market|
-  ul
-    li #{market.from_currency}/#{market.to_currency}
+  - if @exchange.active
+    div style="margin-bottom: 2em"
+      - exchange_run = @exchange.exchange_runs.order('created_at').last
+      ' Last update
+      time datetime="#{exchange_run.start_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
 
-  div Top 5 asks
-  table
-    - market.offers.asks.order('price asc').limit(5).each do |bid|
-      tr
-        td #{number_to_currency(bid.price)}
-        td #{bid.quantity}
+    div
+    - @exchange.markets.select{|m| m.from_currency != m.to_currency}.each do |market|
+      section.pull-left style="margin-left: 1em"
+        div #{market.from_currency.upcase}/#{market.to_currency.upcase}
 
-  div Top 5 bids
-  table
-    - market.offers.bids.order('price desc').limit(5).each do |bid|
-      tr
-        td #{number_to_currency(bid.price)}
-        td #{bid.quantity}
+        div Top 5 offers
+        table
+          - market.offers.asks.order('price').limit(5).each do |bid|
+            tr
+              td style="text-align:right" #{"%0.3f"%bid.quantity}
+              td @
+              td #{number_to_currency(bid.price)}
+  - else
+    div
+      | Inactive
+
+  div style="clear:both"
+
