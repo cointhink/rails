@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130104195855) do
+ActiveRecord::Schema.define(:version => 20130104214918) do
 
   create_table "balances", :force => true do |t|
     t.string   "currency"
@@ -86,6 +86,14 @@ ActiveRecord::Schema.define(:version => 20130104195855) do
   add_index "markets", ["exchange_id"], :name => "index_markets_on_exchange_id"
   add_index "markets", ["from_exchange_id"], :name => "index_markets_on_from_exchange_id"
   add_index "markets", ["to_exchange_id"], :name => "index_markets_on_to_exchange_id"
+
+  create_table "notes", :force => true do |t|
+    t.string   "text"
+    t.integer  "notable_id"
+    t.string   "notable_type"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
 
   create_table "offers", :force => true do |t|
     t.datetime "listed_at"

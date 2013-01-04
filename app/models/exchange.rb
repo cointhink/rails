@@ -2,6 +2,7 @@ class Exchange < ActiveRecord::Base
   has_many :markets, :dependent => :destroy
   has_many :exchange_runs, :dependent => :destroy
   has_many :balances, :as => :balanceable, :dependent => :destroy
+  has_many :notes, :as => :notable, :dependent => :destroy
   attr_accessible :fee_percentage, :name, :country_code, :active,
                   :last_http_duration_ms
 
