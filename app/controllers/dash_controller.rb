@@ -63,4 +63,7 @@ class DashController < ApplicationController
     @pairs = Strategy.pair_spreads
 
   end
+
+  def fourohfour
+  end
 end

@@ -1,5 +1,6 @@
 Btcmarketwatch::Application.routes.draw do
+  root :to => 'dash#chart'
   resources :exchanges
   match '/pairs' => 'dash#pairs'
-  root :to => 'dash#chart'
+  match '*nowhere' => 'dash#fourohfour'
 end
