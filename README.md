@@ -1,6 +1,8 @@
 # HeisenCoin
 
 
+## Features
+
 * Monitor btc/usd market offers from multiple exchanges
 * Formulate a trade strategy.
 * Display market analytics and strategy detail
