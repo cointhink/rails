@@ -65,5 +65,6 @@ class DashController < ApplicationController
   end
 
   def fourohfour
+    render :status => 404
   end
 end
