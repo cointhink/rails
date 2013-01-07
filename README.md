@@ -10,7 +10,11 @@
 ## Rake Tasks
 
 Grab offers from the active exchanges.
-    $ rake btc:snapshot
+```bash
+$ rake btc:snapshot
+```
 
 Compute the maximum arbitrage opportunity
-    $ rake btc:opportunity
+```bash
+$ rake btc:opportunity
+```
