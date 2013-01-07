@@ -1,12 +1,14 @@
-== HeisenCoin
+HeisenCoin
+----------
 
-* Monitor multiple btc/usd market offers.
-* Formulate an trade strategy.
-* Execute the strategy.
-* Compare the expected results against the actual results.
+* Monitor btc/usd market offers from multiple exchanges
+* Formulate a trade strategy.
+* Display market analytics and strategy detail
 
 == Rake Tasks
 
+Grab offers from the active exchanges.
 $ rake btc:snapshot
 
-$ rake btc:strategy:bestbid[100]
+Compute the maximum arbitrage opportunity
+$ rake btc:opportunity
