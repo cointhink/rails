@@ -1,0 +1,2 @@
+class StrategiesController < ApplicationController
+end
