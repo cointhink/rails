@@ -10,7 +10,7 @@ div
       div
         ' Last update
         time datetime="#{exchange_run.start_at.iso8601}" data-format="yyyy-MMM-dd hh:mm:"
-        | #{"%0.3f"%(exchange_run.start_at.sec+(exchange_run.start_at.nsec/1000000000.0))}
+        | #{"%06.3f"%(exchange_run.start_at.sec+(exchange_run.start_at.nsec/1000000000.0))}
       div
         ' API round-trip time: #{"%0.3f"% (exchange_run.duration_ms/1000.0)} sec
 
