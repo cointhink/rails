@@ -12,7 +12,7 @@ div
         time datetime="#{exchange_run.start_at.iso8601}" data-format="yyyy-MMM-dd hh:mm:"
         | #{"%0.3f"%(exchange_run.start_at.sec+(exchange_run.start_at.nsec/1000000000.0))}
       div
-        ' API response time: #{"%0.3f"% (exchange_run.duration_ms/1000.0)} sec
+        ' API round-trip time: #{"%0.3f"% (exchange_run.duration_ms/1000.0)} sec
 
     div
     - @exchange.markets.select{|m| m.from_currency != m.to_currency}.each do |market|
