@@ -2,7 +2,7 @@ h2
   ' Strategy ##{@strategy.id}
   time datetime="#{@strategy.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
 
-div style="font-weight: bold" Summary
+div style="font-weight: bold" Totals
 
 ul
   li In #{@strategy.balance_in}
@@ -19,7 +19,7 @@ div
     span
       ' #{link_to e.name, e}
 
-div style="font-weight: bold; margin-top: 1em" Details
+div style="font-weight: bold; margin-top: 1em" Transactions
 
 - @strategy.stage.children.each do |stage|
   div

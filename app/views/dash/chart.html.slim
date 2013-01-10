@@ -63,6 +63,10 @@ section#strategy
               td
                 - if b > 0
                   | sell #{b}
+
+      br style="clear: both"
+      section#trade_detail
+        | #{link_to "Strategy Detail", @strategy}
   - else
     | No strategy available
 div.clearboth

@@ -73,7 +73,7 @@ function strategyClick(event, point, item, strategy_ids) {
       console.log(item.dataIndex);
       console.log(item.seriesIndex);
       if(item.seriesIndex == 0) {
-        window.location = "?strategy_id="+strategy_ids[item.dataIndex]
+        window.location = "/strategies/"+strategy_ids[item.dataIndex]
       }
 }
 
