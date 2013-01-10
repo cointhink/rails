@@ -2,4 +2,37 @@ h2
   ' Strategy ##{@strategy.id}
   time datetime="#{@strategy.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
 
+div style="font-weight: bold" Summary
+
+ul
+  li In #{@strategy.balance_in}
+  li Out #{@strategy.balance_out}
+  li
+    ' Profit
+    span style="font-size: 110%; color:#{@strategy.potential < 0 ? "#e00" : "black"}"
+      | #{@strategy.potential}
+
 div
+  ' Included exchanges:
+  - exchanges = @strategy.exchange_balances.map(&:exchange)
+  - exchanges.each do |e|
+    span
+      ' #{link_to e.name, e}
+
+div style="font-weight: bold; margin-top: 1em" Details
+
+- @strategy.stage.children.each do |stage|
+  div
+    |#{stage.name}
+
+    - unless stage.name == "Moves"
+      div #{stage.balance_in} in => #{stage.balance_out} out. profit $#{stage.potential} #{"%0.3f"%stage.profit_percentage}%
+    ul
+      - stage.trades.each do |t|
+          li class="#{t.balance_in.btc? ? "bid" : ""}"
+            | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out}
+      - stage.children.each do |stage|
+        - stage.trades.each do |t|
+          li class="#{t.balance_in.btc? ? "bid" : ""}"
+            | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out} #{"(profit #{"%0.3f"%stage.profit(t).amount})" if t.balance_in.btc?}
+
