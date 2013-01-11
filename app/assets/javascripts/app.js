@@ -20,9 +20,9 @@ function setup(data, percentages, strategies, strategy_ids) {
              data: strategies,
              yaxis: 2,
              color: 'grey',
-             bars: {show: true},
+             bars: {show: true, lineWidth: 3},
              lines: {show: false},
-             points: {radius: 8}})
+             points: {radius: 0}})
 
   dset.push({label: "profit %",
              data: percentages,
