@@ -1,8 +1,8 @@
 class DashController < ApplicationController
   def chart
-    hours = (params[:hours] || 8).to_i
-    start = params[:start] ? Time.parse(params[:start]) : Time.now - hours.hours
-    stop = start + hours.hours
+    @hours = (params[:hours] || 8).to_i
+    start = params[:start] ? Time.parse(params[:start]) : Time.now - @hours.hours
+    stop = start + @hours.hours
 
     if stale?(Snapshot.latest)
       snapshots = Snapshot.includes(:exchange_runs => [:exchange, :depth_runs]).where(
