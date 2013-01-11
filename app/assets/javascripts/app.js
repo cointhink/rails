@@ -20,7 +20,7 @@ function setup(data, percentages, strategies, strategy_ids) {
              data: strategies,
              yaxis: 2,
              color: 'grey',
-             bars: {show: false},
+             bars: {show: true},
              lines: {show: false},
              points: {radius: 8}})
 

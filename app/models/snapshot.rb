@@ -34,12 +34,11 @@ class Snapshot < ActiveRecord::Base
                                      exchange: edat[:erun][:exchange],
                                      duration_ms: (edat[:duration]*1000).to_i,
                                      start_at: edat[:start])
-      puts "depth BTCUSD #{edat[:data]["asks"].size + edat[:data]["bids"].size} "+
-           "#{edat[:start].strftime("%T")} #{edat[:duration]}s #{exchange_run.duration_ms}ms"
+      puts "** #{edat[:erun][:exchange].name} "+
+           "#{edat[:data]["asks"].size} asks #{edat[:data]["bids"].size} bids "+
+           "#{edat[:start].strftime("%T")} #{"%0.3f"%edat[:duration]}s"
       [edat[:erun][:bid_market], edat[:erun][:ask_market]].each do |market|
-        puts "#{market.from_currency}/#{market.to_currency} filtering"
         depth_run = market.depth_filter(edat[:data], edat[:erun][:bid_market].to_currency)
-        puts "Created #{depth_run.offers.count} offers"
         depth_run.update_attribute :exchange_run, exchange_run
       end
       exchange_run
