@@ -10,8 +10,8 @@ namespace :btc do
     snapshot.poll(super_http, Exchange.with_markets('btc','usd'))
   end
 
-  desc 'Total opportunity'
-  task :opportunity, [:markets] => :environment do |task, args|
+  desc 'Compute strategy'
+  task :strategy, [:markets] => :environment do |task, args|
     snapshot = Snapshot.order('created_at desc').first
     if snapshot
       puts "Snapshot ##{snapshot.id} #{snapshot.created_at}"
