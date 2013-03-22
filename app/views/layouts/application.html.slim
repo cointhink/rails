@@ -7,15 +7,7 @@ html lang="en"
     = javascript_include_tag "application"
 
   body#cointhink
-    div.navbar
-      div.navbar-inner
-        a.brand href="/"
-          | CoinThink
-        div.nav-collapse
-          div.realtime.pull-right
-            time datetime="#{Time.now.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
-            '
-            span.local_timezone
+    = render partial: "layouts/navbar"
 
     div.container-fluid
       = yield
