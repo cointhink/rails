@@ -5,19 +5,17 @@
 @slider_setup = ->
   @exchanges = []
   $('ul.exchanges li').each (idx,el)->
-      exg = spans_to_json(el)
-      console.log(exg)
-      dust.render('exchange-button', exg, (err,out)->
-        if err
-          console.log(err)
-        else
-          $(el).replaceWith(out)    
-      )
-      exchanges.push(exg)
+    exg = spans_to_json(el)
+    dust.render 'exchange-button', exg, (err,out)->
+      if err
+        console.log(err)
+      else
+        $(el).replaceWith(out)    
+    exchanges.push(exg)
 
 spans_to_json = (el)->
   record = {}
   $("span", el).each (idx,el)->
-                       j = $(el)
-                       record[j.attr('key')] = j.html()
+    j = $(el)
+    record[j.attr('key')] = j.html()
   record
