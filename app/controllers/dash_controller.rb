@@ -58,6 +58,12 @@ class DashController < ApplicationController
     end
   end
 
+  def slider
+    from_market = params[:pair][0,3]
+    to_market = params[:pair][3,3]
+    @exchanges = Exchange.with_markets(from_market, to_market)
+  end
+  
   def pairs
     @data = [ ["mtgox/abc", [[1, 4]]]]
     @pairs = Strategy.pair_spreads

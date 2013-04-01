@@ -1,0 +1,10 @@
+div
+  ul.exchanges
+    - @exchanges.each do |ex|
+      li name="#{ex[:exchange].name.to_json}"
+
+script type=template/dust
+
+
+javascript:
+  slider_setup()
