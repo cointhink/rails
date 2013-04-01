@@ -1,10 +1,14 @@
 div
   ul.exchanges
     - @exchanges.each do |ex|
-      li name="#{ex[:exchange].name.to_json}"
+      li
+        span key="name" #{ex[:exchange].name}
+        span key="logo" 
+          | /img/logo-#{ex[:exchange].name}
 
-script type=template/dust
-
+script type="template/dust" name="exchange-button"
+  li {name}
 
 javascript:
+  dust_compile_templates()
   slider_setup()

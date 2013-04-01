@@ -3,11 +3,21 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
 @slider_setup = ->
-  console.log('slider setup')
-  exchanges = []
-  $('ul.exchanges li').each((idx,el)->
-      exg = {}
-      exg.name = $(el).attr('name')
+  @exchanges = []
+  $('ul.exchanges li').each (idx,el)->
+      exg = spans_to_json(el)
+      console.log(exg)
+      dust.render('exchange-button', exg, (err,out)->
+        if err
+          console.log(err)
+        else
+          $(el).replaceWith(out)    
+      )
       exchanges.push(exg)
-  )
-  console.log(exchanges)
+
+spans_to_json = (el)->
+  record = {}
+  $("span", el).each (idx,el)->
+                       j = $(el)
+                       record[j.attr('key')] = j.html()
+  record

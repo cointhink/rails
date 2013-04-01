@@ -13,3 +13,13 @@
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
+
+function dust_compile_templates() {
+  $("script[type='template/dust']").each(function(idx,el){
+      var name = $(el).attr('name')
+      var body = $(el).html()
+      var compiled = dust.compile(body, name)
+      console.log('compiled '+ JSON.stringify(name))
+      dust.loadSource(compiled)
+    })
+}
