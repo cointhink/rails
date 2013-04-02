@@ -3,7 +3,7 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
 @slider_setup = ->
-  @exchanges = []
+  @exchanges = {}
   $('ul.exchanges li').each (idx,el)->
     exg = spans_to_json(el)
     dust.render 'exchange-button', exg, (err,out)->
@@ -11,7 +11,8 @@
         console.log(err)
       else
         $(el).replaceWith(out)    
-    exchanges.push(exg)
+    exchanges[exg['name']] = exg
+  $('ul.exchanges li').click(exg_toggle)
 
 spans_to_json = (el)->
   record = {}
@@ -19,3 +20,6 @@ spans_to_json = (el)->
     j = $(el)
     record[j.attr('key')] = j.html()
   record
+
+exg_toggle = (event) ->
+  console.log(event.target)
