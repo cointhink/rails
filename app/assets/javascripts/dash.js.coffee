@@ -37,15 +37,15 @@ chart_setup = ->
   d3.select("div.chart").append("svg")
     .attr("class", "chart")
     .attr("width", 420)
-    .attr("height", 20 * data.length);
+    .attr("height", 25 * data.length);
     
 @chart_freshen = ->
   chart.selectAll("rect")
-     .data(data)
-   .enter().append("rect")
-    .attr("y", (data, idx) -> 
-          return idx * 20 )
-    .attr("width", (data, idx)->
-          data*10)
-    .attr("height", 20);
+       .data(data)
+       .enter().append("rect")
+       .attr("y", (data, idx) -> 
+                 return idx * 25 )
+       .attr("width", (data, idx)->
+                 data*10 )
+       .attr("height", 20)
 
