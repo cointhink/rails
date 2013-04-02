@@ -9,7 +9,7 @@ div
           | /img/logo-#{ex[:exchange].name}
 
 script type="template/dust" name="exchange-button"
-  li.btn {name}
+  li.btn name="{name}" {name}
 
 javascript:
   dust_compile_templates()

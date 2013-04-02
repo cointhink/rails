@@ -22,4 +22,7 @@ spans_to_json = (el)->
   record
 
 exg_toggle = (event) ->
-  console.log(event.target)
+  name = $(event.target).attr('name')
+  exchange = exchanges[name]
+  exchange.active = !exchange.active
+  console.log('exchange '+name+' active '+exchange.active)
