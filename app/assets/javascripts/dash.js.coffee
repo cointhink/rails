@@ -5,16 +5,17 @@
 @slider_setup = ->
   @exchanges = {}
   $('ul.exchanges li').each (idx,el)->
-    exg = spans_to_json(el)
+    exg = html_to_obj(el)
     dust.render 'exchange-button', exg, (err,out)->
       if err
         console.log(err)
       else
-        $(el).replaceWith(out)    
+        $(el).replaceWith(out)
     exchanges[exg['name']] = exg
   $('ul.exchanges li').click(exg_toggle)
+  @chart = chart_setup()
 
-spans_to_json = (el)->
+html_to_obj = (el)->
   record = {}
   $("span", el).each (idx,el)->
     j = $(el)
@@ -30,3 +31,21 @@ exg_toggle = (event) ->
     el.addClass('btn-success')
   if !exchange.active
     el.removeClass('btn-success')
+
+chart_setup = ->    
+  @data = [1,2,3]
+  d3.select("div.chart").append("svg")
+    .attr("class", "chart")
+    .attr("width", 420)
+    .attr("height", 20 * data.length);
+    
+@chart_freshen = ->
+  chart.selectAll("rect")
+     .data(data)
+   .enter().append("rect")
+    .attr("y", (data, idx) -> 
+          return idx * 20 )
+    .attr("width", (data, idx)->
+          data*10)
+    .attr("height", 20);
+
