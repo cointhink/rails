@@ -22,7 +22,11 @@ spans_to_json = (el)->
   record
 
 exg_toggle = (event) ->
-  name = $(event.target).attr('name')
+  el = $(event.target)
+  name = el.attr('name')
   exchange = exchanges[name]
   exchange.active = !exchange.active
-  console.log('exchange '+name+' active '+exchange.active)
+  if exchange.active
+    el.addClass('btn-success')
+  if !exchange.active
+    el.removeClass('btn-success')
