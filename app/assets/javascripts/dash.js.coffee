@@ -43,9 +43,11 @@ chart_setup = ->
   chart.selectAll("rect")
        .data(data)
        .enter().append("rect")
-       .attr("y", (data, idx) -> 
+       .attr("x", (data, idx) -> 
                  return idx * 25 )
-       .attr("width", (data, idx)->
+       .attr("y", (data, idx) ->
+                 75 - data*10)
+       .attr("height", (data, idx)->
                  data*10 )
-       .attr("height", 20)
+       .attr("width", 20)
 
