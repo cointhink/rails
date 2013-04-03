@@ -3,7 +3,8 @@ h2 Bitcoin/USD Arbitrage Strategy Report
 section#strategy
   - if @strategy
     h4
-      ' Strategy ##{@strategy.id}
+      | Strategy
+      '  #{link_to "##{@strategy.id}", @strategy}
       time datetime="#{@strategy.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
       '
       span.local_timezone
@@ -61,8 +62,6 @@ section#strategy
                   | sell #{b}
 
       br style="clear: both"
-      section#trade_detail
-        | #{link_to "Strategy Detail", @strategy}
   - else
     | No strategy available
 div.clearboth
