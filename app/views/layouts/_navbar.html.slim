@@ -2,12 +2,16 @@ div.navbar
   div.navbar-inner
     a.brand href="/"
       | CoinThink
-    div.nav-collapse
-      div.realtime.pull-right
-        time datetime="#{Time.now.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
-        '
-        span.local_timezone
-        br
-        a href="https://twitter.com/cointhink" @cointhink
-        '
-        a href="https://github.com/cointhink" github
+    div.realtime.pull-right
+      time datetime="#{Time.now.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
+      '
+      span.local_timezone
+      br
+      a href="https://twitter.com/cointhink" @cointhink
+      '
+      a href="https://github.com/cointhink" github
+    div.realtime.pull-right
+        div Donations appreciated
+        div
+          a href="https://blockchain.info/address/18aqQeT3j5UrwJ75Yc5yRS3qXtMyNBbqpD"
+            |18aqQeT3j5UrwJ75Yc5yRS3qXtMyNBbqpD

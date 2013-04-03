@@ -16,10 +16,18 @@ body#cointhink {
   .navbar {
     margin-bottom: 0;
   }
+  a {
+    color: #888
+  }
+  a :hover {
+    color: #bbb;
+    text-decoration: underline
+  }
 }
 
 .navbar .realtime {
   color: #ddd;
+  margin-right: 1em
 }
 
 H2:first-child {
