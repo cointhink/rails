@@ -15,6 +15,15 @@
 body#cointhink {
   .navbar {
     margin-bottom: 0;
+    a.brand {
+      color: white
+    }
+    a.brand:hover {
+      color: grey;
+      transition-property: color;
+      transition-duration: 0.5s;
+      transition-timing-function: ease;
+    }
   }
   a {
     color: #888
