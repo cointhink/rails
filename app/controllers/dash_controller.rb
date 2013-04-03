@@ -4,7 +4,7 @@ class DashController < ApplicationController
     start = params[:start] ? Time.parse(params[:start]) : Time.now - @hours.hours
     stop = start + @hours.hours
 
-    if stale?(Snapshot.latest)
+    if true
       snapshots = Snapshot.includes(:exchange_runs => [:exchange, :depth_runs]).where(
                       ['snapshots.created_at > ? and snapshots.created_at < ?', start, stop])
                    .order('created_at desc')
@@ -63,7 +63,7 @@ class DashController < ApplicationController
     to_market = params[:pair][3,3]
     @exchanges = Exchange.with_markets(from_market, to_market)
   end
-  
+
   def pairs
     @data = [ ["mtgox/abc", [[1, 4]]]]
     @pairs = Strategy.pair_spreads
