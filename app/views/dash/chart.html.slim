@@ -10,7 +10,7 @@ section#strategy
 
     section#opportunity
       h4 Total Opportunity
-      div style="width: 30em"
+      div style="width: 45em"
         - trade_stage = @strategy.stage.children.select{|s| s.name=="Trades"}.first
         ' For the #{Exchange.actives.count} exchanges being monitored, the total value of offers
         ' that have immediate buyers is
@@ -26,11 +26,10 @@ section#strategy
           span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
             ' #{trade_stage.potential} (#{"%0.3f"%trade_stage.profit_percentage}%).
           - trade_stage_moves = @strategy.stage.children.select{|s| s.name=="Moves"}.first
-          ' When market transfer fees of
+          ' Estimated transfer fees of
           span style="font-size: 110%; font-weight:bold"
             ' #{trade_stage_moves.balance_in - trade_stage.balance_in}
-          ' are included,
-          ' the total profit is
+          ' adjust total profit to
           span style="font-size: 110%; font-weight:bold; color:#{@strategy.potential < 0 ? "#e00" : "black"}"
             ' #{@strategy.potential} (#{"%0.3f"%@strategy.profit_percentage}%)
         - else
