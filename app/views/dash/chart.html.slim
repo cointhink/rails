@@ -80,10 +80,11 @@ section#exchanges
       - Exchange.all.each do |exchange|
         - if exchange.markets.internal.size > 0
           tr
+            td style="text-decoration: #{exchange.active ? "none":"line-through"}"
+              a href="#{exchange_path(exchange)}" style="color: black"
+                | #{exchange.name}
             td
-              | #{link_to exchange.name, exchange} #{image_tag "/flags/#{exchange.country_code}.png"}
-              - unless exchange.active
-                | (disabled)
+              | #{image_tag "/flags/#{exchange.country_code}.png"}
             td
               |  #{exchange.markets.internal[0,1].map{|market| "#{market.from_currency}/#{market.to_currency} fee #{market.fee_percentage}%"}.join(' ')}
             td
