@@ -14,6 +14,7 @@
     exchanges[exg['name']] = exg
   $('ul.exchanges li').click(exg_toggle)
   @chart = chart_setup()
+  load()
 
 html_to_obj = (el)->
   record = {}
@@ -38,6 +39,9 @@ chart_setup = ->
     .attr("class", "chart")
     .attr("width", 420)
     .attr("height", 25 * data.length);
+
+load = ->
+  json_rpc('arbitrage', {})
     
 @chart_freshen = ->
   chart.selectAll("rect")
@@ -51,3 +55,10 @@ chart_setup = ->
                  data*10 )
        .attr("width", 20)
 
+json_rpc = (method, params) ->
+  params.jsonrpc = "2.0"
+  params.method = method
+  url = "https://www.cointhink.com/api/v0/jsonrpc"
+  $.ajax({type:"post",  url:url, data:params, contentType:"application/json"})
+  
+json_done = ->
