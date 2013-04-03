@@ -9,8 +9,7 @@ section#strategy
       '
       span.local_timezone
 
-    section#opportunity
-      h4 Total Opportunity
+    section#opportunity style="margin-bottom: 1em"
       div style="width: 45em"
         - trade_stage = @strategy.stage.children.select{|s| s.name=="Trades"}.first
         ' For the #{Exchange.actives.count} exchanges being monitored, the total value of offers
@@ -37,7 +36,6 @@ section#strategy
           ' The different
           ' exchanges are close enough that no opportunity is currently available.
     section#trade_summary
-      h4 Trade Summary
       div style="float:left"
         i
           | ---- transfer USD ---->
