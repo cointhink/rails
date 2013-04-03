@@ -38,7 +38,7 @@ section#strategy
     section#trade_summary
       div style="float:left"
         i
-          | ---- transfer USD ---->
+          | ---- transfer USD ---->&nbsp;
       table style="float:left"
         - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.usd? && b>0}.any?}.each do |eb|
           tr
@@ -49,7 +49,7 @@ section#strategy
                   | buy #{b}
       div style="float:left"
         i
-          | ---- transfer BTC ---->
+          | &nbsp;---- transfer BTC ---->&nbsp;
       table style="float:left"
         - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.btc? && b>0}.any?}.each do |eb|
           tr
