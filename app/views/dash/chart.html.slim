@@ -42,7 +42,8 @@ section#strategy
       table style="float:left"
         - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.usd? && b>0}.any?}.each do |eb|
           tr
-            td #{eb.exchange.name}
+            td
+              a href="#{exchange_path(eb.exchange)}" style="color: black" #{eb.exchange.name}
             - eb.balances.each do |b|
               td
                 - if b > 0
@@ -53,7 +54,8 @@ section#strategy
       table style="float:left"
         - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.btc? && b>0}.any?}.each do |eb|
           tr
-            td #{eb.exchange.name}
+            td
+              a href="#{exchange_path(eb.exchange)}" style="color: black" #{eb.exchange.name}
             - eb.balances.each do |b|
               td
                 - if b > 0
