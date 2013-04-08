@@ -18,3 +18,5 @@ Gemfile.lock
 
 /config/database.yml
 /config/settings.yml
+
+/js/node_modules
