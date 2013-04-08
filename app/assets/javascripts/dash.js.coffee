@@ -12,7 +12,7 @@
       else
         $(el).replaceWith(out)
     exchanges[exg['name']] = exg
-  $('ul.exchanges li').click(exg_toggle)
+  $('ul.exchanges li').click((event)-> exg_toggle(event); load())
   @chart = chart_setup()
   load()
 
@@ -33,7 +33,7 @@ exg_toggle = (event) ->
   if !exchange.active
     el.removeClass('btn-success')
 
-chart_setup = ->    
+chart_setup = ->
   @data = [1,2,3]
   d3.select("div.chart").append("svg")
     .attr("class", "chart")
@@ -41,13 +41,14 @@ chart_setup = ->
     .attr("height", 25 * data.length);
 
 load = ->
-  json_rpc('arbitrage', {})
-    
+  names = jQuery.map(exchanges, (idx,o)-> exchanges[o]["name"] if exchanges[o].active )
+  json_rpc('arbitrage', {exchanges:names})
+
 @chart_freshen = ->
   chart.selectAll("rect")
        .data(data)
        .enter().append("rect")
-       .attr("x", (data, idx) -> 
+       .attr("x", (data, idx) ->
                  return idx * 25 )
        .attr("y", (data, idx) ->
                  75 - data*10)
@@ -58,7 +59,8 @@ load = ->
 json_rpc = (method, params) ->
   params.jsonrpc = "2.0"
   params.method = method
-  url = "https://www.cointhink.com/api/v0/jsonrpc"
-  $.ajax({type:"post",  url:url, data:params, contentType:"application/json"})
-  
+  url = "/api/v0/jsonrpc"
+  console.log(params)
+  $.ajax({type:"post", url:url, data:JSON.stringify(params), contentType:"application/json", success: json_done})
+
 json_done = ->
