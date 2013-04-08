@@ -61,7 +61,7 @@ json_rpc = (method, params) ->
   rpc.jsonrpc = "2.0"
   rpc.method = method
   rpc.params = params
-  url = "//localhost:8000/api/v0/jsonrpc"
+  url = "/api/v0/jsonrpc"
   console.log(params)
   data = JSON.stringify(rpc)
   $.ajax({type:"post", url:url, data:data, contentType:"application/json", success: json_done})
