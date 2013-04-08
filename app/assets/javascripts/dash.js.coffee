@@ -57,10 +57,13 @@ load = ->
        .attr("width", 20)
 
 json_rpc = (method, params) ->
-  params.jsonrpc = "2.0"
-  params.method = method
-  url = "/api/v0/jsonrpc"
+  rpc = {}
+  rpc.jsonrpc = "2.0"
+  rpc.method = method
+  rpc.params = params
+  url = "//localhost:8000/api/v0/jsonrpc"
   console.log(params)
-  $.ajax({type:"post", url:url, data:JSON.stringify(params), contentType:"application/json", success: json_done})
+  data = JSON.stringify(rpc)
+  $.ajax({type:"post", url:url, data:data, contentType:"application/json", success: json_done})
 
 json_done = ->
