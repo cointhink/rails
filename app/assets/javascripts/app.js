@@ -7,7 +7,7 @@ function setup(data, percentages, strategies, strategy_ids) {
     },
     xaxis: { mode: 'time',
              timezone: 'browser',
-             timeformat: "%m/%d %I%p",
+             timeformat: "%I%p<br/>%m/%d",
              tickSize: [1, "hour"]},
     legend: { position: 'nw',
               container: '#legend'},
