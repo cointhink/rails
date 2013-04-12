@@ -2,7 +2,7 @@
 [ [{name:'mtgox', country_code: 'jp', active: true},       0.6],
   [{name:'bitstamp', country_code: 'si', active: true},    0.5],
   [{name:'intersango', country_code: 'gb', active: false}, 0.65],
-  [{name:'btce', country_code: 'ru', active: true},        0.2],
+  [{name:'btce', country_code: 'bg', active: true},        0.2],
   [{name:'cryptoxchange', country_code: 'au', active: false}, 0.4],
   [{name:'bitfloor', country_code: 'us', active: true},    0.4]
   [{name:'bitcoin24', country_code: 'de', active: true},    0.0]
