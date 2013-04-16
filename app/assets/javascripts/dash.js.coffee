@@ -66,4 +66,5 @@ json_rpc = (method, params) ->
   data = JSON.stringify(rpc)
   $.ajax({type:"post", url:url, data:data, contentType:"application/json", success: json_done})
 
-json_done = ->
+json_done = (data, msg)->
+  console.log(data)
