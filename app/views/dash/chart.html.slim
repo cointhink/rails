@@ -24,7 +24,7 @@
       @strategy_percentages = @snapshots.map{|s| [s.created_at.to_i*1000,
                                                   s.strategy.profit_percentage.to_f] if s.strategy}
 
-  h2 Bitcoin/USD Arbitrage Strategy Report CACHE2
+  h2 Bitcoin/USD Arbitrage Strategy Report
 
   section#strategy
     - if @strategy
