@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130104214918) do
+ActiveRecord::Schema.define(:version => 20130416172030) do
 
   create_table "balances", :force => true do |t|
     t.string   "currency"
@@ -81,6 +81,7 @@ ActiveRecord::Schema.define(:version => 20130104214918) do
     t.string   "to_currency"
     t.decimal  "fee_percentage"
     t.integer  "delay_ms"
+    t.string   "offer_currency"
   end
 
   add_index "markets", ["exchange_id"], :name => "index_markets_on_exchange_id"
@@ -176,5 +177,13 @@ ActiveRecord::Schema.define(:version => 20130104214918) do
   add_index "trades", ["balance_in_id"], :name => "index_trades_on_balance_in_id"
   add_index "trades", ["balance_out_id"], :name => "index_trades_on_balance_out_id"
   add_index "trades", ["offer_id"], :name => "index_trades_on_offer_id"
+
+  create_table "users", :force => true do |t|
+    t.string   "username"
+    t.string   "email"
+    t.string   "encrypted_password"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
 
 end

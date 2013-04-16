@@ -1,13 +1,15 @@
 div.signup
-  | Login
+  | Sign up
 
   form action="#{session_create_path}" method="post"
     fieldset
       label username
       input name="username" type="text" value="#{params[:username]}"
+      label email
+      input name="email" type="email"
       label password
       input name="password" type="password"
-    button class="btn" Login
+    button class="btn" Sign Up
 
 javascript:
-  $("div.signup input[name='password']").focus()
+  $("div.signup input[name='email']").focus()

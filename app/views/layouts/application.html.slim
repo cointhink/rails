@@ -10,6 +10,8 @@ html lang="en"
     = render partial: "layouts/navbar"
 
     div.container-fluid
+      = render partial: "layouts/flash_msg"
+
       = yield
 
       = render partial: "layouts/footer"

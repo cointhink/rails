@@ -10,6 +10,7 @@ gem 'slim'
 gem 'thin'
 gem 'acts_as_tree'
 gem 'friendly_id'
+gem 'bcrypt-ruby', :require => "bcrypt"
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'

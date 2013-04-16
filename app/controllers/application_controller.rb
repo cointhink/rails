@@ -4,4 +4,5 @@ class ApplicationController < ActionController::Base
   helper NanoAuth # available in views
   include NanoAuth # available in controllers
 
+  before_filter :auth
 end
