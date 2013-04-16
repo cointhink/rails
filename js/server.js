@@ -1,12 +1,14 @@
 var bouncy = require('bouncy');
 
 var server = bouncy(function (req, res, bounce) {
-  console.log(req.method+" "+req.url)
+  var port;
   if (req.url.substr(0,5) == '/api/') {
-      bounce(8000);
+      port = 8000
   } else {
-      bounce(3000);
+      port = 3000
   }
+  bounce(port);
+  console.log(port+": "+req.method+" "+req.url)
 });
 console.log("listening on 3001")
 server.listen(3001);
