@@ -24,6 +24,30 @@ body#cointhink {
       transition-duration: 0.5s;
       transition-timing-function: ease;
     }
+    .navbar-right {
+      float: right;
+    }
+    .navbar-inner {
+      padding-right: 5px;
+    }
+    .navbar-right-block {
+      float: right;
+      color: #ddd;
+      margin-right: 1em;
+      margin-top: 0.2em;
+      form {
+        margin-top: 0.4em;
+        margin-bottom: 0;
+      }
+      input {
+        font-size: 120%;
+        margin-right: 4px;
+      }
+      button {
+        color: black;
+        margin: 0
+      }
+    }
   }
   a {
     color: #888
@@ -32,11 +56,6 @@ body#cointhink {
     color: #bbb;
     text-decoration: underline
   }
-}
-
-.navbar .realtime {
-  color: #ddd;
-  margin-right: 1em
 }
 
 H2:first-child {
