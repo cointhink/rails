@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130416172030) do
+ActiveRecord::Schema.define(:version => 20130416211729) do
 
   create_table "balances", :force => true do |t|
     t.string   "currency"
@@ -177,6 +177,7 @@ ActiveRecord::Schema.define(:version => 20130416172030) do
   add_index "trades", ["balance_in_id"], :name => "index_trades_on_balance_in_id"
   add_index "trades", ["balance_out_id"], :name => "index_trades_on_balance_out_id"
   add_index "trades", ["offer_id"], :name => "index_trades_on_offer_id"
+  add_index "trades", ["stage_id"], :name => "index_trades_on_stage_id"
 
   create_table "users", :force => true do |t|
     t.string   "username"
