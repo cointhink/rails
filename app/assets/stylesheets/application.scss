@@ -56,6 +56,15 @@ body#cointhink {
     color: #bbb;
     text-decoration: underline
   }
+
+  .alert-error {
+    background-color: darkred
+  }
+  .alert {
+    a {
+      color: white
+    }
+  }
 }
 
 H2:first-child {
