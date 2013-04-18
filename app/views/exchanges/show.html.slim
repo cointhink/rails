@@ -4,9 +4,18 @@ div
   - if @exchange.url
     | #{link_to URI.parse(@exchange.url).hostname, @exchange.url}
 
-  - if @exchange.active
-    div style="margin-bottom: 2em"
-      - exchange_run = @exchange.exchange_runs.order('created_at').last
+  - unless @exchange.active
+    - note = @exchange.notes.last
+    - if note
+      div.alert class="#{note.category}"
+        time datetime="#{note.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mm"
+        |  #{note.text}
+    - else
+      div.alert Not being monitored
+
+  div style="margin-bottom: 2em"
+    - exchange_run = @exchange.exchange_runs.order('created_at').last
+    - if exchange_run
       div
         ' Last update
         time datetime="#{exchange_run.start_at.iso8601}" data-format="yyyy-MMM-dd hh:mm:"
@@ -14,11 +23,12 @@ div
       div
         ' API round-trip time: #{"%0.3f"% (exchange_run.duration_ms/1000.0)} sec
 
-    div
-    - @exchange.markets.select{|m| m.from_currency != m.to_currency}.each do |market|
-      section.pull-left style="margin-left: 1em"
-        div  #{market.from_currency == 'usd' ? 'Buying' : 'Selling'} (fee #{market.fee_percentage}%)
+  div
+  - @exchange.markets.select{|m| m.from_currency != m.to_currency}.each do |market|
+    section.pull-left style="margin-left: 1em"
+      div  #{market.from_currency == 'usd' ? 'Buying' : 'Selling'} (fee #{market.fee_percentage}%)
 
+      - if exchange_run
         - orders = market.offers.order("price #{market.from_currency == 'usd' ? 'asc' : 'desc'}")
         div Top 5 of #{orders.count} offers
         table
@@ -27,9 +37,6 @@ div
               td style="text-align:right" #{"%0.3f"%bid.quantity}
               td @
               td #{number_to_currency(bid.price)}
-  - else
-    div
-      | Inactive
 
   div style="clear:both"
 
