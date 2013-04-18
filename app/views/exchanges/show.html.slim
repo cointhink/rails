@@ -7,9 +7,7 @@ div
   - unless @exchange.active
     - note = @exchange.notes.last
     - if note
-      div.alert class="#{note.category}"
-        time datetime="#{note.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mm"
-        |  #{note.text}
+      = render :partial => "layouts/note", :locals => {note: note}
     - else
       div.alert Not being monitored
 
