@@ -28,7 +28,8 @@ class SessionController < ApplicationController
         redirect_to :root, :notice => "Welcome, #{user.username}"
       else
         flash[:error] = "Failed account creation"
-        redirect_to({:action => :signup, :username => params[:username]})
+        redirect_to({:action => :signup, :username => params[:username],
+                                         :email => params[:email]})
       end
     end
   end
