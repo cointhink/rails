@@ -81,7 +81,6 @@ ActiveRecord::Schema.define(:version => 20130418172657) do
     t.string   "to_currency"
     t.decimal  "fee_percentage"
     t.integer  "delay_ms"
-    t.string   "offer_currency"
   end
 
   add_index "markets", ["exchange_id"], :name => "index_markets_on_exchange_id"
