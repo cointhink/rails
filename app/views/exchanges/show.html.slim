@@ -4,11 +4,11 @@ div
   - if @exchange.url
     | #{link_to URI.parse(@exchange.url).hostname, @exchange.url}
 
-  - unless @exchange.active
-    - note = @exchange.notes.last
-    - if note
-      = render :partial => "layouts/note", :locals => {note: note}
-    - else
+  - note = @exchange.notes.last
+  - if note
+    = render :partial => "layouts/note", :locals => {note: note}
+  - else
+    - unless @exchange.active
       div.alert Not being monitored
 
   div style="margin-bottom: 2em"
