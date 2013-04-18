@@ -22,10 +22,14 @@ class Snapshot < ActiveRecord::Base
                                        erun[:bid_market].from_currency,
                                        erun[:bid_market].to_currency)
           duration = Time.now-start
-          if data
-            edata << {erun:erun, start:start, data:data, duration:duration}
+          if data.is_a?(Hash)
+            if data["asks"] && data["bids"]
+              edata << {erun:erun, start:start, data:data, duration:duration}
+            else
+              puts "!! #{erun[:exchange].name} returned bad data #{data}"
+            end
           else
-            puts "!! #{erun[:exchange].name} returned empty data"
+            puts "!! #{erun[:exchange].name} returned bad data: #{data.class.name}"
           end
         rescue Faraday::Error::TimeoutError,Errno::EHOSTUNREACH,JSON::ParserError,
                Errno::ECONNREFUSED => e
