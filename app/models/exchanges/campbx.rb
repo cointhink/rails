@@ -9,6 +9,10 @@ class Exchanges::Campbx < Exchanges::Base
   def depth_poll(conn, from_currency, to_currency)
     # covers two markets, from/to and to/from
     url = "http://campbx.com/api/xdepth.php"
-    JSON.parse(conn.get(url).body)
+    depth = JSON.parse(conn.get(url).body)
+    #rename keys
+    depth["asks"] = depth.delete("Asks")
+    depth["bids"] = depth.delete("Bids")
+    depth
   end
 end
