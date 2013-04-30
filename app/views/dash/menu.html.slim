@@ -1,0 +1,12 @@
+#menu
+  h2 Exchanges
+  ul
+    - Exchange.with_markets('btc','usd').each do |m|
+      li
+        a href="#{exchange_path(m[:exchange])}" #{m[:exchange].name}
+
+  h2 Arbitrage
+  ul
+    li
+      a href="/arbitrage/btcusd" btc/usd
+
