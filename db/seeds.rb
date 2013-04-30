@@ -6,7 +6,7 @@
   [{name:'cryptoxchange', country_code: 'au', active: false}, 0.4],
   [{name:'bitfloor', country_code: 'us', active: true},    0.4],
   [{name:'bitcoin24', country_code: 'de', active: true},    0.0],
-  [{name:'campbx', country_code: 'us', active: true},    0.0]
+  [{name:'campbx', country_code: 'us', active: true},    0.55]
 ].each do |info|
   e = Exchange.create(info.first)
   e.markets.create(from_exchange: e, from_currency:'btc',
