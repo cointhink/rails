@@ -3,7 +3,7 @@
   ul
     - Exchange.with_markets('btc','usd').each do |m|
       li
-        a href="#{exchange_path(m[:exchange])}" #{m[:exchange].name}
+        a href="#{exchange_path(m[:exchange])}" #{m[:exchange].display_name}
 
   h2 Arbitrage
   ul

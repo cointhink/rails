@@ -1,6 +1,6 @@
 div
   h3 style="margin-bottom: 0"
-    | #{@exchange.name}
+    | #{@exchange.display_name}
   - if @exchange.url
     | #{link_to URI.parse(@exchange.url).hostname, @exchange.url}
 
