@@ -21,7 +21,7 @@ class Exchange < ActiveRecord::Base
   end
 
   def api
-    @api ||= "Exchanges::#{name.classify}".constantize.new
+    @api ||= "Exchanges::#{slug.classify}".constantize.new
   end
 
   def usd
