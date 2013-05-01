@@ -15,7 +15,7 @@ div
     - exchange_run = @exchange.exchange_runs.order('created_at').last
     - if exchange_run
       div
-        ' Last update
+        ' Last depth update at
         time datetime="#{exchange_run.start_at.iso8601}" data-format="yyyy-MMM-dd hh:mm:"
         | #{"%06.3f"%(exchange_run.start_at.sec+(exchange_run.start_at.nsec/1000000000.0))}
       div
