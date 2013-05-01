@@ -35,7 +35,7 @@ class Market < ActiveRecord::Base
   end
 
   def api
-    "Markets::#{exchange.name.classify}".constantize.new(self)
+    "Markets::#{exchange.slug.classify}".constantize.new(self)
   end
 
   def pair
