@@ -16,7 +16,14 @@ body#cointhink {
   .navbar {
     margin-bottom: 0;
     a.brand {
-      color: white
+      color: white;
+      img {
+        width:25px;
+        margin-right:0.3em;
+      }
+      span.text {
+        margin-top: 0.1em;
+      }
     }
     a.brand:hover {
       color: grey;
@@ -24,6 +31,7 @@ body#cointhink {
       transition-duration: 0.5s;
       transition-timing-function: ease;
     }
+
     .navbar-right {
       float: right;
     }

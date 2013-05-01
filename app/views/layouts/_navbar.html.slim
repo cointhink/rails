@@ -1,7 +1,8 @@
 div.navbar
   div.navbar-inner
     a.brand href="/"
-      | CoinThink
+      img src="#{image_path "logo-256.png"}"
+      span.text CoinThink
     div.navbar-right
       div.navbar-right-block
         - if logged_in?
