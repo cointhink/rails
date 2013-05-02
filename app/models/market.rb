@@ -60,7 +60,8 @@ class Market < ActiveRecord::Base
       best_offer = depth_run.offers.order('price desc').last
     elsif currency == to_currency
       best_offer = depth_run.offers.order('price asc').last
-    elsif raise "depth_filter failed, bad currency #{currency} for market #{self}"
+    else
+      raise "depth_filter failed, bad currency #{currency} for market #{self}"
     end
     puts "#{currency} #{self.from_currency}/#{self.to_currency} Best offer: #{best_offer.price}"
     depth_run.update_attribute :best_offer_id, best_offer.id
