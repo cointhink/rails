@@ -24,10 +24,10 @@ div
   div
   - @exchange.markets.select{|m| m.from_currency != m.to_currency}.each do |market|
     section.pull-left style="margin-left: 1em"
-      div  #{market.from_currency == 'usd' ? 'Buying' : 'Selling'} (fee #{market.fee_percentage}%)
+      div  #{market.bidask('usd') == 'bid' ? 'Buying' : 'Selling'} (fee #{market.fee_percentage}%)
 
       - if exchange_run
-        - orders = market.offers.order("price #{market.from_currency == 'usd' ? 'asc' : 'desc'}")
+        - orders = market.offers.order("price #{market.bidask('usd') == 'ask' ? 'asc' : 'desc'}")
         div Top 5 of #{orders.count} offers
         table
           - orders.limit(5).each do |bid|

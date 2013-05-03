@@ -30,6 +30,10 @@ class Market < ActiveRecord::Base
     "#{exchange.name} #{from_exchange_name}#{from_currency}/#{to_exchange_name}#{to_currency}"
   end
 
+  def bidask(currency)
+    to_currency == currency ? "ask" : "bid"
+  end
+
   def fee
     fee_percentage/100
   end
@@ -51,15 +55,16 @@ class Market < ActiveRecord::Base
 
   def depth_filter(data, currency)
     depth_run = depth_runs.create
-    offers = api.offers(data, currency)
+    offers = api.offers(data, bidask(currency), currency)
     offers.map!{|o| o.merge({market_id:id})}
     ActiveRecord::Base.transaction do
       depth_run.offers.create(offers)
     end
-    if currency == from_currency
-      best_offer = depth_run.offers.order('price desc').last
-    elsif currency == to_currency
-      best_offer = depth_run.offers.order('price asc').last
+
+    if bidask(currency) == "bid"
+      best_offer = depth_run.offers.order('price desc').first
+    elsif bidask(currency) == "ask"
+      best_offer = depth_run.offers.order('price asc').first
     else
       raise "depth_filter failed, bad currency #{currency} for market #{self}"
     end

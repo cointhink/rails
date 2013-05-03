@@ -4,14 +4,9 @@ class Markets::Campbx
     @market = market
   end
 
-  def offers(data, currency)
-    if @market.from_currency == currency
-      offer_type = "ask"
-    else
-      offer_type = "bid"
-    end
-    data[offer_type+"s"].map do |offer|
-      { bidask: offer_type,
+  def offers(data, bidask, currency)
+    data[bidask+"s"].map do |offer|
+      { bidask: bidask,
         price: offer[0],
         quantity: offer[1],
         currency: currency
