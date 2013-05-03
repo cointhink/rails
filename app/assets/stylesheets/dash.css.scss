@@ -28,3 +28,23 @@ section#trade_summary {
 div#menu a {
   color: black
 }
+
+#menu {
+  table.exchanges {
+    a {
+      width: 100%
+    }
+  }
+  td.exchange {
+     padding-right: 1em;
+     text-align: center;
+  }
+  td.obookvalue {
+     padding-left: 2em;
+     text-align: right;
+  }
+
+  ul.arbitrage {
+    list-style: none
+  }
+}

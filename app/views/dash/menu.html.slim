@@ -1,12 +1,26 @@
 #menu
   h2 Exchanges
-  ul
-    - Exchange.with_markets('btc','usd').each do |m|
-      li
-        a href="#{exchange_path(m[:exchange])}" #{m[:exchange].display_name}
+  table.exchanges style="margin-left: 1em"
+    thead
+      tr
+        td
+        td align="center" colspan="2" Top 10% Orderbook
+      tr align="right"
+        td
+        td title="USD value of the orderbook within 10% of the best ask" Ask Value
+        td title="USD value of the orderbook within 10% of the best bid" Bid Value
+    - @exchanges.each do |e|
+      tr
+        td.exchange
+          a.btn href="#{exchange_path(e[:exchange_id])}"
+            | #{e[:name]}
+        - if e[:depth_runs]
+          - e[:depth_runs].each do |dr|
+            td.obookvalue align="right"
+              | $#{number_with_precision(dr.cost.amount, :precision => 0, :delimiter => ',')}
 
-  h2 Arbitrage
-  ul
+  h2 Arbitrage Report
+  ul.arbitrage
     li
-      a href="/arbitrage/btcusd" btc/usd
+      a.btn href="/arbitrage/btcusd" BTC/USD
 
