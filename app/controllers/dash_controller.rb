@@ -46,12 +46,12 @@ class DashController < ApplicationController
   end
 
   def menu
-    snapshot = Snapshot.last
-    latest_exchanges = snapshot.exchange_runs.map{|er| er.exchange}
+    @snapshot = Snapshot.last
+    latest_exchanges = @snapshot.exchange_runs.map{|er| er.exchange}
     @exchanges = Exchange.with_markets('btc','usd').map do |m|
       e = {:exchange_id => m[:exchange].id, :name => m[:exchange].display_name, :cost => 0} #descriptive data
       if latest_exchanges.include?(m[:exchange])
-        exchange_runs = snapshot.exchange_runs.select{|er| er.exchange == m[:exchange]}.first
+        exchange_runs = @snapshot.exchange_runs.select{|er| er.exchange == m[:exchange]}.first
         e[:depth_runs] = exchange_runs.depth_runs
         e[:cost] = e[:depth_runs].sum{|dr| dr.cost.amount.to_f}
       end

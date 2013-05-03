@@ -22,5 +22,7 @@
   h2 Arbitrage Report
   ul.arbitrage
     li
-      a.btn href="/arbitrage/btcusd" BTC/USD
-
+      a.btn style="margin-right: 1em" href="/arbitrage/btcusd"
+        | BTC/USD
+      - if @snapshot.strategy
+        | $#{"%0.0f"%@snapshot.strategy.potential.amount} available
