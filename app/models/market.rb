@@ -31,6 +31,7 @@ class Market < ActiveRecord::Base
   end
 
   def bidask(currency)
+    # btc/usd is BID
     from_currency == currency ? "ask" : "bid"
   end
 
