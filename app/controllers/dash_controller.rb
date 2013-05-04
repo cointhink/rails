@@ -49,7 +49,7 @@ class DashController < ApplicationController
     @snapshot = Snapshot.last
     latest_exchanges = @snapshot.exchange_runs.map{|er| er.exchange}
     @exchanges = Exchange.with_markets('btc','usd').map do |m|
-      e = {:exchange_id => m[:exchange].id, :name => m[:exchange].display_name, :cost => 0} #descriptive data
+      e = {:exchange => m[:exchange], :cost => 0} #descriptive data
       if latest_exchanges.include?(m[:exchange])
         exchange_runs = @snapshot.exchange_runs.select{|er| er.exchange == m[:exchange]}.first
         e[:depth_runs] = exchange_runs.depth_runs

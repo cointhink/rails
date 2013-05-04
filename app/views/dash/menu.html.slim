@@ -12,8 +12,8 @@
     - @exchanges.each do |e|
       tr
         td.exchange
-          a.btn href="#{exchange_path(e[:exchange_id])}"
-            | #{e[:name]}
+          a.btn href="#{exchange_path(e[:exchange])}"
+            | #{e[:exchange].display_name}
         - if e[:depth_runs]
           - e[:depth_runs].each do |dr|
             td.obookvalue align="right"
