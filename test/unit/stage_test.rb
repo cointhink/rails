@@ -43,20 +43,19 @@ class StageTest < ActiveSupport::TestCase
   end
 
   test "profit" do
-    sells = @stage.sells
-    profits = sells.map do |trade|
-      @stage.profit(trade)
+    profits = @stage.sells.map do |sell_trade|
+      @stage.profit(sell_trade).to_s
     end
 
     buy_usd_in = @buy_trade.balance_in
     buy_btc_out = @buy_trade.calculated_out
-    puts "sale nets #{buy_btc_out}"
-    sell_fee = @sell1_trade.offer.fee_factor(buy_usd_in.currency)
-    sell_price = @sell1_trade.offer.rate(buy_usd_in.currency)
-    sell_price_with_fee = sell_price * sell_fee
-    puts "sell_fee #{sell_fee} sell_price #{sell_price} sell_price_with_fee #{sell_price_with_fee}"
 
-    sell1_profit = buy_btc_out * sell_price_with_fee
+    sell_fee_factor = @sell1_trade.offer.fee_factor(buy_usd_in.currency)
+    sell_price = @sell1_trade.offer.rate(buy_usd_in.currency)
+    sell_price_with_fee = sell_price * sell_fee_factor
+
+    sell1_profit =  (sell_price_with_fee * buy_btc_out.amount) - buy_usd_in
+    # easier to sight-check as strings
     assert_equal [sell1_profit.to_s], profits
   end
 end
