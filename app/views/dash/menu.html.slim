@@ -7,17 +7,18 @@
         td align="center" colspan="2" Top 25% Orderbook
       tr align="right"
         td
-        td title="USD value of the orderbook within 10% of the best ask" Ask Value
         td title="USD value of the orderbook within 10% of the best bid" Bid Value
+        td title="USD value of the orderbook within 10% of the best ask" Ask Value
     - @exchanges.each do |e|
       tr
         td.exchange
           a.btn href="#{exchange_path(e[:exchange])}"
             | #{e[:exchange].display_name}
         - if e[:depth_runs]
-          - e[:depth_runs].each do |dr|
+          - ['bid','ask'].each do |mkt|
+            - cost = e[:depth_runs][mkt]
             td.obookvalue align="right"
-              | $#{number_with_precision(dr.cost.amount, :precision => 0, :delimiter => ',')}
+              | $#{number_with_precision(cost.amount, :precision => 0, :delimiter => ',')}
 
   h2 Arbitrage Report
   ul.arbitrage

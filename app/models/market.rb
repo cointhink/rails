@@ -31,7 +31,7 @@ class Market < ActiveRecord::Base
   end
 
   def bidask(currency)
-    to_currency == currency ? "ask" : "bid"
+    from_currency == currency ? "ask" : "bid"
   end
 
   def fee

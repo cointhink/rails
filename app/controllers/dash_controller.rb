@@ -52,8 +52,8 @@ class DashController < ApplicationController
       e = {:exchange => m[:exchange], :cost => 0} #descriptive data
       if latest_exchanges.include?(m[:exchange])
         exchange_runs = @snapshot.exchange_runs.select{|er| er.exchange == m[:exchange]}.first
-        e[:depth_runs] = exchange_runs.depth_runs
-        e[:cost] = e[:depth_runs].sum{|dr| dr.cost.amount.to_f}
+        e[:depth_runs] = exchange_runs.depth_runs.reduce({}){|m,dr| m[dr.market.bidask('usd')]=dr.cost;m}
+        e[:cost] = e[:depth_runs].values.sum{|cost| cost.amount.to_f}
       end
       e
     end
