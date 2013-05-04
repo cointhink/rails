@@ -61,20 +61,21 @@ class Market < ActiveRecord::Base
       depth_run.offers.create(offers)
     end
 
+    top_percentage = 25
     if bidask(currency) == "bid"
       best_offers = depth_run.offers.order('price desc')
       best_offer = best_offers.first
-      ten_percent_offers = best_offers.where(['price > ?', best_offer.price*0.9])
+      ten_percent_offers = best_offers.where(['price > ?', best_offer.price*(1-(top_percentage/100.0))])
     elsif bidask(currency) == "ask"
       best_offers = depth_run.offers.order('price asc')
       best_offer = best_offers.first
-      ten_percent_offers = best_offers.where(['price < ?', best_offer.price*1.1])
+      ten_percent_offers = best_offers.where(['price < ?', best_offer.price*(1+(top_percentage/100.0))])
     else
       raise "depth_filter failed, bad currency #{currency} for market #{self}"
     end
 
     cost = Balance.create({currency:currency, amount:ten_percent_offers.sum{|o| o.price*o.quantity}})
-    puts "#{currency} #{self.from_currency}/#{self.to_currency} Best offer: #{"0.5f"%best_offer.price} Cost: #{cost}"
+    puts "#{currency} #{self.from_currency}/#{self.to_currency} Best offer: #{"%0.5f"%best_offer.price} Cost: #{cost}"
     depth_run.update_attributes!({:best_offer => best_offer,
                                   :cost => cost})
     depth_run
