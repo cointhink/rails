@@ -52,12 +52,13 @@
             span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
               ' #{trade_stage.potential} (#{"%0.3f"%trade_stage.profit_percentage}%).
             - trade_stage_moves = @strategy.stage.children.select{|s| s.name=="Moves"}.first
-            ' Estimated transfer fees of
-            span style="font-size: 110%; font-weight:bold"
-              ' #{trade_stage_moves.balance_in - trade_stage.balance_in}
-            ' adjust total profit to
-            span style="font-size: 110%; font-weight:bold; color:#{@strategy.potential < 0 ? "#e00" : "black"}"
-              ' #{@strategy.potential} (#{"%0.3f"%@strategy.profit_percentage}%)
+            /!
+              ' Estimated transfer fees of
+              span style="font-size: 110%; font-weight:bold"
+                ' #{trade_stage_moves.balance_in - trade_stage.balance_in}
+              ' adjust total profit to
+              span style="font-size: 110%; font-weight:bold; color:#{@strategy.potential < 0 ? "#e00" : "black"}"
+                ' #{@strategy.potential} (#{"%0.3f"%@strategy.profit_percentage}%)
           - else
             ' The different
             ' exchanges are close enough that no opportunity is currently available.
