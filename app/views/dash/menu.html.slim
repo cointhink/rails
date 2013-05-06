@@ -26,4 +26,5 @@
       a.btn style="margin-right: 1em" href="/arbitrage/btcusd"
         | BTC/USD
       - if @snapshot.strategy
-        | $#{"%0.0f"%@snapshot.strategy.potential.amount} available
+        - trade = @snapshot.strategy.stage.children.select{|s| s.name=="Trades"}.first
+        | $#{"%0.0f"%trade.potential.amount} available
