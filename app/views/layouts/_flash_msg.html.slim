@@ -1,0 +1,4 @@
+- flash.keys.each do |key|
+  div.alert class="alert-#{key}"
+    button type="button" class="close" data-dismiss="alert" &times;
+    | #{flash[key]}

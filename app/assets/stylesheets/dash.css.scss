@@ -4,7 +4,7 @@
 
 #chart {
   width: 900px;
-  height: 400px;
+  height: 370px;
   float: left;
   font-family: Calibri, Candara, Arial, sans-serif;
 }
@@ -23,4 +23,28 @@ section#opportunity {
 
 section#trade_summary {
   margin-left: 1em
+}
+
+div#menu a {
+  color: black
+}
+
+#menu {
+  table.exchanges {
+    a {
+      width: 100%
+    }
+  }
+  td.exchange {
+     padding-right: 1em;
+     text-align: center;
+  }
+  td.obookvalue {
+     padding-left: 2em;
+     text-align: right;
+  }
+
+  ul.arbitrage {
+    list-style: none
+  }
 }

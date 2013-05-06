@@ -1,107 +1,134 @@
-h2 Bitcoin/USD Arbitrage Strategy Report
+- cache do
+  ruby:
+      chart_data = {}
+      @snapshots.each do |snapshot|
+        snapshot.exchange_runs.each do |ex_run|
+          chart_data[ex_run.exchange] ||= [ ex_run.exchange.name, [], [] ]
 
-section#strategy
-  - if @strategy
-    h4
-      | Strategy
-      '  #{link_to "##{@strategy.id}", @strategy}
-      time datetime="#{@strategy.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
-      '
-      span.local_timezone
+          depth_runs = ex_run.depth_runs.includes(:best_offer).all
+          if depth_runs.size == 2
+            o=depth_runs.first # tofix: bid/ask detection
+            op = o.best_offer ? o.best_offer.price : nil
+            chart_data[ex_run.exchange][1] << [o.created_at.to_i*1000, op]
+            o=depth_runs.last # tofix: bid/ask detection
+            op = o.best_offer ? o.best_offer.price : nil
+            chart_data[ex_run.exchange][2] << [o.created_at.to_i*1000, op]
+          end
+        end
+      end
+      @chart_data = chart_data.map{|k,v| v}
 
-    section#opportunity
-      h4 Total Opportunity
-      div style="width: 45em"
-        - trade_stage = @strategy.stage.children.select{|s| s.name=="Trades"}.first
-        ' For the #{Exchange.actives.count} exchanges being monitored, the total value of offers
-        ' that have immediate buyers is
-        span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
-          ' #{trade_stage.balance_in}.
-        - if trade_stage.balance_in > 0.01
-          ' Selling immediately,
-          ' including market fees, earns
+      @strategy_data = @snapshots.map{|s| [s.created_at.to_i*1000,
+                                          s.strategy.potential.amount.to_f] if s.strategy}
+      @strategy_ids = @snapshots.map{|s| s.strategy.id if s.strategy}
+      @strategy_percentages = @snapshots.map{|s| [s.created_at.to_i*1000,
+                                                  s.strategy.profit_percentage.to_f] if s.strategy}
+
+  h2 Bitcoin/USD Arbitrage Strategy Report
+
+  section#strategy
+    - if @strategy
+      h4
+        | Strategy
+        '  #{link_to "##{@strategy.id}", @strategy}
+        time datetime="#{@strategy.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
+        '
+        span.local_timezone
+
+      section#opportunity style="margin-bottom: 1em"
+        div style="width: 45em"
+          - trade_stage = @strategy.stage.children.select{|s| s.name=="Trades"}.first
+          ' For the #{Exchange.actives.count} exchanges being monitored, the total value of offers
+          ' that have immediate buyers is
           span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
-            '  #{trade_stage.balance_out}
+            ' #{trade_stage.balance_in}.
+          - if trade_stage.balance_in > 0.01
+            ' Selling immediately,
+            ' including market fees, earns
+            span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
+              '  #{trade_stage.balance_out}
 
-          ' for a profit of
-          span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
-            ' #{trade_stage.potential} (#{"%0.3f"%trade_stage.profit_percentage}%).
-          - trade_stage_moves = @strategy.stage.children.select{|s| s.name=="Moves"}.first
-          ' Estimated transfer fees of
-          span style="font-size: 110%; font-weight:bold"
-            ' #{trade_stage_moves.balance_in - trade_stage.balance_in}
-          ' adjust total profit to
-          span style="font-size: 110%; font-weight:bold; color:#{@strategy.potential < 0 ? "#e00" : "black"}"
-            ' #{@strategy.potential} (#{"%0.3f"%@strategy.profit_percentage}%)
-        - else
-          ' The different
-          ' exchanges are close enough that no opportunity is currently available.
-    section#trade_summary
-      h4 Trade Summary
-      div style="float:left"
-        i
-          | ---- transfer USD ---->
-      table style="float:left"
-        - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.usd? && b>0}.any?}.each do |eb|
-          tr
-            td #{eb.exchange.name}
-            - eb.balances.each do |b|
+            ' for a profit of
+            span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
+              ' #{trade_stage.potential} (#{"%0.3f"%trade_stage.profit_percentage}%).
+            - trade_stage_moves = @strategy.stage.children.select{|s| s.name=="Moves"}.first
+            ' Estimated transfer fees of
+            span style="font-size: 110%; font-weight:bold"
+              ' #{trade_stage_moves.balance_in - trade_stage.balance_in}
+            ' adjust total profit to
+            span style="font-size: 110%; font-weight:bold; color:#{@strategy.potential < 0 ? "#e00" : "black"}"
+              ' #{@strategy.potential} (#{"%0.3f"%@strategy.profit_percentage}%)
+          - else
+            ' The different
+            ' exchanges are close enough that no opportunity is currently available.
+      section#trade_summary
+        div style="float:left"
+          i
+            | ---- transfer USD ---->&nbsp;
+        table style="float:left"
+          - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.usd? && b>0}.any?}.each do |eb|
+            tr
               td
-                - if b > 0
-                  | buy #{b}
-      div style="float:left"
-        i
-          | ---- transfer BTC ---->
-      table style="float:left"
-        - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.btc? && b>0}.any?}.each do |eb|
-          tr
-            td #{eb.exchange.name}
-            - eb.balances.each do |b|
+                a href="#{exchange_path(eb.exchange)}" style="color: black" #{eb.exchange.name}
+              - eb.balances.each do |b|
+                td
+                  - if b > 0
+                    | buy #{b}
+        div style="float:left"
+          i
+            | &nbsp;---- transfer BTC ---->&nbsp;
+        table style="float:left"
+          - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.btc? && b>0}.any?}.each do |eb|
+            tr
               td
-                - if b > 0
-                  | sell #{b}
+                a href="#{exchange_path(eb.exchange)}" style="color: black" #{eb.exchange.name}
+              - eb.balances.each do |b|
+                td
+                  - if b > 0
+                    | sell #{b}
 
-      br style="clear: both"
-  - else
-    | No strategy available
-div.clearboth
+        br style="clear: both"
+    - else
+      | No strategy available
+  div.clearboth
 
-section#history
-  h4 Strategy History (#{@hours} hours)
+  section#history
+    h4 Strategy History (#{@hours} hours)
 
-  div#chart
+    div#chart
 
-  div#legend
+    div#legend
 
-div.clearboth
+  div.clearboth
+
+  javascript:
+    $(function() {
+      setup(#{{JSON.pretty_generate(@chart_data)}},
+            #{{@strategy_percentages.to_json}},
+            #{{@strategy_data.to_json}},
+            #{{@strategy_ids.to_json}})
+
+    })
 
 section#exchanges
   h4 Exchanges
-  ul
-    table
-      - Exchange.all.each do |exchange|
-        - if exchange.markets.internal.size > 0
-          tr
-            td
-              | #{link_to exchange.name, exchange} #{image_tag "/flags/#{exchange.country_code}.png"}
-              - unless exchange.active
-                | (disabled)
-            td
-              |  #{exchange.markets.internal[0,1].map{|market| "#{market.from_currency}/#{market.to_currency} fee #{market.fee_percentage}%"}.join(' ')}
-            td
-              - etime=exchange.exchange_runs.last
-              - if etime && exchange.active
-                time datetime="#{etime.start_at.iso8601}" data-format="ddd HH:mm"
-                | :#{"%06.3f"%(etime.start_at.sec+(etime.start_at.nsec/1000000000.0))} #{"%0.3f"%(etime.duration_ms/1000.0)}s
+  table
+    - Exchange.order('active desc,name').each do |exchange|
+      - if exchange.markets.internal.size > 0
+        tr
+          td style="text-decoration: #{exchange.active ? "none":"line-through"}"
+            a href="#{exchange_path(exchange)}" style="color: black"
+              | #{exchange.name}
+          td
+            | #{image_tag "/flags/#{exchange.country_code}.png"}
+          td
+            |  #{exchange.markets.internal[0,1].map{|market| "#{market.from_currency}/#{market.to_currency} fee #{market.fee_percentage}%"}.join(' ')}
+          td
+            - etime=exchange.exchange_runs.last
+            - if etime && exchange.active
+              time datetime="#{etime.start_at.iso8601}" data-format="ddd HH:mm"
+              | :#{"%06.3f"%(etime.start_at.sec+(etime.start_at.nsec/1000000000.0))} #{"%0.3f"%(etime.duration_ms/1000.0)}s
 
 
 
-javascript:
-  $(function() {
-    setup(#{{JSON.pretty_generate(@chart_data)}},
-          #{{@strategy_percentages.to_json}},
-          #{{@strategy_data.to_json}},
-          #{{@strategy_ids.to_json}})
-
-  })
 

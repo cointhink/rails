@@ -30,6 +30,11 @@ class Market < ActiveRecord::Base
     "#{exchange.name} #{from_exchange_name}#{from_currency}/#{to_exchange_name}#{to_currency}"
   end
 
+  def bidask(currency)
+    # btc/usd is BID
+    from_currency == currency ? "ask" : "bid"
+  end
+
   def fee
     fee_percentage/100
   end
@@ -51,19 +56,29 @@ class Market < ActiveRecord::Base
 
   def depth_filter(data, currency)
     depth_run = depth_runs.create
-    offers = api.offers(data, currency)
+    offers = api.offers(data, bidask(currency), currency)
     offers.map!{|o| o.merge({market_id:id})}
     ActiveRecord::Base.transaction do
       depth_run.offers.create(offers)
     end
-    if currency == from_currency
-      best_offer = depth_run.offers.order('price desc').last
-    elsif currency == to_currency
-      best_offer = depth_run.offers.order('price asc').last
-    elsif raise "depth_filter failed, bad currency #{currency} for market #{self}"
+
+    top_percentage = 25
+    if bidask(currency) == "bid"
+      best_offers = depth_run.offers.order('price desc')
+      best_offer = best_offers.first
+      ten_percent_offers = best_offers.where(['price > ?', best_offer.price*(1-(top_percentage/100.0))])
+    elsif bidask(currency) == "ask"
+      best_offers = depth_run.offers.order('price asc')
+      best_offer = best_offers.first
+      ten_percent_offers = best_offers.where(['price < ?', best_offer.price*(1+(top_percentage/100.0))])
+    else
+      raise "depth_filter failed, bad currency #{currency} for market #{self}"
     end
-    puts "#{currency} #{self.from_currency}/#{self.to_currency} Best offer: #{best_offer.price}"
-    depth_run.update_attribute :best_offer_id, best_offer.id
+
+    cost = Balance.create({currency:currency, amount:ten_percent_offers.sum{|o| o.price*o.quantity}})
+    puts "#{currency} #{self.from_currency}/#{self.to_currency} Best offer: #{"%0.5f"%best_offer.price} Cost: #{cost}"
+    depth_run.update_attributes!({:best_offer => best_offer,
+                                  :cost => cost})
     depth_run
   end
 

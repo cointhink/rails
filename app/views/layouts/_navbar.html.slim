@@ -1,17 +1,30 @@
 div.navbar
   div.navbar-inner
     a.brand href="/"
-      | CoinThink
-    div.realtime.pull-right
-      time datetime="#{Time.now.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
-      '
-      span.local_timezone
-      br
-      a href="https://twitter.com/cointhink" @cointhink
-      '
-      a href="https://github.com/cointhink" github
-    div.realtime.pull-right
-        div Donations appreciated
-        div
-          a href="https://blockchain.info/address/18aqQeT3j5UrwJ75Yc5yRS3qXtMyNBbqpD"
-            |18aqQeT3j5UrwJ75Yc5yRS3qXtMyNBbqpD
+      img src="#{image_path "logo-256.png"}"
+      span.text CoinThink
+    div.navbar-right
+      div.navbar-right-block
+        - if logged_in?
+          span class="user-detail"
+            = current_user.username
+          br
+          span class="user-detail"
+            = link_to "logout", session_logout_path, :method => :post
+        - else
+          form id="login" onsubmit="email_login(this.elements); return false" action="/session/lookup"
+            input placeholder="username" name="username"
+            button class="btn" Sign in
+      div.navbar-right-block
+        time datetime="#{Time.now.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
+        '
+        span.local_timezone
+        br
+        a href="https://twitter.com/cointhink" @cointhink
+        '
+        a href="https://github.com/cointhink" github
+      div.navbar-right-block
+          div Contributions keep this site going
+          div
+            a href="https://blockchain.info/address/18aqQeT3j5UrwJ75Yc5yRS3qXtMyNBbqpD"
+              |18aqQeT3j5UrwJ75Yc5yRS3qXtMyNBbqpD

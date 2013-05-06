@@ -9,14 +9,9 @@ class Markets::Intersango
              :lowest_ask_usd => data["sell"]}
   end
 
-  def offers(data, currency)
-    if @market.from_currency == currency
-      offer_type = "ask"
-    else
-      offer_type = "bid"
-    end
-    data[offer_type+"s"].map do |offer|
-      { bidask: offer_type,
+  def offers(data, bidask, currency)
+    data[bidask+"s"].map do |offer|
+      { bidask: bidask,
         price: offer.first,
         quantity: offer.last,
         currency: currency

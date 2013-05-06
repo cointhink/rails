@@ -11,10 +11,8 @@ class Strategy < ActiveRecord::Base
     # find all asks less than bids, fee adjusted
     # assume unlimited buying funds
     depth_runs = snapshot.exchange_runs.map{|er| er.depth_runs}.flatten
-    bid_markets = depth_runs.select{|dr| dr.market.from_currency == left_currency &&
-                                         dr.market.to_currency == right_currency}
-    ask_markets = depth_runs.select{|dr| dr.market.from_currency == right_currency &&
-                                         dr.market.to_currency == left_currency}
+    bid_markets = depth_runs.select{|dr| dr.market.bidask(right_currency) == 'bid'}
+    ask_markets = depth_runs.select{|dr| dr.market.bidask(right_currency) == 'ask'}
 
     puts "Ask Markets: #{ask_markets.map{|dr| "#{dr.market.name}"}.join(', ')}"
     puts "Bid Markets: #{bid_markets.map{|dr| "#{dr.market.name}"}.join(', ')}"

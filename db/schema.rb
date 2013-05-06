@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130104214918) do
+ActiveRecord::Schema.define(:version => 20130502205028) do
 
   create_table "balances", :force => true do |t|
     t.string   "currency"
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(:version => 20130104214918) do
     t.datetime "updated_at",      :null => false
     t.integer  "exchange_run_id"
     t.integer  "best_offer_id"
+    t.integer  "cost_id"
   end
 
   add_index "depth_runs", ["exchange_run_id"], :name => "index_depth_runs_on_exchange_run_id"
@@ -67,6 +68,7 @@ ActiveRecord::Schema.define(:version => 20130104214918) do
     t.string   "slug"
     t.string   "logo_url"
     t.string   "url"
+    t.string   "display_name"
   end
 
   add_index "exchanges", ["slug"], :name => "index_exchanges_on_slug", :unique => true
@@ -93,6 +95,7 @@ ActiveRecord::Schema.define(:version => 20130104214918) do
     t.string   "notable_type"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
+    t.string   "category"
   end
 
   create_table "offers", :force => true do |t|
@@ -176,5 +179,14 @@ ActiveRecord::Schema.define(:version => 20130104214918) do
   add_index "trades", ["balance_in_id"], :name => "index_trades_on_balance_in_id"
   add_index "trades", ["balance_out_id"], :name => "index_trades_on_balance_out_id"
   add_index "trades", ["offer_id"], :name => "index_trades_on_offer_id"
+  add_index "trades", ["stage_id"], :name => "index_trades_on_stage_id"
+
+  create_table "users", :force => true do |t|
+    t.string   "username"
+    t.string   "email"
+    t.string   "encrypted_password"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
 
 end
