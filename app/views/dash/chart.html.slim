@@ -18,11 +18,13 @@
       end
       @chart_data = chart_data.map{|k,v| v}
 
-      @strategy_data = @snapshots.map{|s| [s.created_at.to_i*1000,
-                                          s.strategy.potential.amount.to_f] if s.strategy}
+      @strategy_data = @snapshots.map do |s|
+        if s.strategy
+          trade_stage = s.strategy.stage.children.select{|s| s.name=="Trades"}.first
+          [s.created_at.to_i*1000, trade_stage.potential.amount.to_f]
+        end
+      end
       @strategy_ids = @snapshots.map{|s| s.strategy.id if s.strategy}
-      @strategy_percentages = @snapshots.map{|s| [s.created_at.to_i*1000,
-                                                  s.strategy.profit_percentage.to_f] if s.strategy}
 
   h2 Bitcoin/USD Arbitrage Strategy Report
 
