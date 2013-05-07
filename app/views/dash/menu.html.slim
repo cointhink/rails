@@ -18,7 +18,8 @@
           - ['bid','ask'].each do |mkt|
             - cost = e[:depth_runs][mkt]
             td.obookvalue align="right"
-              | $#{number_with_precision(cost.amount, :precision => 0, :delimiter => ',')}
+              - if cost
+                | $#{number_with_precision(cost.amount, :precision => 0, :delimiter => ',')}
 
   h2 Arbitrage Report
   ul.arbitrage
