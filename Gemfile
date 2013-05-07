@@ -7,7 +7,7 @@ gem 'faraday'
 gem 'jquery-rails'
 gem 'pry-rails'
 gem 'slim'
-gem 'thin'
+gem 'unicorn'
 gem 'acts_as_tree'
 gem 'friendly_id'
 gem 'bcrypt-ruby', :require => "bcrypt"
