@@ -2,6 +2,8 @@ class User < ActiveRecord::Base
   attr_accessible :username, :email, :encrypted_password
   validates :username, :email, :presence => true, :uniqueness => true
   validates :username, :length => { :minimum => 2 }
+  validates :username, :format => {:with => /^\w+$/,
+                                   :message => "letter numbers and underscore only"}
   validates :email, :format => { :with => /@/ }
   validates :encrypted_password, :presence => true
 
@@ -14,6 +16,19 @@ class User < ActiveRecord::Base
     end
     user.save
     user
+  end
+
+  def bitcoin
+    @bitcoin ||= Bitcoin(SETTINGS["bitcoind"]["user"],
+                         SETTINGS["bitcoind"]["password"])
+  end
+
+  def bitcoin_account_id
+    "cointhink:#{username}"
+  end
+
+  def balance
+    bitcoin.getbalance(bitcoin_account_id)
   end
 
   def authentic?(password)
