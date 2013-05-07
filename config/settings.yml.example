@@ -1,5 +1,13 @@
 ---
 google:
   analytics: 'UA-XXXXXX-X'
+  adsense:
+    client: "ca-pub-XXXX"
+    slot: "YYY"
+    width: 200
+    height: 200
 net:
   timeout: 15
+bitcoind:
+  user: "bitcoinrpc"
+  password: ""
