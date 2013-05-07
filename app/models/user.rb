@@ -7,6 +7,9 @@ class User < ActiveRecord::Base
   validates :email, :format => { :with => /@/ }
   validates :encrypted_password, :presence => true
 
+  extend FriendlyId
+  friendly_id :username, use: :slugged
+
   def self.safe_create(params)
     user = User.new
     user.username = params[:username]
