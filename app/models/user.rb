@@ -31,7 +31,11 @@ class User < ActiveRecord::Base
   end
 
   def balance
-    bitcoin.getbalance(bitcoin_account_id)
+    begin
+      bitcoin.getbalance(bitcoin_account_id)
+    rescue Errno::ECONNREFUSED => e
+      "unavailable"
+    end
   end
 
   def authentic?(password)
