@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
     if params[:password].length >= 6
       user.encrypted_password = BCrypt::Password.create(params[:password])
     end
-    user.save
+    user.save!
     user
   end
 

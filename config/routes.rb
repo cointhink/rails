@@ -2,7 +2,7 @@ Btcmarketwatch::Application.routes.draw do
   root :to => 'dash#menu'
   resources :exchanges
   resources :strategies
-  resources :users
+  resources :users, :path => "/u"
 
   match '/arbitrage/:pair' => 'dash#chart'
   match '/arbitrage' => 'dash#chart'
