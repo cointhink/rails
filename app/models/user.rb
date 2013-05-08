@@ -21,31 +21,6 @@ class User < ActiveRecord::Base
     user
   end
 
-  def bitcoin
-    @bitcoin ||= Bitcoin(SETTINGS["bitcoind"]["user"],
-                         SETTINGS["bitcoind"]["password"])
-  end
-
-  def bitcoin_account_id
-    "cointhink:#{username}"
-  end
-
-  def balance
-    begin
-      bitcoin.getbalance(bitcoin_account_id)
-    rescue Errno::ECONNREFUSED => e
-      "unavailable"
-    end
-  end
-
-  def receiving_address
-    begin
-      bitcoin.getaccountaddress(bitcoin_account_id)
-    rescue Errno::ECONNREFUSED => e
-      "unavailable"
-    end
-  end
-
   def authentic?(password)
     BCrypt::Password.new(encrypted_password) == password
   end

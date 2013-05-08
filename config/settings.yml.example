@@ -8,6 +8,10 @@ google:
     height: 200
 net:
   timeout: 15
-bitcoind:
-  user: "bitcoinrpc"
-  password: ""
+cryptocoins:
+  bitcoin:
+  url: "tcp://btc_conainer"
+  key: "btckey"
+  litecoin:
+  url: "tcp://ltc_container"
+  key: "btckey"
