@@ -10,8 +10,8 @@ net:
   timeout: 15
 cryptocoins:
   bitcoin:
-  url: "tcp://btc_conainer"
-  key: "btckey"
+    url: "tcp://btc_conainer"
+    key: "btckey"
   litecoin:
-  url: "tcp://ltc_container"
-  key: "btckey"
+    url: "tcp://ltc_container"
+    key: "btckey"
