@@ -10,7 +10,6 @@ gem 'slim'
 gem 'acts_as_tree'
 gem 'friendly_id'
 gem 'bcrypt-ruby', :require => "bcrypt"
-gem 'bitcoin-client'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'
