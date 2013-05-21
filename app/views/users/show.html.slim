@@ -4,4 +4,7 @@ h2
   | Balances
   ul style="list-style-type: none"
     - @balances.each do |coin|
-      li #{coin["name"]} #{coin["balance"]["amount"]} #{coin["balance"]["currency"]}
+      -if coin["balance"]
+        li #{coin["name"]} #{coin["balance"]["amount"]} #{coin["balance"]["currency"]}
+      -else
+        li #{coin["name"]} #{coin["error"]}
