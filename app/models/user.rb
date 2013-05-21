@@ -18,13 +18,26 @@ class User < ActiveRecord::Base
       user.encrypted_password = BCrypt::Password.create(params[:password])
     end
     if user.valid?
-      COIND.keys.each do |coin|
-        coind_result = COIND[coin].add_user(user.username)
-        logger.info coind_result
+      coin_accounts_success = setup_coin_accounts(user.username)
+      unless coin_accounts_success
+        # error alert
       end
     end
     user.save!
     user
+  end
+
+  def self.setup_coin_accounts(username)
+    begin
+      COIND.keys.each do |coin|
+        coind_result = COIND[coin].add_user(username)
+        if coind_result["receiving_addresss"]
+          true
+        end
+      end.all?
+    rescue Errno::ECONNREFUSED
+      return false
+    end
   end
 
   def authentic?(password)
