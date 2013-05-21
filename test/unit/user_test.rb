@@ -18,7 +18,4 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
-  test "bitcoin account address" do
-    assert @user.bitcoin_account_id, "cointhink:#{@user_attrs[:username]}"
-  end
 end
