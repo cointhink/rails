@@ -10,8 +10,8 @@ net:
   timeout: 15
 cryptocoins:
   bitcoin:
-    url: "tcp://btc_conainer"
+    url: "http://localhost:8080"
     key: "btckey"
   litecoin:
-    url: "tcp://ltc_container"
-    key: "btckey"
+    url: "http://localhost:8081"
+    key: "ltckey"

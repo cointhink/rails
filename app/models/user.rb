@@ -17,6 +17,12 @@ class User < ActiveRecord::Base
     if params[:password].length >= 6
       user.encrypted_password = BCrypt::Password.create(params[:password])
     end
+    if user.valid?
+      COIND.keys.each do |coin|
+        coind_result = COIND[coin].add_user(user.username)
+        logger.info coind_result
+      end
+    end
     user.save!
     user
   end
