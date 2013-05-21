@@ -4,7 +4,7 @@ class Exchange < ActiveRecord::Base
   has_many :balances, :as => :balanceable, :dependent => :destroy
   has_many :notes, :as => :notable, :dependent => :destroy
   attr_accessible :fee_percentage, :name, :country_code, :active,
-                  :last_http_duration_ms
+                  :last_http_duration_ms, :display_name
 
   scope :actives, where('active is true')
 
