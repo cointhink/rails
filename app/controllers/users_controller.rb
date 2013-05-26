@@ -7,7 +7,7 @@ class UsersController < ApplicationController
         begin
           @balances[coinname] = coind.user(@user.username)
         rescue Errno::ECONNREFUSED
-          {"error" => "not available"}
+          @balances[coinname] = {"error" => "not available"}
         end
       end
     end
