@@ -1,3 +1,26 @@
 // Place all the styles related to the users controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.user-show {
+	.coin-balance {
+	  img {
+	    width: 1.5em;
+	    margin-right: 0.3em;
+	    margin-bottom: 0.1em;
+	  }
+	}
+  span.balance {
+    font-size: 80%;
+    margin-left: 2em;
+    margin-right: 0.3em;
+  }
+
+  span.amount {
+  	color: green;
+  }
+
+  span.error {
+  	color: red;
+  }
+}

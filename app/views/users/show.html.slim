@@ -1,14 +1,21 @@
-h1 #{@user.username}
+.user-show
+	h1 #{@user.username}
 
-- if @balances
-	h2
-	  | Balances
-	  ul style="list-style-type: none"
-	    - @balances.each do |coin, info|
-	      - logger.info info
-	      li 
-	        | #{coin}
-	        -if info["balance"]
-	          | #{info["balance"]["amount"]} #{info["balance"]["currency"]}
-	        -else
-	          | #{info["error"]}
+	- if @balances
+		h2
+		  | Balances
+		  ul style="list-style-type: none"
+		    - @balances.each do |coin, info|
+		      - logger.info info
+		      li.coin-balance
+		        = image_tag coin+".png"
+		        | #{SETTINGS['cryptocoins'][coin]['display_name']}
+		        br
+		        span.balance
+		          | Balance:
+		        -if info["balance"]
+		          span.amount
+		            | #{info["balance"]["amount"]} #{info["balance"]["currency"].upcase}
+		        -else
+		          span.error
+		            | coming soon <!-- #{info["error"]} -->
