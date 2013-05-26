@@ -1,10 +1,14 @@
 h1 #{@user.username}
 
-h2
-  | Balances
-  ul style="list-style-type: none"
-    - @balances.each do |coin|
-      -if coin["balance"]
-        li #{coin["name"]} #{coin["balance"]["amount"]} #{coin["balance"]["currency"]}
-      -else
-        li #{coin["name"]} #{coin["error"]}
+- if @balances
+	h2
+	  | Balances
+	  ul style="list-style-type: none"
+	    - @balances.each do |coin, info|
+	      - logger.info info
+	      li 
+	        | #{coin}
+	        -if info["balance"]
+	          | #{info["balance"]["amount"]} #{info["balance"]["currency"]}
+	        -else
+	          | #{info["error"]}
