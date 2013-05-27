@@ -48,7 +48,14 @@ div#menu a {
     list-style: none
   }
 
-  ul.news time {
-    margin-right: 1em;
+  ul.news {
+    time {
+      margin-right: 1em;
+    }
+    .exchange {
+      background: lightgrey;
+      margin-right: 0.5em;
+    }
+    .exchange a {color: black}
   }
 }

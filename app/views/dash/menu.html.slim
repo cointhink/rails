@@ -35,6 +35,9 @@
     - @news.each do |news|
       li
         time datetime="#{news.created_at.iso8601}" data-format="yyyy-MMM-dd"
+        - if news.notable.is_a?(Exchange)
+          span.exchange
+            | #{link_to news.notable.display_name, news.notable}
         span.text
           | #{{news.text}}
 
