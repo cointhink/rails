@@ -29,3 +29,12 @@
       - if @snapshot.strategy
         - trade = @snapshot.strategy.stage.children.select{|s| s.name=="Trades"}.first
         | $#{"%0.0f"%trade.potential.amount} available
+
+  h2 News
+  ul.news
+    - @news.each do |news|
+      li
+        time datetime="#{news.created_at.iso8601}" data-format="yyyy-MMM-dd"
+        span.text
+          | #{news.text}
+

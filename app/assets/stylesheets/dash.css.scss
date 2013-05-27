@@ -44,7 +44,11 @@ div#menu a {
      text-align: right;
   }
 
-  ul.arbitrage {
+  ul {
     list-style: none
+  }
+
+  ul.news time {
+    margin-right: 1em;
   }
 }
