@@ -23,6 +23,9 @@
     h2
       | Transactions
     ul.transactions
-      - @transactions.each do |tx|
-        li.tx
-          | #{tx}
+      - if @transactions.size > 0
+        - @transactions.each do |tx|
+          li.tx
+            | #{tx.inspect}
+      - else
+        li None
