@@ -19,7 +19,10 @@ class UsersController < ApplicationController
       @transactions = []
       COIND.each do |coinname, coind|
         begin
-          @transactions << coind.transactions(current_user.username)["transactions"]
+          tx_resp = coind.transactions(current_user.username)
+          if tx_resp["transactions"]
+            @transactions << ["transactions"]
+          end
         rescue Errno::ECONNREFUSED, Jimson::Client::Error::ServerError => e
           logger.info e
         end
