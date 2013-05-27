@@ -4,6 +4,12 @@
 
 .user-show {
 	.coin-balance {
+    font-size: 150%;
+    .title {
+      font-size: 120%;
+      font-weight: bold;
+      margin-bottom: 0px
+    }
 	  img {
 	    width: 1.5em;
 	    margin-right: 0.3em;
@@ -11,7 +17,6 @@
 	  }
 	}
   span.balance {
-    font-size: 80%;
     margin-left: 2em;
     margin-right: 0.3em;
   }

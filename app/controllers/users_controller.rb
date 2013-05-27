@@ -15,6 +15,15 @@ class UsersController < ApplicationController
           @balances[coinname] = {"error" => "not enabled"}
         end
       end
+
+      @transactions = []
+      COIND.each do |coinname, coind|
+        begin
+          @transactions << coind.transactions(current_user.username)
+        rescue Errno::ECONNREFUSED, Jimson::Client::Error::ServerError => e
+          logger.info e
+        end
+      end
     end
   end
 end
