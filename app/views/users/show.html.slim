@@ -20,6 +20,8 @@
             span.error
               | #{info["error"]} 
 
+    h2
+      | Transactions
     ul.transactions
       - @transactions.each do |tx|
         li.tx
