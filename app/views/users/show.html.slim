@@ -6,7 +6,6 @@
 		  | Balances
 		  ul style="list-style-type: none"
 		    - @balances.each do |coin, info|
-		      - logger.info info
 		      li.coin-balance
 		        = image_tag coin+".png"
 		        | #{SETTINGS['cryptocoins'][coin]['display_name']}
@@ -18,4 +17,4 @@
 		            | #{info["balance"]["amount"]} #{info["balance"]["currency"].upcase}
 		        -else
 		          span.error
-		            | coming soon <!-- #{info["error"]} -->
+		            | #{info["error"]} 

@@ -5,9 +5,14 @@ class UsersController < ApplicationController
       @balances = {}
       COIND.each do |coinname, coind|
         begin
-          @balances[coinname] = coind.user(@user.username)
+          begin
+          @balances[coinname] = coind.user(current_user.username)
+          rescue Jimson::Client::Error::ServerError => e
+            logger.info e
+            @balances[coinname] = {"error" => "unavailable"}
+          end
         rescue Errno::ECONNREFUSED
-          @balances[coinname] = {"error" => "not available"}
+          @balances[coinname] = {"error" => "not enabled"}
         end
       end
     end
