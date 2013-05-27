@@ -7,7 +7,7 @@ div.navbar
       div.navbar-right-block
         - if logged_in?
           span class="user-detail"
-            = current_user.username
+            = link_to current_user.username, current_user
           br
           span class="user-cmd"
             = link_to "logout", session_logout_path, :method => :post
