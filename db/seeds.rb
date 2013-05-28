@@ -1,5 +1,6 @@
 # Exchanges
-[ [{name:'mtgox', display_name:'Mt. Gox',country_code: 'jp', active: true},       0.6],
+[ [{name:'cointhink', display_name:'CoinThink',country_code: 'us', active: false},       0.5],
+  [{name:'mtgox', display_name:'Mt. Gox',country_code: 'jp', active: true},       0.6],
   [{name:'bitstamp', display_name:'Bitstamp', country_code: 'si', active: true},    0.5],
   [{name:'intersango', display_name:'InterSango', country_code: 'gb', active: false}, 0.65],
   [{name:'btce', display_name:'BTC-E', country_code: 'bg', active: true},        0.2],
