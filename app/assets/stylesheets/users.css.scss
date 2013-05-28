@@ -16,7 +16,7 @@
 	    margin-bottom: 0.1em;
 	  }
 	}
-  span.balance {
+  span.indent {
     margin-left: 2em;
     margin-right: 0.3em;
   }
@@ -27,5 +27,9 @@
 
   span.error {
   	color: red;
+  }
+
+  span.receiving_address {
+    font-size: 80%
   }
 }

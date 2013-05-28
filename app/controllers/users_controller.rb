@@ -23,7 +23,7 @@ class UsersController < ApplicationController
         begin
           tx_resp = coind.transactions(current_user.username)
           if tx_resp["transactions"]
-            @transactions << ["transactions"]
+            @transactions << tx_resp["transactions"]
           end
         rescue Errno::ECONNREFUSED, Jimson::Client::Error::ServerError => e
           logger.info e
