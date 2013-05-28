@@ -7,6 +7,9 @@ class User < ActiveRecord::Base
   validates :email, :format => { :with => /@/ }
   validates :encrypted_password, :presence => true
 
+  has_many :authorizations
+  has_many :acl_flags, :through => :authorizations
+
   extend FriendlyId
   friendly_id :username, use: :slugged
 
@@ -43,4 +46,12 @@ class User < ActiveRecord::Base
   def authentic?(password)
     BCrypt::Password.new(encrypted_password) == password
   end
+
+  def acl_flag?(name)
+    flag = AclFlag.find_by_name(name)
+    if flag
+      acl_flags.include?(flag)
+    end
+  end
+
 end
