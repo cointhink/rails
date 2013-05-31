@@ -9,7 +9,8 @@ class User < ActiveRecord::Base
 
   has_many :authorizations
   has_many :acl_flags, :through => :authorizations
-
+  has_many :scripts
+  
   extend FriendlyId
   friendly_id :username, use: :slugged
 
