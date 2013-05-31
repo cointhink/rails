@@ -22,14 +22,21 @@ class SessionController < ApplicationController
         redirect_to({:action => :login, :username => params[:username]})
       end
     else
-      user = User.safe_create(params)
-      if user.valid?
-        log_in(user.id)
-        redirect_to :root, :notice => "Welcome, #{user.username}"
+      matching_routes = Rails.application.routes.routes.simulator.simulate("/#{params[:username]}")
+      if matching_routes.memos && matching_routes.memos.size == 1 # exactly one route
+        user = User.safe_create(params)
+        if user.valid?
+          log_in(user.id)
+          redirect_to :root, :notice => "Welcome, #{user.username}"
+        else
+          flash[:error] = user.errors.full_messages.join('. ')
+          redirect_to({:action => :signup, :username => params[:username],
+                                           :email => params[:email]})
+        end
       else
-        flash[:error] = "Failed account creation"
-        redirect_to({:action => :signup, :username => params[:username],
-                                         :email => params[:email]})
+          flash[:error] = "That username is not allowed. Please pick another."
+          redirect_to({:action => :signup, :username => params[:username],
+                                           :email => params[:email]})        
       end
     end
   end

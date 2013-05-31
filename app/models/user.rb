@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
         # error alert
       end
     end
-    user.save!
+    user.save
     user
   end
 
