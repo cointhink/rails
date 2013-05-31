@@ -1,11 +1,8 @@
 Btcmarketwatch::Application.routes.draw do
   root :to => 'dash#menu'
+
   resources :exchanges
   resources :strategies
-  resources :users, :path => "/u"
-  resources :scripts, :path => "/s"
-
-  match '/s/:username/:scriptname' => 'script#lastrun'
 
   match '/arbitrage/:pair' => 'dash#chart'
   match '/arbitrage' => 'dash#chart'
@@ -17,6 +14,9 @@ Btcmarketwatch::Application.routes.draw do
   match '/session/login' => 'session#login'
   match '/session/logout' => 'session#logout'
   match '/session/signup' => 'session#signup'
+
+  match '/:id' => 'users#show'
+  match '/:username/:scriptname' => 'scripts#lastrun'
 
   match '*nowhere' => 'dash#fourohfour'
 end
