@@ -3,6 +3,9 @@ Btcmarketwatch::Application.routes.draw do
   resources :exchanges
   resources :strategies
   resources :users, :path => "/u"
+  resources :scripts, :path => "/s"
+
+  match '/s/:username/:scriptname' => 'script#lastrun'
 
   match '/arbitrage/:pair' => 'dash#chart'
   match '/arbitrage' => 'dash#chart'
