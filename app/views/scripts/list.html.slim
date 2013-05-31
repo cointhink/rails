@@ -1,6 +1,12 @@
 .scripts-list
   h2 Scripts Manager
 
+  ul#list
+    - @scripts.each do |script|
+      li
+        a href="/#{script.user.username}/#{script.slug}/edit"
+         ' #{script.name}
+
   = form_tag do
     a#add
       ' Add script

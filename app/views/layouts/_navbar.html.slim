@@ -24,3 +24,7 @@ div.navbar
         '
         a href="https://github.com/cointhink" github
       div.navbar-right-block
+        - if logged_in?
+          ul.main-menu
+           li
+            a href="/scripts" Scripts

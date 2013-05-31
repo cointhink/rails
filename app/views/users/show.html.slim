@@ -1,5 +1,5 @@
 .user-show
-  h1 #{@user.username}
+  h2 #{@user.username}
 
   - if @balances
     h2
@@ -11,7 +11,7 @@
           div.title
             = image_tag coin+".png"
             | #{SETTINGS['cryptocoins'][coin]['display_name']}
-          div  
+          div
             span.indent
               | Balance:
             -if info["balance"]

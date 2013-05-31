@@ -3,7 +3,7 @@ Btcmarketwatch::Application.routes.draw do
 
   resources :exchanges
   resources :strategies
-  
+
   match '/arbitrage/:pair' => 'dash#chart'
   match '/arbitrage' => 'dash#chart'
   match '/markets/:pair' => 'dash#slider'
@@ -20,6 +20,7 @@ Btcmarketwatch::Application.routes.draw do
 
   match '/:id' => 'users#show'
   match '/:username/:scriptname' => 'scripts#lastrun'
+  match '/:username/:id/edit' => 'scripts#edit'
 
   match '*nowhere' => 'dash#fourohfour'
 end
