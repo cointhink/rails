@@ -23,7 +23,9 @@ class UsersController < ApplicationController
         begin
           tx_resp = coind.transactions(current_user.username)
           if tx_resp["transactions"]
-            @transactions << tx_resp["transactions"]
+            tx = tx_resp["transactions"].map{|t| 
+                       t.merge({:currency => SETTINGS["cryptocoins"][coinname]["currency"]})}
+            @transactions << tx
           end
         rescue Errno::ECONNREFUSED, Jimson::Client::Error::ServerError => e
           logger.info e
