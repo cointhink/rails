@@ -10,7 +10,7 @@
         div
           ' Last run:
 
-  = form_tag do
+  = form_tag({},{:id=>'new_script', :class=>'form-inline'}) do
     a#add
       ' Add new script
     div.hidden#fields

@@ -10,7 +10,7 @@ class ScriptsController < ApplicationController
     script.user = current_user
     script.save
     unless script.valid?
-      flash[:error] = "Script creation failed"
+      flash[:error] = script.errors.full_messages.join('. ')
     end
     redirect_to :action => :list
 	end
