@@ -13,4 +13,19 @@ $(->
     console.log(e)
     $.post('/scripts', {})
   )
+
+  $('.scripts-edit a.url').click((e) ->
+    e.preventDefault()
+    $('.scripts-edit a.text').removeClass('selected-source')
+    $('.scripts-edit a.url').addClass('selected-source')
+    $('.scripts-edit input.url').show()
+    $('.scripts-edit textarea').hide()
+  )
+  $('.scripts-edit a.text').click((e) ->
+    e.preventDefault()
+    $('.scripts-edit a.text').addClass('selected-source')
+    $('.scripts-edit a.url').removeClass('selected-source')
+    $('.scripts-edit input.url').hide()
+    $('.scripts-edit textarea').show()
+  )
 )

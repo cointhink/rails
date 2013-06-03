@@ -1,0 +1,16 @@
+.scripts-lastrun
+  h2 #{@script.name}
+
+  div.commands
+    a href=""
+      button Run
+    a href="/#{@script.user.slug}/#{@script.slug}/edit"
+      button Edit
+
+  div.output
+    - unless @run
+      ' This script has not been run yet
+
+    - if @run
+      pre
+        = @run.json_output

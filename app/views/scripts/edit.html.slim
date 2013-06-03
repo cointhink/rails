@@ -5,6 +5,17 @@
     fieldset
       label Name
       input type="string" value="#{@script.name}"
+
+      label
+        ' Content from
+        a.url.selected-source href=""
+          | URL
+        '  |
+        a.text href=""
+          ' Text
+      input.url type="url"
+      textarea style="display: none"
+
     div
       button type='submit' Update
 
