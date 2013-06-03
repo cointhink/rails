@@ -6,6 +6,7 @@ class Script < ActiveRecord::Base
   scope :valid, lambda { where("deleted = ?", false) }
 
   belongs_to :user
+  has_many :runs, :class_name => 'ScriptRun'
 
   extend FriendlyId
   friendly_id :name, use: :slugged
