@@ -3,6 +3,8 @@ class Script < ActiveRecord::Base
 
   validates :name, :presence => true, :uniqueness => {:scope => :user_id}
 
+  scope :valid, lambda { where("deleted = ?", false) }
+
   belongs_to :user
 
   extend FriendlyId
@@ -10,6 +12,9 @@ class Script < ActiveRecord::Base
 
   def self.safe_create(params)
     script = Script.new
+    #defaults
+    script.deleted = false
+
     script.name = params[:name]
     script.save
     script

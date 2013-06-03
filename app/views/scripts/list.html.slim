@@ -4,12 +4,15 @@
   ul#list
     - @scripts.each do |script|
       li
-        a href="/#{script.user.username}/#{script.slug}/edit"
-         ' #{script.name}
+        div
+          a href="/#{script.user.username}/#{script.slug}/edit"
+           ' #{script.name}
+        div
+          ' Last run:
 
   = form_tag do
     a#add
-      ' Add script
+      ' Add new script
     div.hidden#fields
       input.input-small name='name' type="text" placeholder='Script Name'
       button type='submit' Create
