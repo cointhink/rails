@@ -2,9 +2,12 @@
   h2 Edit Details
 
   = form_tag do
-    label Name
-    input type="string"
-    button type='submit' Update
+    fieldset
+      label Name
+      input type="string" value="#{@script.name}"
+    div
+      button type='submit' Update
 
-  = form_tag("/#{@script.user.slug}/#{@script.slug}",{:method=>:delete}) do
-    button type='submit' Delete
+  div.pull-right
+    = form_tag("/#{@script.user.slug}/#{@script.slug}",{:method=>:delete}) do
+      button type='submit' Delete

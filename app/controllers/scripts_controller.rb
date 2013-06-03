@@ -17,6 +17,9 @@ class ScriptsController < ApplicationController
 
   def lastrun
     @script = Script.find(params[:scriptname])
+    if @script
+      @run = @script.runs.latest.last
+    end
   end
 
   def edit
