@@ -26,7 +26,7 @@ class ScriptsController < ApplicationController
   def delete
     @script = Script.find(params[:scriptname])
     if @script
-      @script.update_attribute :deleted, true
+      @script.destroy
       flash[:success]="Script #{@script.name} deleted."
     end
     redirect_to :controller => :scripts, :action => :list
