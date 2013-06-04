@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130603174717) do
+ActiveRecord::Schema.define(:version => 20130604143402) do
 
   create_table "acl_flags", :force => true do |t|
     t.string   "name"
@@ -142,6 +142,7 @@ ActiveRecord::Schema.define(:version => 20130603174717) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
     t.boolean  "deleted"
+    t.string   "body"
   end
 
   add_index "scripts", ["slug"], :name => "index_scripts_on_slug", :unique => true

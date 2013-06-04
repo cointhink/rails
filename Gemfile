@@ -11,6 +11,7 @@ gem 'acts_as_tree'
 gem 'friendly_id'
 gem 'bcrypt-ruby', :require => "bcrypt"
 gem 'jimson'
+gem 'rest-client'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'

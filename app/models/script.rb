@@ -1,5 +1,5 @@
 class Script < ActiveRecord::Base
-  attr_accessible :name, :url
+  attr_accessible :name, :url, :body
 
   validates :name, :presence => true, :uniqueness => {:scope => :user_id}
 
@@ -22,8 +22,15 @@ class Script < ActiveRecord::Base
   end
 
   def safe_update(params)
-    if params[:name]
+    unless params[:name].blank?
       self.name = params[:name]
+    end
+    unless params[:url].blank?
+      self.url = params[:url]
+      # response = RestClient.get(params[:url])
+    end
+    unless params[:body].blank?
+      self.body = params[:body]
     end
     save
   end

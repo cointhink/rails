@@ -9,8 +9,6 @@ $(->
     $('.scripts-list input[name="name"]').focus()
   )
   $('.scripts-list form').submit((e) ->
-    console.log("posting")
-    console.log(e)
     $.post('/scripts', {})
   )
 
@@ -29,3 +27,10 @@ $(->
     $('.scripts-edit textarea').show()
   )
 )
+
+this.scripts_edit_setup = (o) ->
+  if o.url
+    $('.scripts-edit a.url').click()
+  else
+    $('.scripts-edit a.text').click()
+  console.log(o)

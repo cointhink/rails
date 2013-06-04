@@ -8,13 +8,14 @@
 
       label
         ' Content from
-        a.url.selected-source href=""
+        a.url href=""
           | URL
         '  |
         a.text href=""
           ' Text
-      input.url type="url" placeholder="URL of script body" name="script[url]"
+      input.url type="url" placeholder="URL of script body" name="script[url]" value="#{@script.url}"
       textarea style="display: none" rows="18" name="script[body]"
+        = @script.body
 
     div
       button type='submit' Update
@@ -22,3 +23,6 @@
   div.pull-right
     = form_tag("/#{@script.user.slug}/#{@script.slug}",{:method=>:delete}) do
       button type='submit' Delete
+
+javascript:
+  $(function(){scripts_edit_setup(#{{@script.to_json}})})
