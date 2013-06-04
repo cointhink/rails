@@ -6,5 +6,5 @@
     li
       - if logged_in?
         a href="/scripts" Manager
-      else
-        span title="Log in first" Manager
+      - else
+        span title="Log in first" onclick="$('input[name=\'username\']').focus()" Manager
