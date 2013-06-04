@@ -3,11 +3,11 @@ div.signup
 
   form id="signupForm" action="#{session_create_path}" method="post"
     fieldset
-      label username
+      label Username
       input name="username" type="text" value="#{params[:username]}"
-      label email (for password recovery)
+      label Email (for password recovery)
       input name="email" type="email" value="#{params[:email]}"
-      label password (6 characters or more)
+      label Password (6 characters or more)
       input name="password" type="password"
     button class="btn" Sign Up
 

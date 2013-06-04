@@ -1,11 +1,11 @@
 div.signup
-  | Login
+  h2 Login
 
   form action="#{session_create_path}" method="post"
     fieldset
-      label username
+      label Username
       input name="username" type="text" value="#{params[:username]}"
-      label password
+      label Password
       input name="password" type="password"
     button class="btn" Login
 
