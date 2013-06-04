@@ -4,4 +4,7 @@
     li
       a href="/scripts/explore" Explore
     li
-      a href="/scripts" Manager
+      - if logged_in?
+        a href="/scripts" Manager
+      else
+        span title="Log in first" Manager
