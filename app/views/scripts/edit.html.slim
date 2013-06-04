@@ -1,10 +1,10 @@
 .scripts-edit
-  h2 Edit Details
+  h2 Edit Script
 
-  = form_tag do
+  = form_tag "/#{@script.user.slug}/#{@script.slug}/", {:method => :put} do
     fieldset
       label Name
-      input type="string" value="#{@script.name}"
+      input type="string" value="#{@script.name}" name="script[name]"
 
       label
         ' Content from
@@ -13,8 +13,8 @@
         '  |
         a.text href=""
           ' Text
-      input.url type="url"
-      textarea style="display: none"
+      input.url type="url" placeholder="URL of script body" name="script[url]"
+      textarea style="display: none" rows="18" name="script[body]"
 
     div
       button type='submit' Update

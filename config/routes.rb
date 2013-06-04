@@ -21,7 +21,9 @@ Btcmarketwatch::Application.routes.draw do
   match '/:id' => 'users#show'
   get '/:username/:scriptname' => 'scripts#lastrun'
   delete '/:username/:scriptname' => 'scripts#delete'
+  put '/:username/:scriptname' => 'scripts#update'
   match '/:username/:scriptname/edit' => 'scripts#edit'
+
 
   match '*nowhere' => 'dash#fourohfour'
 end

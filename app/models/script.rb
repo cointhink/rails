@@ -20,4 +20,12 @@ class Script < ActiveRecord::Base
     script.save
     script
   end
+
+  def safe_update(params)
+    if params[:name]
+      self.name = params[:name]
+    end
+    save
+  end
+
 end

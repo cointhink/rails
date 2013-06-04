@@ -1,5 +1,5 @@
 class ScriptsController < ApplicationController
-	before_filter :require_login
+	before_filter :require_login, :except => [:lastrun]
 
 	def list
     @scripts = current_user.scripts.valid
@@ -24,6 +24,12 @@ class ScriptsController < ApplicationController
 
   def edit
     @script = Script.find(params[:scriptname])
+  end
+
+  def update
+    @script = Script.find(params[:scriptname])
+    @script.safe_update(params[:script])
+    redirect_to :action => :lastrun, :scriptname => @script.slug
   end
 
   def delete
