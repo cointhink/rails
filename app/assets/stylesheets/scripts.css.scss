@@ -19,6 +19,15 @@
 }
 
 .scripts-lastrun {
+  .commands{
+    margin-bottom: 1em;
+    a {
+      margin-right: 0.5em;
+    }
+  }
+  .output{
+    margin-bottom: 1em;
+  }
   .body {
     width: 80%;
     pre {
