@@ -12,6 +12,7 @@ gem 'friendly_id'
 gem 'bcrypt-ruby', :require => "bcrypt"
 gem 'jimson'
 gem 'rest-client'
+gem 'coderay'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'
