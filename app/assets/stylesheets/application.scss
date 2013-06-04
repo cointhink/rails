@@ -67,9 +67,11 @@ body#cointhink {
       font-size: 150%;
     }
   }
+
   a {
     color: #888
   }
+
   a :hover {
     color: #bbb;
     text-decoration: underline
@@ -83,20 +85,39 @@ body#cointhink {
       color: white
     }
   }
-}
 
-H2:first-child {
-  margin-top: 0
-}
-
-.footer {
-  clear: both;
-  margin: 2em auto;
-  div {
-    line-height: 1;
+  H2:first-child {
+    margin-top: 0
   }
-}
 
-.hidden {
-  display: none;
+  .footer {
+    clear: both;
+    margin: 2em auto;
+    div {
+      line-height: 1;
+    }
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .submenu {
+    margin-top: 1px;
+    line-height: 25px;
+    background: #222;
+    text-align: center;
+    font-size: 140%;
+
+    a {
+      color: #888;
+    }
+    ul {
+    }
+    li {
+      list-style: none;
+      display: inline;
+      margin-right: 1em;
+    }
+  }
 }
