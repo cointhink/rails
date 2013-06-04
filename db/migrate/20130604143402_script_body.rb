@@ -1,5 +1,5 @@
 class ScriptBody < ActiveRecord::Migration
   def change
-    add_column :scripts, :body, :string
+    add_column :scripts, :body, :text
   end
 end
