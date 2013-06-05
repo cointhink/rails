@@ -1,6 +1,7 @@
 class Script < ActiveRecord::Base
   attr_accessible :name, :url, :body
 
+  validates :user_id, :presence => true
   validates :name, :presence => true, :uniqueness => {:scope => :user_id}
 
   scope :valid, lambda { where("deleted = ?", false) }
