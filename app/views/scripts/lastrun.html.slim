@@ -2,11 +2,12 @@
 .scripts-lastrun
   h2 Script Run - "#{@script.name}"
 
-  div.commands
-    a href=""
-      button Run
-    a href="/#{@script.user.slug}/#{@script.slug}/edit"
-      button Edit
+  - if logged_in? && current_user == @script.user
+    div.commands
+      a href=""
+        button Run
+      a href="/#{@script.user.slug}/#{@script.slug}/edit"
+        button Edit
 
   div.output
     - unless @run
