@@ -15,6 +15,10 @@ class ScriptsController < ApplicationController
     redirect_to :action => :list
 	end
 
+  def explore
+    @scripts = Script.all
+  end
+
   def lastrun
     @script = Script.find(params[:scriptname])
     if @script

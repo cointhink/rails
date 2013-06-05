@@ -1,2 +1,10 @@
 = render :partial => 'menu'
-h2 Explore
+div.scripts-explore
+  h2 Explore Scripts
+
+  h4 Featured Scripts
+  ul
+    - @scripts.each do |script|
+      li
+        a href="/#{script.user.slug}/#{script.slug}"
+          | #{script.user.username}/#{script.name}
