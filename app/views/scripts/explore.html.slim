@@ -7,4 +7,8 @@ div.scripts-explore
     - @scripts.each do |script|
       li
         a href="/#{script.user.slug}/#{script.slug}"
-          | #{script.user.username}/#{script.name}
+          span.name
+            | #{script.user.slug}/#{script.slug}
+        |  (
+        time datetime="#{script.created_at.iso8601}" data-format="yyyy-MMM-dd"
+        | )
