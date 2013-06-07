@@ -19,9 +19,28 @@ class SessionControllerTest < ActionController::TestCase
     end
   end
 
-  test "create" do
-#    post :create
-#    assert_response :redirect
-#    assert session[:logged_in_user_id]
+  test "create new user" do
+    User.stub :where, [] do
+      User.stub :new, User.new do
+        post :create, {:username => "newuser",
+                       :password => "password6",
+                       :email => "me@me"}
+        assert_redirected_to root_path
+        assert session[:logged_in_user_id]
+      end
+    end
   end
+
+  test "create new user with route dupe username" do
+    User.stub :where, [] do
+      User.stub :new, User.new do
+        post :create, {:username => "arbitrage",
+                       :password => "password6",
+                       :email => "me@me"}
+        assert_redirected_to session_signup_path(:username => "arbitrage", :email => "me@me")
+        assert_nil session[:logged_in_user_id]
+      end
+    end
+  end
+
 end

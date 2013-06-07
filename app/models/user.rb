@@ -34,7 +34,7 @@ class User < ActiveRecord::Base
           true
         end
       end.all?
-    rescue Errno::ECONNREFUSED, RestClient::RequestTimeout
+    rescue Errno::ECONNREFUSED, RestClient::RequestTimeout, RestClient::MethodNotAllowed
       return false
     end
   end
