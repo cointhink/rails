@@ -29,7 +29,7 @@ module NanoAuth
     id = session[:logged_in_user_id]
     if id
       begin
-        log_in(id)
+        log_in(User.find(id))
         logger.info("Login: #{current_user.username.inspect} #{current_user.email.inspect} User##{current_user.id}")
       rescue ActiveRecord::RecordNotFound
         logger.info("session user id of #{id} is bogus. removing")
