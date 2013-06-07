@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
 
   helper NanoAuth # available in views
   include NanoAuth # available in controllers
+  include Routy
 
   before_filter :auth
 end

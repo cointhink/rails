@@ -12,9 +12,7 @@ class SessionController < ApplicationController
     user = User.where(username:params[:username]).first
     if user
       if user.authentic?(params[:password])
-        logger.info("before #{session.inspect}")
         log_in(user.id)
-        logger.info("after #{session.inspect}")
         flash[:success] = "Welcome back, #{user.username}"
         redirect_to root_url
       else
@@ -22,8 +20,7 @@ class SessionController < ApplicationController
         redirect_to({:action => :login, :username => params[:username]})
       end
     else
-      matching_routes = Rails.application.routes.routes.simulator.simulate("/#{params[:username]}")
-      if matching_routes.memos && matching_routes.memos.size == 1 # exactly one route
+      if routes_match_count("/#{params[:username]}") == 1
         user = User.safe_create(params)
         if user.valid?
           log_in(user.id)
@@ -36,7 +33,7 @@ class SessionController < ApplicationController
       else
           flash[:error] = "That username is not allowed. Please pick another."
           redirect_to({:action => :signup, :username => params[:username],
-                                           :email => params[:email]})        
+                                           :email => params[:email]})
       end
     end
   end
