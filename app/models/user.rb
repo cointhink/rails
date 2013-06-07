@@ -14,24 +14,15 @@ class User < ActiveRecord::Base
   extend FriendlyId
   friendly_id :username, use: :slugged
 
-  def self.safe_create(params)
-    user = User.new
-    user.username = params[:username]
-    user.email = params[:email]
+  def apply_params(params)
+    self.username = params[:username]
+    self.email = params[:email]
     if params[:password].length >= 6
-      user.encrypted_password = BCrypt::Password.create(params[:password])
+      self.encrypted_password = BCrypt::Password.create(params[:password])
     end
-    if user.valid?
-      coin_accounts_success = setup_coin_accounts(user.username)
-      unless coin_accounts_success
-        # error alert
-      end
-    end
-    user.save
-    user
   end
 
-  def self.setup_coin_accounts(username)
+  def setup_coin_accounts
     begin
       COIND.keys.each do |coin|
         coind_result = COIND[coin].add_user(username)

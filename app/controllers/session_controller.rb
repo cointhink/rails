@@ -21,8 +21,11 @@ class SessionController < ApplicationController
       end
     else
       if routes_match_count("/#{params[:username]}") == 1
-        user = User.safe_create(params)
+        user = User.new
+        user.apply_params(params)
         if user.valid?
+          user.save!
+          user.setup_coin_accounts
           log_in(user.id)
           redirect_to :root, :notice => "Welcome, #{user.username}"
         else

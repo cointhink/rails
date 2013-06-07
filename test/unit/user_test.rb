@@ -5,7 +5,8 @@ class UserTest < ActiveSupport::TestCase
     @user_attrs = {username:"defaultbob",
                    email:"bob@bob",
                    password:"password"}
-    @user = User.safe_create(@user_attrs)
+    @user = User.new
+    @user.apply_params(@user_attrs)
     assert @user.valid?, @user.errors.inspect
   end
 
@@ -13,9 +14,9 @@ class UserTest < ActiveSupport::TestCase
     @bad_attrs = {username:"badactor-#",
                    email:"bad@bad",
                    password:"password"}
-    assert_raise ActiveRecord::RecordInvalid do
-      User.safe_create(@bad_attrs)
-    end
+    @user.apply_params(@bad_attrs)
+    @user.valid?
+    assert_equal [:username], @user.errors.keys
   end
 
 end
