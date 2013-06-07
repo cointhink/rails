@@ -15,9 +15,11 @@ class User < ActiveRecord::Base
   friendly_id :username, use: :slugged
 
   def apply_params(params)
+    # valid? is always called after this method
+    # params is expected to be a complete set of attributes
     self.username = params[:username]
     self.email = params[:email]
-    if params[:password].length >= 6
+    if params[:password] && params[:password].length >= 6
       self.encrypted_password = BCrypt::Password.create(params[:password])
     else
       self.encrypted_password = nil #create a validation error
