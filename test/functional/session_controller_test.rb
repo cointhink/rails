@@ -19,6 +19,21 @@ class SessionControllerTest < ActionController::TestCase
     end
   end
 
+  test "login user" do
+    login_params = {:username => "existinguser",
+                    :password => "password6"}
+    user = MiniTest::Mock.new
+    user.expect :authentic?, true, [login_params[:password]]
+    user_id = 110
+    user.expect :id, user_id
+    user.expect :username, login_params[:username]
+    User.stub :where, [user] do
+      post :create, login_params
+      assert_redirected_to root_path
+      assert_equal user_id, session[:logged_in_user_id]
+    end
+  end
+
   test "create new user" do
     User.stub :where, [] do
       User.stub :new, User.new do

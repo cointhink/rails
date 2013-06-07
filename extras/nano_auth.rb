@@ -4,9 +4,9 @@ module NanoAuth
     @current_user
   end
 
-  def log_in(id)
-    @current_user = User.find(id)
-    session[:logged_in_user_id] = @current_user.id
+  def log_in(user)
+    @current_user = user
+    session[:logged_in_user_id] = user.id
   end
 
   def log_out

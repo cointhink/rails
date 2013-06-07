@@ -12,7 +12,7 @@ class SessionController < ApplicationController
     user = User.where(username:params[:username]).first
     if user
       if user.authentic?(params[:password])
-        log_in(user.id)
+        log_in(user)
         flash[:success] = "Welcome back, #{user.username}"
         redirect_to root_url
       else
@@ -26,7 +26,7 @@ class SessionController < ApplicationController
         if user.valid?
           user.save!
           user.setup_coin_accounts
-          log_in(user.id)
+          log_in(user)
           redirect_to :root, :notice => "Welcome, #{user.username}"
         else
           flash[:error] = user.errors.full_messages.join('. ')
