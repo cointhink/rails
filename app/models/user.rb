@@ -19,6 +19,8 @@ class User < ActiveRecord::Base
     self.email = params[:email]
     if params[:password].length >= 6
       self.encrypted_password = BCrypt::Password.create(params[:password])
+    else
+      self.encrypted_password = nil #create a validation error
     end
   end
 
