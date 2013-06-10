@@ -36,4 +36,7 @@ class Script < ActiveRecord::Base
     save
   end
 
+  def start
+  end
+
 end

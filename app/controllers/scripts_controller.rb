@@ -46,6 +46,10 @@ class ScriptsController < ApplicationController
   end
 
   def start
+    @script = Script.find(params[:scriptname])
+    if @script
+      @script.start
+    end
     redirect_to :action => :lastrun
   end
 

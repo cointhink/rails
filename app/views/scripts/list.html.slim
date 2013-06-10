@@ -9,8 +9,10 @@
           a href="/#{script.user.username}/#{script.slug}"
            ' #{script.name}
         div
-          ' Created
+          span
+            ' Created
           time datetime="#{script.created_at.iso8601}" data-format="MMM dd"
+          ' Stopped
           - if script.runs.latest.size > 0
             ' Last run: #{script.runs.latest.last.created_at}
 
