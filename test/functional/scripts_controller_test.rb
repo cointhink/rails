@@ -4,7 +4,6 @@ class ScriptsControllerTest < ActionController::TestCase
 
   test "start" do
     login
-    puts "** #{@controller.class} #{@controller.respond_to?(:auth)}"
     post :start, {scriptname:"average", username:"jill"}
     assert_nil flash[:error]
     assert_redirected_to :action => :lastrun
