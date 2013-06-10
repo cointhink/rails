@@ -15,7 +15,7 @@
 
   div.status
     span style="font-weight: bold"
-      = @script.docker_status.upcase
+      = @script.current_state.upcase
 
   div.output
     - unless @run
