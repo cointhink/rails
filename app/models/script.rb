@@ -16,8 +16,13 @@ class Script < ActiveRecord::Base
   workflow_column :docker_status
 
   workflow do
-    state :stopped
-    state :running
+    state :stopped do
+      event :start, :transitions_to => :running
+    end
+    state :running do
+      event :stop, :transitions_to => :stopped
+    end
+
   end
 
   def self.safe_create(params)
@@ -42,6 +47,12 @@ class Script < ActiveRecord::Base
       self.body = params[:body]
     end
     save
+  end
+
+  def start
+  end
+
+  def stop
   end
 
 end

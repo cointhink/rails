@@ -13,6 +13,10 @@
       a href="/#{@script.user.slug}/#{@script.slug}/edit"
         button Edit
 
+  div.status
+    span style="font-weight: bold"
+      = @script.docker_status.upcase
+
   div.output
     - unless @run
       ' This script has not been run yet
