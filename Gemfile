@@ -14,6 +14,7 @@ gem 'jimson'
 gem 'rest-client'
 gem 'coderay'
 gem 'docker-client'
+gem 'workflow'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'

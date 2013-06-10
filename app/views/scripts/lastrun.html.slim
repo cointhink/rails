@@ -4,8 +4,12 @@
 
   - if logged_in? && current_user == @script.user
     div.commands
-      = form_tag "/#{@script.user.slug}/#{@script.slug}/start" do
-        button Start
+      - if @script.running?
+        = form_tag "/#{@script.user.slug}/#{@script.slug}/stop" do
+          button Stop
+      - if @script.stopped?
+        = form_tag "/#{@script.user.slug}/#{@script.slug}/start" do
+          button Start
       a href="/#{@script.user.slug}/#{@script.slug}/edit"
         button Edit
 

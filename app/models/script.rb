@@ -12,6 +12,14 @@ class Script < ActiveRecord::Base
   extend FriendlyId
   friendly_id :name, use: :slugged
 
+  include Workflow
+  workflow_column :docker_status
+
+  workflow do
+    state :stopped
+    state :running
+  end
+
   def self.safe_create(params)
     script = Script.new
     #defaults
@@ -34,9 +42,6 @@ class Script < ActiveRecord::Base
       self.body = params[:body]
     end
     save
-  end
-
-  def start
   end
 
 end

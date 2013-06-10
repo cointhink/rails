@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130607162035) do
+ActiveRecord::Schema.define(:version => 20130610221845) do
 
   create_table "acl_flags", :force => true do |t|
     t.string   "name"
@@ -145,6 +145,7 @@ ActiveRecord::Schema.define(:version => 20130607162035) do
     t.text     "body"
     t.string   "docker_host"
     t.string   "docker_container_id"
+    t.string   "docker_status"
   end
 
   add_index "scripts", ["slug"], :name => "index_scripts_on_slug", :unique => true
