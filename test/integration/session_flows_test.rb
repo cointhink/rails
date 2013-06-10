@@ -6,24 +6,26 @@ class SessionFlowsTest < ActionDispatch::IntegrationTest
 
   test "signup good" do
     user = {:username => "person",
-             :password => "letmein"}
+            :email => "my@email",
+            :password => "letmein"}
 
     assert_difference('User.where({username:'+user[:username].to_json+'}).count') do
       get "/session/signup"
-      post "/session/create", user.merge({:email => "my@email"})
+      post "/session/create", user.merge({:email => user[:email]})
     end
     assert_redirected_to '/'
   end
 
   test "signup missing password" do
     user = {:username => "person",
-             :password => ""}
+            :email => "my@email",
+            :password => ""}
 
     assert_no_difference('User.where({username:'+user[:username].to_json+'}).count') do
       get "/session/signup"
-      post "/session/create", user.merge({:email => "my@email"})
+      post "/session/create", user.merge({:email => user[:email]})
     end
-    assert_redirected_to '/'
+    assert_redirected_to url_for({action: "signup", email:user[:email], username: user[:username]})
   end
 
 end
