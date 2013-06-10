@@ -44,4 +44,9 @@ class ScriptsController < ApplicationController
     end
     redirect_to :controller => :scripts, :action => :list
   end
+
+  def start
+    redirect_to :action => :lastrun
+  end
+
 end

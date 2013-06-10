@@ -4,8 +4,8 @@
 
   - if logged_in? && current_user == @script.user
     div.commands
-      a href=""
-        button Run
+      form action="/#{@script.user.slug}/#{@script.slug}/start" method="post"
+        button Start
       a href="/#{@script.user.slug}/#{@script.slug}/edit"
         button Edit
 
