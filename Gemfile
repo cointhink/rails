@@ -16,6 +16,7 @@ gem 'coderay'
 gem 'docker-client', :require => "docker"
 gem 'workflow'
 gem 'rethinkdb'
+gem 'uuid'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'

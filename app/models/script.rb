@@ -10,6 +10,8 @@ class Script < ActiveRecord::Base
   belongs_to :user
   has_many :runs, :class_name => 'ScriptRun'
 
+  after_destroy :rethink_delete
+
   extend FriendlyId
   friendly_id :name, use: :slugged
 
@@ -47,12 +49,17 @@ class Script < ActiveRecord::Base
       # response = RestClient.get(params[:url])
     end
     unless params[:body].blank?
-      r.table('scripts').get(script_name).run(R) ||
-      r.table('scripts').insert(id:script_name).run(R)
-
       r.table('scripts').get(script_name).update(body:params[:body]).run(R)
     end
     save
+  end
+
+  def rethink_insert
+    r.table('scripts').insert(id:script_name, key:UUID.generate).run(R)
+  end
+
+  def rethink_delete
+    r.table('scripts').get(script_name).delete.run(R)
   end
 
   def script_name
@@ -62,6 +69,11 @@ class Script < ActiveRecord::Base
   def body
     doc = r.table('scripts').get(script_name).run(R)
     doc ? doc["body"] : nil
+  end
+
+  def key
+    doc = r.table('scripts').get(script_name).run(R)
+    doc ? doc["key"] : nil
   end
 
   def start
@@ -110,8 +122,9 @@ class Script < ActiveRecord::Base
   def build_container
     result = docker.containers.create(['cointhink-guest', user.username, name],
                                       SETTINGS["docker"]["image"],
-                                      {"Env"=>["cointhink_username=#{user.username}",
-                                               "cointhink_scriptname=#{name}"]})
+                                      {"Env"=>["cointhink_user_name=#{user.username}",
+                                               "cointhink_script_name=#{name}",
+                                               "cointhink_script_key=#{key}"]})
     logger.info "create "+result.inspect
     result["Id"]
   end
