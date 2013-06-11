@@ -1,0 +1,10 @@
+---
+- hosts: lxc
+  sudo: yes
+  tasks:
+    - action: apt pkg=software-properties-common state=present
+    - action: apt_repository repo=ppa:rethinkdb/ppa
+    - action: apt pkg=rethinkdb state=present
+
+    - action: apt_repository repo=ppa:dotcloud/lxc-docker
+    - action: apt pkg=lxc-docker state=present

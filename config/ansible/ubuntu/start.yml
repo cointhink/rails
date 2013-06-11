@@ -1,0 +1,6 @@
+---
+- hosts: lxc
+  sudo: yes
+  tasks:
+    - action: service name=rethinkdb state=started
+    - action: service name=docker state=started
