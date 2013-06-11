@@ -1,5 +1,6 @@
 class Script < ActiveRecord::Base
-  attr_accessible :name, :url, :body
+  attr_accessible :name, :url, :body, :body_url,
+                  :docker_host, :docker_container_id, :docker_status
 
   validates :user_id, :presence => true
   validates :name, :presence => true, :uniqueness => {:scope => :user_id}
@@ -25,6 +26,8 @@ class Script < ActiveRecord::Base
 
   end
 
+  include RethinkDB::Shortcuts
+
   def self.safe_create(params)
     script = Script.new
     #defaults
@@ -44,9 +47,21 @@ class Script < ActiveRecord::Base
       # response = RestClient.get(params[:url])
     end
     unless params[:body].blank?
-      self.body = params[:body]
+      r.table('scripts').get(script_name).run(R) ||
+      r.table('scripts').insert(id:script_name).run(R)
+
+      r.table('scripts').get(script_name).update(body:params[:body]).run(R)
     end
     save
+  end
+
+  def script_name
+    "#{user.username}/#{name}"
+  end
+
+  def body
+    doc = r.table('scripts').get(script_name).run(R)
+    doc ? doc["body"] : nil
   end
 
   def start

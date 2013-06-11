@@ -18,3 +18,8 @@ cryptocoins:
 docker:
   default_host: "localhost"
   image: "ubuntu"
+rethinkdb:
+  host: 'localhost'
+  port: 28015
+  db: 'cointhink'
+
