@@ -17,3 +17,4 @@ cryptocoins:
     key: "ltckey"
 docker:
   default_host: "localhost"
+  image: "ubuntu"

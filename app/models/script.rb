@@ -93,7 +93,8 @@ class Script < ActiveRecord::Base
   end
 
   def build_container
-    result = docker.containers.create(['cointhink-guest', user.username, name], 'busybox')
+    result = docker.containers.create(['cointhink-guest', user.username, name],
+                                      SETTINGS["docker"]["image"])
     logger.info "create "+result.inspect
     result["Id"]
   end
