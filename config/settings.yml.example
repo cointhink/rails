@@ -15,3 +15,5 @@ cryptocoins:
   litecoin:
     url: "http://localhost:8081"
     key: "ltckey"
+docker:
+  default_host: "localhost"

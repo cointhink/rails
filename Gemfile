@@ -13,7 +13,7 @@ gem 'bcrypt-ruby', :require => "bcrypt"
 gem 'jimson'
 gem 'rest-client'
 gem 'coderay'
-gem 'docker-client'
+gem 'docker-client', :require => "docker"
 gem 'workflow'
 
 group :assets do

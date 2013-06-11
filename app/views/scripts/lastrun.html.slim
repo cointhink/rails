@@ -6,7 +6,7 @@
     div.commands
       - if @script.running?
         = form_tag "/#{@script.user.slug}/#{@script.slug}/stop" do
-          button Stop
+          button Stop #{@script.docker_container_id}
       - if @script.stopped?
         = form_tag "/#{@script.user.slug}/#{@script.slug}/start" do
           button Start
@@ -18,9 +18,6 @@
       = @script.current_state.to_s.upcase
 
   div.output
-    - unless @run
-      ' This script has not been run yet
-
     - if @run
       pre
         = @run.json_output
