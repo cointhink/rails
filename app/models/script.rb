@@ -90,14 +90,16 @@ class Script < ActiveRecord::Base
     end
     begin
       logger.info "Script#start #{docker_container_id} "+result.inspect
-      result = docker.containers.start(docker_container_id)
       detail = docker.containers.show(docker_container_id)
       logger.info detail.inspect
+      result = docker.containers.start(docker_container_id)
     rescue Docker::Error::ContainerNotFound
       # bogus container id
       logger.info "Script#start #{docker_container_id} not found"
       update_attribute :docker_container_id, nil
       halt
+    rescue Curl::Err::PartialFileError => e
+      logger.info e.inspect
     end
   end
 
