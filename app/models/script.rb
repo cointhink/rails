@@ -99,9 +99,9 @@ class Script < ActiveRecord::Base
       update_attribute :docker_container_id, nil
       halt
     rescue Docker::Error::InternalServerError => e
-      logger.info "InternalServerError: "+e.inspect
+      logger.info "Script#Start InternalServerError: "+e.inspect
     rescue Curl::Err::PartialFileError => e
-      logger.info "PartialFileError: "+e.inspect
+      logger.info "Script#start PartialFileError: "+e.inspect
     end
   end
 
@@ -109,10 +109,12 @@ class Script < ActiveRecord::Base
     if docker_container_id
       begin
         result = docker.containers.stop(docker_container_id)
-        logger.info "stop #{docker_container_id} "+result.inspect
+        logger.info "Script#stop #{docker_container_id} "+result.inspect
       rescue Docker::Error::ContainerNotFound
         # bogus container id, set to stopped anyways
-        logger.info "stop #{docker_container_id} not found"
+        logger.info "Script#stop #{docker_container_id} not found"
+      rescue Curl::Err::PartialFileError => e
+        logger.info "Script#stop PartialFileError: "+e.inspect
       end
     end
   end
