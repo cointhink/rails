@@ -1,0 +1,2 @@
+echo starting script_get.js
+node_modules/.bin/forever start script_get.js
