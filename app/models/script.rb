@@ -98,8 +98,10 @@ class Script < ActiveRecord::Base
       logger.info "Script#start #{docker_container_id} not found"
       update_attribute :docker_container_id, nil
       halt
+    rescue Docker::Error::InternalServerError => e
+      logger.info "InternalServerError: "+e.inspect
     rescue Curl::Err::PartialFileError => e
-      logger.info e.inspect
+      logger.info "PartialFileError: "+e.inspect
     end
   end
 
