@@ -80,7 +80,7 @@ class Script < ActiveRecord::Base
     unless docker_container_id
       id = build_container
       if id
-        logger.info ("Script #{user.username}/#{name} container created id ##{docker_container_id}")
+        logger.info ("Script #{user.username}/#{name} container created id ##{id}")
         update_attribute :docker_container_id, id
       else
         # error alert
@@ -89,11 +89,13 @@ class Script < ActiveRecord::Base
       end
     end
     begin
+      logger.info "Script#start #{docker_container_id} "+result.inspect
       result = docker.containers.start(docker_container_id)
-      logger.info "start #{docker_container_id} "+result.inspect
+      detail = docker.containers.show(docker_container_id)
+      logger.info detail.inspect
     rescue Docker::Error::ContainerNotFound
       # bogus container id
-      logger.info "start #{docker_container_id} not found"
+      logger.info "Script#start #{docker_container_id} not found"
       update_attribute :docker_container_id, nil
       halt
     end
@@ -124,8 +126,9 @@ class Script < ActiveRecord::Base
                                       SETTINGS["docker"]["image"],
                                       {"Env"=>["cointhink_user_name=#{user.username}",
                                                "cointhink_script_name=#{name}",
-                                               "cointhink_script_key=#{key}"]})
-    logger.info "create "+result.inspect
+                                               "cointhink_script_key=#{key}"],
+                                       "PortSpecs"=>["3002"]})
+    logger.info "Script#build_container "+result.inspect
     result["Id"]
   end
 end
