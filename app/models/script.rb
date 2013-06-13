@@ -77,20 +77,30 @@ class Script < ActiveRecord::Base
   end
 
   def start
+    if docker_container_id
+      # container_id check
+      begin
+        detail = docker.containers.show(docker_container_id)
+        logger.info "Script#start #{docker_container_id} "+result.inspect
+      rescue Docker::Error::ContainerNotFound
+        logger.error "Script#start #{user.username}/#{name} abandoning cointainer id #{docker_container_id}."
+        docker_container_id = nil
+      end
+    end
+
     unless docker_container_id
       id = build_container
       if id
-        logger.info ("Script #{user.username}/#{name} container created id ##{id}")
+        logger.info ("Script#start #{user.username}/#{name} container created id ##{id}")
         update_attribute :docker_container_id, id
       else
         # error alert
-        logger.error "Script #{user.username}/#{name} cointainer build failed"
+        logger.error "Script#start #{user.username}/#{name} cointainer build failed"
         halt
       end
     end
+
     begin
-      detail = docker.containers.show(docker_container_id)
-      logger.info detail.inspect
       result = docker.containers.start(docker_container_id)
       logger.info "Script#start #{docker_container_id} "+result.inspect
     rescue Docker::Error::ContainerNotFound
@@ -112,7 +122,7 @@ class Script < ActiveRecord::Base
         logger.info "Script#stop #{docker_container_id} "+result.inspect
       rescue Docker::Error::ContainerNotFound
         # bogus container id, set to stopped anyways
-        logger.info "Script#stop #{docker_container_id} not found"
+        logger.info "Script#stop container #{docker_container_id} not found"
       rescue Curl::Err::PartialFileError => e
         logger.info "Script#stop PartialFileError: "+e.inspect
       end
