@@ -17,7 +17,7 @@ var server = bouncy(function (req, res, bounce) {
     res.end(fs.readFileSync('npm/'+path.basename(scriptname)));
   } else {
     var fullname = username+'/'+scriptname
-    console.log('fetching '+fullname)
+    console.log((new Date())+' fetching '+fullname)
     r.connect({host:'localhost', port:28015, db:'cointhink'},
       function(err, conn) {
         r.table('scripts').get(fullname).run(conn, function(err, doc){
