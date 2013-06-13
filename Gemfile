@@ -13,7 +13,7 @@ gem 'bcrypt-ruby', :require => "bcrypt"
 gem 'jimson'
 gem 'rest-client'
 gem 'coderay'
-gem 'docker-client', :require => "docker"
+gem 'docker-client', :git => "git://github.com/donpdonp/docker-client.git", :require => "docker"
 gem 'workflow'
 gem 'rethinkdb'
 gem 'uuid'
