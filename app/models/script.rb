@@ -89,13 +89,18 @@ class Script < ActiveRecord::Base
     end
 
     unless docker_container_id
-      id = build_container
-      if id
-        logger.info ("Script#start #{user.username}/#{name} container created id ##{id}")
-        update_attribute :docker_container_id, id
-      else
-        # error alert
-        logger.error "Script#start #{user.username}/#{name} cointainer build failed"
+      begin
+        id = build_container
+        if id
+          logger.info ("Script#start #{user.username}/#{name} container created id ##{id}")
+          update_attribute :docker_container_id, id
+        else
+          # error alert
+          logger.error "Script#start #{user.username}/#{name} cointainer build failed"
+          halt
+        end
+      rescue Docker::Error::NotFoundError => e
+        logger.error "Script#start #{user.username}/#{name} cointainer build failed "+e
         halt
       end
     end
