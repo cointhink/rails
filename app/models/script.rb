@@ -80,7 +80,7 @@ class Script < ActiveRecord::Base
     if docker_container_id
       # container_id check
       begin
-        detail = docker.containers.show(docker_container_id)
+        result = docker.containers.show(docker_container_id)
         logger.info "Script#start #{docker_container_id} "+result.inspect
       rescue Docker::Error::ContainerNotFound
         logger.error "Script#start #{user.username}/#{name} abandoning cointainer id #{docker_container_id}."
