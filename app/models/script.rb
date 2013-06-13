@@ -84,7 +84,7 @@ class Script < ActiveRecord::Base
         logger.info "Script#start #{docker_container_id} check "+result.inspect
       rescue Docker::Error::ContainerNotFound
         logger.error "Script#start #{user.username}/#{name} abandoning cointainer id #{docker_container_id}."
-        this.docker_container_id = nil
+        self.docker_container_id = nil
       end
     end
 
