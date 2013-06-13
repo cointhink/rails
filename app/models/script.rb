@@ -81,10 +81,10 @@ class Script < ActiveRecord::Base
       # container_id check
       begin
         result = docker.containers.show(docker_container_id)
-        logger.info "Script#start #{docker_container_id} "+result.inspect
+        logger.info "Script#start #{docker_container_id} check "+result.inspect
       rescue Docker::Error::ContainerNotFound
         logger.error "Script#start #{user.username}/#{name} abandoning cointainer id #{docker_container_id}."
-        docker_container_id = nil
+        this.docker_container_id = nil
       end
     end
 
@@ -102,7 +102,7 @@ class Script < ActiveRecord::Base
 
     begin
       result = docker.containers.start(docker_container_id)
-      logger.info "Script#start #{docker_container_id} "+result.inspect
+      logger.info "Script#start #{docker_container_id} start returned "+result.inspect
     rescue Docker::Error::ContainerNotFound
       # bogus container id
       logger.info "Script#start #{docker_container_id} not found"
