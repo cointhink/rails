@@ -148,7 +148,8 @@ class Script < ActiveRecord::Base
                                       {"Env"=>["cointhink_user_name=#{user.username}",
                                                "cointhink_script_name=#{name}",
                                                "cointhink_script_key=#{key}"],
-                                       "PortSpecs"=>["3002"]})
+                                       "PortSpecs"=>["3002"],
+                                       "User"=>SETTINGS["docker"]["user"]})
     logger.info "Script#build_container "+result.inspect
     result["Id"]
   end

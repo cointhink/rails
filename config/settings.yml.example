@@ -12,14 +12,18 @@ cryptocoins:
   bitcoin:
     url: "http://localhost:8080"
     key: "btckey"
+    currency: "btc"
+    display_name: "Bitcoin"
   litecoin:
     url: "http://localhost:8081"
     key: "ltckey"
+    currency: "ltc"
+    display_name: "Litecoin"
 docker:
   default_host: "localhost"
   image: "ubuntu"
+  user: "cointhink"
 rethinkdb:
   host: 'localhost'
   port: 28015
-  db: 'cointhink'
-
+  db: 'data'
