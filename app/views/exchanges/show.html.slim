@@ -1,15 +1,16 @@
-div
+div.exchanges-show
   h3 style="margin-bottom: 0"
     | #{@exchange.display_name}
   - if @exchange.url
     | #{link_to URI.parse(@exchange.url).hostname, @exchange.url}
 
-  - note = @exchange.notes.last
-  - if note
-    = render :partial => "layouts/note", :locals => {note: note}
+  - if @exchange.active
+    .notes
+      - @exchange.notes.last(3).each do |note|
+        = render :partial => "layouts/note", :locals => {note: note}
   - else
-    - unless @exchange.active
-      div.alert Not being monitored
+    div.alert Not being monitored
+
 
   div style="margin-bottom: 2em"
     - exchange_run = @exchange.exchange_runs.order('created_at').last

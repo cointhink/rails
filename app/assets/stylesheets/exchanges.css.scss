@@ -1,3 +1,15 @@
 // Place all the styles related to the exchanges controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.exchanges-show {
+  .alert {
+    margin: 0;
+    padding: 1px 1px 1px 1px;
+  }
+
+  .notes {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+}
