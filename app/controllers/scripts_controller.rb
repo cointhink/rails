@@ -28,7 +28,7 @@ class ScriptsController < ApplicationController
       @signals = r.db('cointhink').
         table('signals').
         get_all(@script.script_name, {index:'name'}).
-        order_by('time').
+        order_by(r.desc('time')).
         run(R)
     end
   end
