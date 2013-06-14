@@ -20,3 +20,5 @@ Gemfile.lock
 /config/settings.yml
 
 /js/node_modules
+/js/npm
+
