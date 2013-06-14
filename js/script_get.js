@@ -33,7 +33,7 @@ var server = bouncy(function (req, res, bounce) {
                   var body = data.toString('utf8')
                   sig_doc = JSON.parse(body)
                   sig_doc.name = username+'/'+scriptname
-                  sig_doc.time = new Date() //iso8601.fromDate(new Date())
+                  sig_doc.time = iso8601.fromDate(new Date())
                   console.log('posting '+JSON.stringify(sig_doc))
                   r.table('signals').insert(sig_doc).run(conn, function(err, doc){
                     if(err){
