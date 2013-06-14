@@ -55,7 +55,9 @@ class Script < ActiveRecord::Base
   end
 
   def rethink_insert
-    r.table('scripts').insert(id:script_name, key:UUID.generate).run(R)
+    r.table('scripts').insert(id:script_name,
+                              key:UUID.generate,
+                              inventory: {}).run(R)
   end
 
   def rethink_delete
@@ -66,14 +68,24 @@ class Script < ActiveRecord::Base
     "#{user.username}/#{name}"
   end
 
+  def doc
+    r.table('scripts').get(script_name).run(R)
+  end
+
   def body
-    doc = r.table('scripts').get(script_name).run(R)
-    doc ? doc["body"] : nil
+    doc["body"]
   end
 
   def key
-    doc = r.table('scripts').get(script_name).run(R)
-    doc ? doc["key"] : nil
+    doc["key"]
+  end
+
+  def inventory
+    doc["inventory"]
+  end
+
+  def currencies
+    inventory.keys
   end
 
   def start

@@ -17,6 +17,12 @@
     span style="font-weight: bold; font-size: 150%"
       = @script.current_state.to_s.upcase
 
+  div.inventory
+    h3 Inventory
+    ul
+      - @script.currencies.each do |currency|
+        li #{currency}
+
   div.output
     - if @run
       pre
