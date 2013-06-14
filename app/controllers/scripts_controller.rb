@@ -55,7 +55,11 @@ class ScriptsController < ApplicationController
   def start
     @script = Script.find(params[:scriptname])
     if @script
-      @script.start!
+      if owner_check(@script)
+        @script.start!
+      else
+        flash[:error] = "No permission to start this script."
+      end
     end
     redirect_to :action => :lastrun
   end
@@ -68,4 +72,8 @@ class ScriptsController < ApplicationController
     redirect_to :action => :lastrun
   end
 
+  private
+  def owner_check(script)
+    script.user == current_user
+  end
 end
