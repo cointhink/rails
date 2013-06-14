@@ -14,7 +14,7 @@
         button Edit
 
   div.status
-    span style="font-weight: bold"
+    span style="font-weight: bold; font-size: 150%"
       = @script.current_state.to_s.upcase
 
   div.output
@@ -22,5 +22,13 @@
       pre
         = @run.json_output
 
+  - if @signals
+    div.signals
+      h3 Signals
+      ul
+        - @signals.each do |signal|
+          li #{signal}
+
   div.body
+    h3 Code
     == CodeRay.scan(@script.body, :javascript).div

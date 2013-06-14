@@ -25,6 +25,11 @@ class ScriptsController < ApplicationController
     @script = Script.find(params[:scriptname])
     if @script
       @run = @script.runs.latest.last
+      @signals = r.db('cointhink').
+        table('signals').
+        get_all(@script.script_name, {index:'name'}).
+        order_by('time').
+        run(R)
     end
   end
 
