@@ -62,6 +62,11 @@ class Script < ActiveRecord::Base
 
   def rethink_delete
     r.table('scripts').get(script_name).delete.run(R)
+    r.db('cointhink').
+      table('signals').
+      get_all(@script.script_name, {index:'name'}).
+      delete.
+      run(R)
   end
 
   def script_name
