@@ -12,3 +12,4 @@
     - command: cp /etc/rethinkdb/default.conf.sample /etc/rethinkdb/instances.d/default.conf creates=/etc/rethinkdb/instances.d/default.conf
     - action: apt pkg=lxc-docker state=present
     - action: apt pkg=nodejs state=present
+    - action: apt pkg=libzmq1-dev state=present
