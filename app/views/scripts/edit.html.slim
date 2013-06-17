@@ -22,8 +22,8 @@
       button type='submit' Update
 
   div.pull-right
-    = form_tag("/#{@script.user.slug}/#{@script.slug}",{:method=>:delete}) do
-      button type='submit' Delete
+    = form_tag("/#{@script.user.slug}/#{@script.slug}",{:method=>:delete,:confirm=>"sure?"}) do
+      = button_tag "Delete", :confirm => "Delete #{@script.name}?"
 
 javascript:
   $(function(){scripts_edit_setup(#{{@script.to_json}})})
