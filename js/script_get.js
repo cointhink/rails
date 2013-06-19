@@ -11,7 +11,7 @@ var server = bouncy(function (req, res, bounce) {
   var key = parts[3]
 
   console.log(req.method+" "+req.url)
- if(username == 'npm' && key == null) {
+ if((username == 'npm' || username == 'dist') && key == null) {
     console.log('fetching npm '+scriptname)
     res.statusCode = 200;
     res.end(fs.readFileSync('npm/'+path.basename(scriptname)));
