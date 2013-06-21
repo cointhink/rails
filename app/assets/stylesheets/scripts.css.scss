@@ -35,6 +35,22 @@
       line-height: 13px;
     }
   }
+  .signals {
+    span {
+      margin-right: 0.5em;
+    }
+
+    span.type{
+      color: blue;
+    }
+
+    span.msg {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      color: brown;
+    }
+  }
 }
 
 .scripts-explore {

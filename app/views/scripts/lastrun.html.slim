@@ -33,7 +33,13 @@
       h3 Signals
       ul
         - @signals.each do |signal|
-          li #{signal}
+          li
+            span.time
+              ' #{signal["time"]}
+            span.type
+              ' #{signal["type"]}
+            span.msg
+              ' #{signal["msg"]}
 
   div.body
     h3 Code
