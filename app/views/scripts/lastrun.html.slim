@@ -35,7 +35,7 @@
         - @signals.each do |signal|
           li
             span.time
-              ' #{signal["time"]}
+              time datetime="#{signal["time"]}" data-format="yyyy-MMM-dd h:mm.sstt"
             span.type
               ' #{signal["type"]}
             span.msg
