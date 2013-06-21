@@ -29,6 +29,7 @@ class ScriptsController < ApplicationController
         table('signals').
         get_all(@script.script_name, {index:'name'}).
         order_by(r.desc('time')).
+        limit(8).
         run(R)
     end
   end
