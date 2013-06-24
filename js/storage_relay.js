@@ -46,6 +46,7 @@ sock.on('message', function(data){
     )
   } catch (ex) {
     console.log(ex+' ignoring "'+data+'"')
+    respond({"status":"garbled"})
   }
 })
 
