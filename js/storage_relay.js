@@ -15,7 +15,16 @@ console.log('storage relay on 3003')
       function(err, conn) {
         r.table('scripts').get(fullname).run(conn, function(err, doc){
           if(doc && doc.key == message.key){
-            sock.send(JSON.stringify({"status":"ok"}))
+            var storage = doc.storage
+            if(payload.action == 'get'){
+              sock.send(JSON.stringify({"status":"ok", "payload":storage[payload.key]}))
+            }
+            if(payload.action == 'set'){
+              storage[payload.key] = payload.value
+              r.table('scripts').get(fullname).update({storage:storage}).run(conn, function(status){
+                sock.send(JSON.stringify({"status":"ok", "payload":status}))
+              })
+            }
           }
         })
       }

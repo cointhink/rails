@@ -57,7 +57,8 @@ class Script < ActiveRecord::Base
   def rethink_insert
     r.table('scripts').insert(id:script_name,
                               key:UUID.generate,
-                              inventory: {}).run(R)
+                              inventory: {},
+                              storage: {}).run(R)
   end
 
   def rethink_delete
