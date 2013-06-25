@@ -8,7 +8,6 @@ console.log('storage relay on 3003')
 sock.on('message', function(data){
   try {
     var message = JSON.parse(data)
-    console.log(message)
     var payload = message.payload
     var fullname = message.username+"/"+message.scriptname
 
@@ -23,21 +22,23 @@ sock.on('message', function(data){
               if(doc.key == message.key){
                 var storage = doc.storage
                 if(payload.action == 'get'){
-                  sock.send(JSON.stringify({"status":"ok", "payload":storage[payload.key]}))
+                  var value = storage[payload.key]
+                  console.log(fullname+' get '+payload.key+' '+value)
+                  sock.send(JSON.stringify({"status":"ok", "payload":value}))
                 }
                 if(payload.action == 'set'){
-                  console.log('set '+payload.key+' '+payload.value)
+                  console.log(fullname+' set '+payload.key+' '+payload.value)
                   storage[payload.key] = payload.value
                   r.table('scripts').get(fullname).update({storage:storage}).run(conn, function(status){
                     respond({"status":"ok", "payload":status})
                   })
                 }
               } else {
-                console.log("bad key!")
+                console.log(fullname+" bad key!")
                 respond({"status":"badkey"})
               }
             } else {
-              console.log("empty doc!")
+              console.log(fullname+" empty doc!")
               respond({"status":"nodoc"})
             }
           }
