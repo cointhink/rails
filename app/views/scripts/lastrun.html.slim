@@ -39,7 +39,10 @@
             span.type
               ' #{signal["type"]}
             span.msg
-              ' #{signal["msg"]}
+              - if signal["type"] == "error"
+                pre #{signal["msg"]}
+              - else
+                ' #{signal["msg"]}
 
   div.body
     h3 Code

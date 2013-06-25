@@ -3,9 +3,14 @@ export HOME=/home/cointhink
 cd
 echo I am `id` in `pwd`
 URL="http://dockerhost:3002/$cointhink_user_name/$cointhink_script_name/$cointhink_script_key"
+wget -O /dev/null --quiet --post-data "Starting script" "$URL/system"
 echo `date` Loading $cointhink_user_name/$cointhink_script_name
 wget --quiet -O "$cointhink_script_name" $URL
-#echo npm install...
-#npm install
 echo starting $cointhink_script_name ...
-node "$cointhink_script_name"
+node "$cointhink_script_name" 2> node.err
+NODE_EXIT=$?
+echo Node Exit $NODE_EXIT
+ls -l node.err
+wget -O /dev/null --quiet --post-file node.err "$URL/error"
+wget -O /dev/null --quiet --post-data "Script exited" "$URL/system"
+exit $NODE_EXIT
