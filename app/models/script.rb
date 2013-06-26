@@ -118,7 +118,7 @@ class Script < ActiveRecord::Base
           halt
         end
       rescue Docker::Error::NotFoundError => e
-        logger.error "Script#start #{user.username}/#{name} cointainer build failed "+e
+        logger.error "Script#start #{user.username}/#{name} cointainer build failed, Not Found "
         halt
       end
     end
