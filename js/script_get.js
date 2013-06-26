@@ -17,7 +17,7 @@ var server = bouncy(function (req, res, bounce) {
     res.end(fs.readFileSync('npm/'+path.basename(scriptname)));
   } else {
     var fullname = username+'/'+scriptname
-    console.log((new Date())+' fetching script '+fullname)
+    console.log((new Date())+' loading '+fullname)
     r.connect({host:'localhost', port:28015, db:'cointhink'},
       function(err, conn) {
         r.table('scripts').get(fullname).run(conn, function(err, doc){
@@ -26,6 +26,7 @@ var server = bouncy(function (req, res, bounce) {
               res.statusCode = 200;
               // Authorized
               if(req.method == 'GET') {
+                console.log('serving script '+fullname)
                 res.end(doc.body);
               }
               if(req.method == 'POST') {
@@ -35,7 +36,7 @@ var server = bouncy(function (req, res, bounce) {
                   sig_doc.time = iso8601.fromDate(new Date())
                   sig_doc.type = parts[4]
                   sig_doc.msg = data.toString('utf8')
-                  console.log('posting '+JSON.stringify(sig_doc))
+                  console.log('rethink insert '+JSON.stringify(sig_doc))
                   r.table('signals').insert(sig_doc).run(conn, function(err, doc){
                     if(err){
                       res.end({error: err});
