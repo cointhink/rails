@@ -24,12 +24,22 @@ sock.on('message', function(data){
                 if(payload.action == 'get'){
                   var value = storage[payload.key]
                   console.log(fullname+' get '+payload.key+' '+value)
-                  sock.send(JSON.stringify({"status":"ok", "payload":value}))
+                  respond({"status":"ok", "payload":value})
                 }
                 if(payload.action == 'set'){
                   console.log(fullname+' set '+payload.key+' '+payload.value)
                   storage[payload.key] = payload.value
                   r.table('scripts').get(fullname).update({storage:storage}).run(conn, function(status){
+                    respond({"status":"ok", "payload":status})
+                  })
+                }
+                if(payload.action == 'load'){
+                  console.log(fullname+' load storage')
+                  respond({"status":"ok", "payload":storage})
+                }
+                if(payload.action == 'store'){
+                  console.log(fullname+' store storage')
+                  r.table('scripts').get(fullname).update({storage:payload.storage}).run(conn, function(status){
                     respond({"status":"ok", "payload":status})
                   })
                 }
