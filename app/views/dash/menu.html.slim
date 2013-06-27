@@ -10,7 +10,7 @@
       tr
         td.exchange
           a.btn href="#{exchange_path(e[:exchange])}"
-            | #{e[:exchange].display_name} 
+            ' #{e[:exchange].display_name}
             | #{image_tag "/flags/#{e[:exchange].country_code}.png"}
         - if e[:depth_runs]
           - ['bid','ask'].each do |mkt|
@@ -23,7 +23,7 @@
   ul.arbitrage
     li
       a.btn style="margin-right: 1em" href="/arbitrage/btcusd"
-        | BTC/USD
+        | BTC/USD Chart
       - if @snapshot.strategy
         - trade = @snapshot.strategy.stage.children.select{|s| s.name=="Trades"}.first
         | $#{"%0.0f"%trade.potential.amount} available
