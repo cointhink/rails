@@ -70,6 +70,10 @@ class Script < ActiveRecord::Base
       run(R)
   end
 
+  def reset!
+    r.table('scripts').get(script_name).update(storage:{}).run(R)
+  end
+
   def script_name
     "#{user.username}/#{name}"
   end

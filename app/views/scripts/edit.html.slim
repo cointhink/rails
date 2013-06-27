@@ -21,9 +21,13 @@
     div
       button type='submit' Update
 
-  div.pull-right
+  div
     = form_tag("/#{@script.user.slug}/#{@script.slug}",{:method=>:delete,:confirm=>"sure?"}) do
       = button_tag "Delete", :confirm => "Delete #{@script.name}?"
+
+  div
+    = form_tag("/#{@script.user.slug}/#{@script.slug}/reset",{:confirm=>"sure?"}) do
+      = button_tag "Reset", :confirm => "Reset stored variables for #{@script.name}?"
 
 javascript:
   $(function(){scripts_edit_setup(#{{@script.to_json}})})

@@ -73,6 +73,18 @@ class ScriptsController < ApplicationController
     redirect_to :action => :lastrun
   end
 
+  def reset
+    @script = Script.find(params[:scriptname])
+    if @script
+      if owner_check(@script)
+        @script.reset!
+      else
+        flash[:error] = "No permission to reset this script."
+      end
+    end
+    redirect_to :action => :lastrun
+  end
+
   private
   def owner_check(script)
     script.user == current_user

@@ -26,6 +26,7 @@ Btcmarketwatch::Application.routes.draw do
   get '/:username/:scriptname/edit' => 'scripts#edit'
   post '/:username/:scriptname/start' => 'scripts#start'
   post '/:username/:scriptname/stop' => 'scripts#stop'
+  post '/:username/:scriptname/reset' => 'scripts#reset'
 
   match '*nowhere' => 'dash#fourohfour'
 end
