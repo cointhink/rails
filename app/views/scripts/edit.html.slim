@@ -26,6 +26,10 @@
       = button_tag "Delete", :confirm => "Delete #{@script.name}?"
 
   div
+    h3 Storage
+    p #{@script.storage.inspect}
+
+  div
     = form_tag("/#{@script.user.slug}/#{@script.slug}/reset",{:confirm=>"sure?"}) do
       = button_tag "Reset", :confirm => "Reset stored variables for #{@script.name}?"
 

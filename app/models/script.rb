@@ -94,6 +94,10 @@ class Script < ActiveRecord::Base
     doc["inventory"]
   end
 
+  def storage
+    doc["storage"]
+  end
+
   def currencies
     inventory.keys
   end
