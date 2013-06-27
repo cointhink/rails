@@ -23,6 +23,12 @@
       - @script.inventory.each do |currency, amount|
         li #{amount} #{currency.upcase}
 
+  div.Storage
+    h3 Storage
+    ul
+      - @script.storage.each do |key, value|
+        li #{key} = #{value}
+
   div.output
     - if @run
       pre
