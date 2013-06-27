@@ -58,6 +58,7 @@ class Script < ActiveRecord::Base
     r.table('scripts').insert(id:script_name,
                               key:UUID.generate,
                               inventory: {},
+                              trades: [],
                               storage: {}).run(R)
   end
 

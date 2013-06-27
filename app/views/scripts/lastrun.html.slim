@@ -20,8 +20,8 @@
   div.inventory
     h3 Inventory
     ul
-      - @script.currencies.each do |currency|
-        li #{currency}
+      - @script.inventory.each do |currency, amount|
+        li #{amount} #{currency.upcase}
 
   div.output
     - if @run
