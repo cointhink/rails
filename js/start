@@ -1,2 +1,3 @@
-echo starting script_get.js
+echo starting services
 node_modules/.bin/forever start script_get.js
+node_modules/.bin/forever start storage_relay.js
