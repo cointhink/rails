@@ -22,8 +22,10 @@ ws.on('connect', function(connection) {
     });
     connection.on('message', function(message) {
         if (message.type === 'utf8') {
-          console.log(message.utf8Data)
-          sock.send(message.utf8Data)
+          packet = JSON.parse(message.utf8Data)
+          var data = JSON.stringify(packet["ticker"])
+          console.log(data)
+          sock.send(data)
         }
     });
 })
