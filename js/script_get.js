@@ -2,7 +2,6 @@ var bouncy = require('bouncy');
 var r = require('rethinkdb');
 var fs = require('fs');
 var path = require('path');
-var iso8601 = require('iso8601');
 
 var server = bouncy(function (req, res, bounce) {
   var parts = req.url.split('/');
