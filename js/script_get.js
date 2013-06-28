@@ -33,7 +33,7 @@ var server = bouncy(function (req, res, bounce) {
                 req.on("data",function(data){
                   var sig_doc = {}
                   sig_doc.name = username+'/'+scriptname
-                  sig_doc.time = iso8601.fromDate(new Date())
+                  sig_doc.time = (new Date()).toISOString()
                   sig_doc.type = parts[4]
                   sig_doc.msg = data.toString('utf8')
                   console.log('rethink insert '+JSON.stringify(sig_doc))
