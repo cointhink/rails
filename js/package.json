@@ -9,6 +9,8 @@
     "iso8601":"*",
     "zmq":"*",
     "mtgox-orderbook":"*",
-    "socket.io-client":"*"
+    "socket.io-client":"*",
+    "websocket":"*",
+    "riemann":"*"
   }
 }

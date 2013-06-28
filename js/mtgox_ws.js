@@ -8,6 +8,11 @@ var ws = new WebSocketClient();
 sock.bindSync('tcp://172.16.42.1:3001');
 console.log('event_relay zmq push bound to port 3001');
 
+var riemann = require('riemann').createClient({ host: 'localhost', port: 5555 })
+var use_riemann = false
+riemann.tcp.socket.on('error', function(e){ console.warn("Riemann TCP error: "+e.message)})
+riemann.tcp.socket.on('connect', function(){ use_riemann = true; console.log("connected")})
+
 ws.on('connectFailed', function(error) {
     console.log('Connect Error: ' + error.toString());
 });
