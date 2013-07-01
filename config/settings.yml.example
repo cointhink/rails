@@ -27,3 +27,7 @@ rethinkdb:
   host: 'localhost'
   port: 28015
   db: 'data'
+exceptions:
+  to: 'sys@admin'
+  from: 'exceptions@server'
+  prefix: '[Site] '
