@@ -17,6 +17,7 @@ gem 'docker-client', :git => "git://github.com/donpdonp/docker-client.git", :req
 gem 'workflow'
 gem 'rethinkdb'
 gem 'uuid'
+gem 'riemann-client'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'
