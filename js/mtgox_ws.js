@@ -17,7 +17,7 @@ ws.on('connectFailed', function(error) {
     console.log('Connect Error: ' + error.toString());
 });
 
-var message_count = 0;
+var old_message_count, message_count = 0;
 ws.on('connect', function(connection) {
     console.log('mtgox websocket connected');
     connection.on('error', function(error) {
@@ -39,7 +39,10 @@ ws.on('connect', function(connection) {
 
 setInterval(function(){
   riemann_send(message_count)
-  console.log('messages per second '+message_count)
+  if(old_message_count != message_count){
+    console.log((new Date())+' messages per second '+message_count)
+  }
+  old_message_count = message_count
   message_count = 0
 }, 1000)
 
