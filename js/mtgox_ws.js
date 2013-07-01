@@ -6,17 +6,18 @@ var WebSocketClient = require('websocket').client;
 var ws = new WebSocketClient();
 
 sock.bindSync('tcp://172.16.42.1:3001');
-console.log('event_relay zmq push bound to port 3001');
+console.log('zeromq push bound to port 3001');
 
 var riemann = require('riemann').createClient({ host: 'localhost', port: 5555 })
 var use_riemann = false
 riemann.tcp.socket.on('error', function(e){ console.warn("Riemann TCP error: "+e.message)})
-riemann.tcp.socket.on('connect', function(){ use_riemann = true; console.log("connected")})
+riemann.tcp.socket.on('connect', function(){ use_riemann = true; console.log("riemann connected")})
 
 ws.on('connectFailed', function(error) {
     console.log('Connect Error: ' + error.toString());
 });
 
+var message_count = 0;
 ws.on('connect', function(connection) {
     console.log('mtgox websocket connected');
     connection.on('error', function(error) {
@@ -28,12 +29,28 @@ ws.on('connect', function(connection) {
     connection.on('message', function(message) {
         if (message.type === 'utf8') {
           packet = JSON.parse(message.utf8Data)
+          console.log(packet.ticker.last)
+          message_count += 1
           var data = JSON.stringify(packet["ticker"])
-          console.log(data)
           sock.send(data)
         }
     });
 })
+
+setInterval(function(){
+  riemann_send(message_count)
+  console.log('messages per second '+message_count)
+  message_count = 0
+}, 1000)
+
+function riemann_send(count) {
+  if(use_riemann){
+    riemann.send(riemann.Event({
+      service: 'mtgox',
+      metric: count
+    }))
+  }
+}
 
 ws.connect('ws://websocket.mtgox.com:80/?Channel=ticker.BTCUSD', null,  "http://websocket.mtgox.com");
 
