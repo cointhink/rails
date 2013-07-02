@@ -1,6 +1,6 @@
 = render :partial => 'menu'
 .scripts-lastrun
-  h2 Script Run - "#{@script.name}"
+  h2 Script "#{@script.name}"
 
   - if logged_in? && current_user == @script.user
     div.commands
@@ -23,13 +23,7 @@
       - @script.inventory.each do |currency, amount|
         li #{amount} #{currency.upcase}
 
-  div.Storage
-    h3 Storage
-    ul
-      - @script.storage.each do |key, value|
-        li #{key} = #{value}
-
-  div.output
+  div.runs
     - if @run
       pre
         = @run.json_output
@@ -49,6 +43,12 @@
                 pre #{signal["msg"]}
               - else
                 ' #{signal["msg"]}
+
+  div.Storage
+    h3 Storage
+    ul
+      - @script.storage.each do |key, value|
+        li #{key} = #{value}
 
   div.body
     h3 Code
