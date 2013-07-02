@@ -21,7 +21,7 @@
     h3 Inventory
     ul
       - @script.inventory.each do |currency, amount|
-        li #{amount} #{currency.upcase}
+        li #{"%0.5f" % amount} #{currency.upcase}
 
   div.trades
     h3 Trades

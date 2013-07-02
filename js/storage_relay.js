@@ -53,6 +53,11 @@ sock.on('message', function(data){
                       r.table('scripts').get(fullname).
                       update({inventory:doc.inventory}).run(conn, function(err){
                         if(err) console.log(err)
+                        var trade_msg = "["+payload.exchange+"] "+payload.buysell+" "+payload.quantity+payload.market+"@"+payload.amount+payload.currency
+                        r.table('signals').insert({name:fullname,
+                                                   time:(new Date()).toISOString(),
+                                                   type:payload.action,
+                                                   msg:trade_msg}).run(conn, function(err){if(err)console.log(err)})
                         respond(response)
                       })
                     })

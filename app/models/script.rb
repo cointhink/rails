@@ -57,7 +57,7 @@ class Script < ActiveRecord::Base
   def rethink_insert
     r.table('scripts').insert(id:script_name,
                               key:UUID.generate,
-                              inventory: {},
+                              inventory: {btc:1,usd:100},
                               trades: [],
                               storage: {}).run(R)
   end
@@ -174,7 +174,7 @@ class Script < ActiveRecord::Base
   end
 
   def build_container
-    result = docker.containers.create(['cointhink-guest', user.username, name],
+    result = docker.containers.create(['ct-g', user.username, name],
                                       SETTINGS["docker"]["image"],
                                       {"Env"=>["cointhink_user_name=#{user.username}",
                                                "cointhink_script_name=#{name}",
