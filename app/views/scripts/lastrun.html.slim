@@ -23,6 +23,12 @@
       - @script.inventory.each do |currency, amount|
         li #{amount} #{currency.upcase}
 
+  div.trades
+    h3 Trades
+    ul
+      - @script.trades.each do |trade|
+        li #{trade}
+
   div.runs
     - if @run
       pre
