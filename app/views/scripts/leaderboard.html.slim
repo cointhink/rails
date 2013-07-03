@@ -1,14 +1,16 @@
 = render :partial => 'menu'
-div.scripts-explore
-  h2 Explore Scripts
+div.scripts-leaderboard
+  h2 Leaderboard
 
-  h4 Featured Scripts
-  ul
+  ul.leaders
     - @scripts.each do |script|
       li
-        a href="/#{script.user.slug}/#{script.slug}"
-          span.name
+        span.name
+          a href="/#{script.user.slug}/#{script.slug}"
             | #{script.user.slug}/#{script.slug}
+        span.invbtc
+          | #{"%0.5f"%script.inventory["btc"]}btc
+
         |  (
         time datetime="#{script.created_at.iso8601}" data-format="yyyy-MMM-dd"
         | )

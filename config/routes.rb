@@ -16,8 +16,8 @@ Btcmarketwatch::Application.routes.draw do
   match '/session/signup' => 'session#signup'
 
   post '/scripts' => 'scripts#create'
-  match '/scripts' => 'scripts#list'
-  match '/scripts/explore' => 'scripts#explore'
+  match '/scripts' => 'scripts#manage'
+  match '/scripts/leaderboard' => 'scripts#leaderboard'
 
   get '/:id' => 'users#show'
   get '/:username/:scriptname' => 'scripts#lastrun'

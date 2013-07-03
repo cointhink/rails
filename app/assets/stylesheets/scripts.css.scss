@@ -64,7 +64,12 @@
   }
 }
 
-.scripts-explore {
+.scripts-leaderboard {
   .name { font-size: 110%}
-  li { list-style-type: square}
+  li {
+    list-style-type: none;
+    span + span {
+      margin-left: 0.5em;
+    }
+  }
 }

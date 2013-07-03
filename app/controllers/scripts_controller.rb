@@ -1,7 +1,7 @@
 class ScriptsController < ApplicationController
 	before_filter :require_login, :except => [:lastrun, :explore]
 
-	def list
+	def manage
     @scripts = current_user.scripts.valid
 	end
 
@@ -17,7 +17,7 @@ class ScriptsController < ApplicationController
     redirect_to :action => :list
 	end
 
-  def explore
+  def leaderboard
     @scripts = Script.all
   end
 
