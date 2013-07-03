@@ -14,7 +14,7 @@ class ScriptsController < ApplicationController
     else
       flash[:error] = script.errors.full_messages.join('. ')
     end
-    redirect_to :action => :list
+    redirect_to :action => :manage
 	end
 
   def leaderboard
@@ -51,7 +51,7 @@ class ScriptsController < ApplicationController
       @script.destroy
       flash[:success]="Script #{@script.name} deleted."
     end
-    redirect_to :controller => :scripts, :action => :list
+    redirect_to :controller => :scripts, :action => :manage
   end
 
   def start
