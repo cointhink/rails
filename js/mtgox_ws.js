@@ -18,6 +18,8 @@ ws.on('connectFailed', function(error) {
 });
 
 var old_message_count, message_count = 0;
+var old_message_date = new Date();
+
 ws.on('connect', function(connection) {
     console.log('mtgox websocket connected');
     connection.on('error', function(error) {
@@ -39,10 +41,17 @@ ws.on('connect', function(connection) {
 
 setInterval(function(){
   riemann_send(message_count)
-  if(old_message_count != message_count){
+  if(old_message_count == message_count){
+    var stable_time = ((new Date()) - old_message_date)/1000
+    if(stable_time > 120) {
+      console.log('mps rate has been at '+message_count+' for '+stable_time+' seconds!')
+      process.exit(1)
+    }
+  } else {
     console.log((new Date())+' messages per second '+message_count)
+    old_message_count = message_count
+    old_message_date = new Date()
   }
-  old_message_count = message_count
   message_count = 0
 }, 1000)
 
