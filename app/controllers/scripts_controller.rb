@@ -1,5 +1,5 @@
 class ScriptsController < ApplicationController
-	before_filter :require_login, :except => [:lastrun, :explore]
+	before_filter :require_login, :except => [:lastrun, :leaderboard]
 
 	def manage
     @scripts = current_user.scripts.valid
