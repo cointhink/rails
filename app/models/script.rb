@@ -57,7 +57,7 @@ class Script < ActiveRecord::Base
   def rethink_insert
     r.table('scripts').insert(id:script_name,
                               key:UUID.generate,
-                              inventory: {btc:1,usd:100},
+                              inventory: {btc:1},
                               trades: [],
                               storage: {}).run(R)
   end
