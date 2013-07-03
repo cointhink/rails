@@ -41,9 +41,6 @@ class Script < ActiveRecord::Base
   end
 
   def safe_update(params)
-    unless params[:name].blank?
-      self.name = params[:name]
-    end
     unless params[:url].blank?
       self.url = params[:url]
       # response = RestClient.get(params[:url])

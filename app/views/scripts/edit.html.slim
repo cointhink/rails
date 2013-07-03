@@ -1,11 +1,9 @@
 = render :partial => 'menu'
 .scripts-edit
-  h2 Edit Script
+  h2 Edit Script "#{@script.name}"
 
   = form_tag "/#{@script.user.slug}/#{@script.slug}/", {:method => :put} do
     fieldset
-      label Name
-      input type="string" value="#{@script.name}" name="script[name]"
 
       label
         ' Content from
