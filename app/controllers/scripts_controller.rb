@@ -19,6 +19,7 @@ class ScriptsController < ApplicationController
 
   def leaderboard
     @scripts = Script.all
+    @scripts.sort! {|a,b| b.inventory["btc"] <=> a.inventory["btc"]}
   end
 
   def lastrun
