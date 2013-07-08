@@ -10,6 +10,7 @@
     "mtgox-orderbook":"*",
     "socket.io-client":"*",
     "websocket":"*",
-    "riemann":"*"
+    "riemann":"*",
+    "redis":"*"
   }
 }

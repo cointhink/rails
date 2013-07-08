@@ -1,6 +1,7 @@
 var zmq = require('zmq'),
     sock = zmq.socket('push');
-var websocket = require('websocket');
+var websocket = require('websocket'),
+    redis = require('redis').createClient()
 
 var WebSocketClient = require('websocket').client;
 var ws = new WebSocketClient();
@@ -33,8 +34,9 @@ ws.on('connect', function(connection) {
           packet = JSON.parse(message.utf8Data)
           console.log(packet.ticker.last)
           message_count += 1
-          var data = JSON.stringify(packet["ticker"])
-          sock.send(data)
+          var ticker = packet["ticker"]
+          zmq_send(ticker)
+          redis_ticker(ticker)
         }
     });
 })
@@ -54,6 +56,18 @@ setInterval(function(){
   }
   message_count = 0
 }, 1000)
+
+function zmq_send(packet){
+  var data = JSON.stringify(packet)
+  sock.send(data)
+}
+
+function redis_ticker(ticker){
+  var hash_name = 'mtgox-ticker-'+ticker.item+ticker.last.currency
+  console.log('set '+hash_name+' ')
+  redis.hset(hash_name, 'value', ticker.last.value)
+  redis.hset(hash_name, 'now', (new Date(ticker.now/1000)).toISOString())
+}
 
 function riemann_send(count) {
   if(use_riemann){
