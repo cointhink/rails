@@ -19,15 +19,18 @@
 
   div.inventory
     h3 Inventory
-    ul
-      - @script.inventory.each do |currency, amount|
-        li #{"%0.5f" % amount} #{currency.upcase}
+    - if @script.inventory
+      ul
+        - @script.inventory.each do |currency, amount|
+          li #{"%0.5f" % amount} #{currency.upcase}
+
 
   div.trades
     h3 Trades
-    ul
-      - @script.trades.each do |trade|
-        li #{trade}
+    - if @script.trades
+      ul
+        - @script.trades.each do |trade|
+          li #{trade}
 
   div.runs
     - if @run
@@ -52,9 +55,10 @@
 
   div.Storage
     h3 Storage
-    ul
-      - @script.storage.each do |key, value|
-        li #{key} = #{value}
+    - if @script.storage
+      ul
+        - @script.storage.each do |key, value|
+          li #{key} = #{value}
 
   div.body
     h3 Code

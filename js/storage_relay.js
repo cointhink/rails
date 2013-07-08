@@ -91,6 +91,7 @@ sock.on('message', function(data){
 })
 
 function respond(payload){
+  console.dir(payload)
   sock.send(JSON.stringify(payload))
 }
 
