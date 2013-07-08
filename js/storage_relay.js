@@ -36,11 +36,11 @@ sock.on('message', function(data){
                   })
                 }
                 if(payload.action == 'load'){
-                  console.log(fullname+' load storage')
+                  console.log(fullname+' load storage '+JSON.stringify(storage))
                   respond({"status":"ok", "payload":storage})
                 }
                 if(payload.action == 'store'){
-                  console.log(fullname+' store storage')
+                  console.log(fullname+' store storage '+JSON.stringify(payload.storage))
                   r.table('scripts').get(fullname).update({storage:payload.storage}).run(conn, function(status){
                     respond({"status":"ok", "payload":status})
                   })
