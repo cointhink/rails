@@ -1,6 +1,8 @@
 var zmq = require('zmq'),
     sock = zmq.socket('rep');
-var r = require('rethinkdb');
+var r = require('rethinkdb'),
+    redis = require('redis').createClient()
+
 
 sock.bindSync('tcp://172.16.42.1:3003');
 console.log('storage relay on 3003')
@@ -45,25 +47,30 @@ sock.on('message', function(data){
                 }
                 if(payload.action == 'trade'){
                   console.log(fullname+' trade '+payload.exchange+' '+payload.market+' '+payload.buysell)
-                  var response = trade(payload, doc.inventory)
-                  if(response.status == 'ok'){
-                    r.table('scripts').get(fullname)('trades').
-                    prepend(response.payload.trade).run(conn, function(err){
-                      if(err) console.log(err)
-                      r.table('scripts').get(fullname).
-                      update({inventory:doc.inventory}).run(conn, function(err){
+                  var hashname = payload.exchange.toLowerCase()+"-ticker-"+
+                                 payload.market.toUpperCase()+
+                                 payload.currency.toUpperCase()
+                  redis.hgetall(hashname, function(err,ticker){
+                    var response = trade(payload, doc.inventory, ticker)
+                    if(response.status == 'ok'){
+                      r.table('scripts').get(fullname)('trades').
+                      prepend(response.payload.trade).run(conn, function(err){
                         if(err) console.log(err)
-                        var trade_msg = "["+payload.exchange+"] "+payload.buysell+" "+payload.quantity+payload.market+"@"+payload.amount+payload.currency
-                        r.table('signals').insert({name:fullname,
-                                                   time:(new Date()).toISOString(),
-                                                   type:payload.action,
-                                                   msg:trade_msg}).run(conn, function(err){if(err)console.log(err)})
-                        respond(response)
+                        r.table('scripts').get(fullname).
+                        update({inventory:doc.inventory}).run(conn, function(err){
+                          if(err) console.log(err)
+                          var trade_msg = "["+payload.exchange+"] "+payload.buysell+" "+payload.quantity+payload.market+"@"+payload.amount+payload.currency
+                          r.table('signals').insert({name:fullname,
+                                                     time:(new Date()).toISOString(),
+                                                     type:payload.action,
+                                                     msg:trade_msg}).run(conn, function(err){if(err)console.log(err)})
+                          respond(response)
+                        })
                       })
-                    })
-                  } else {
-                    respond(response)
-                  }
+                    } else {
+                      respond(response)
+                    }
+                  })
                 }
               } else {
                 console.log(fullname+" bad key!")
@@ -87,35 +94,45 @@ function respond(payload){
   sock.send(JSON.stringify(payload))
 }
 
-function trade(payload, inventory){
 //trade('mtgox','btc',4,'buy','usd',92)
 //trade('mtgox','btc',4,'sell','usd',97)
-  var result
-  if(payload.buysell == 'buy') {
-    var on_hand = inventory[payload.currency]
-    if(on_hand){
-      var price = (payload.amount * payload.quantity)
-      if(on_hand >= price) {
-        inventory[payload.currency] -= price
-        result = {"status":"ok", payload: {trade:payload, inventory:inventory}}
-      } else {
-        result = {"status":"err", payload:""+on_hand+payload.currency+" is in sufficient for "+price}
+function trade(payload, inventory, ticker){
+  var result // return value
+  var ticker_age_sec = ((new Date()) - new Date(ticker.now))/1000
+  if(ticker_age_sec < 120){
+    var price_diff_ratio = (Math.abs(payload.amount - ticker.value))/ticker.value
+    if(price_diff_ratio <= 0.01){
+      if(payload.buysell == 'buy') {
+        var on_hand = inventory[payload.currency]
+        if(on_hand){
+          var price = (payload.amount * payload.quantity)
+          if(on_hand >= price) {
+              inventory[payload.currency] -= price
+              result = {"status":"ok", payload: {trade:payload, inventory:inventory}}
+          } else {
+            result = {"status":"err", payload:""+on_hand+payload.currency+" is in sufficient for "+price}
+          }
+        } else {
+          result = {"status":"err", payload:"no "+payload.currency+" in inventory"}
+        }
+      } else if (payload.buysell == 'sell') {
+        var on_hand = inventory[payload.market]
+        if(on_hand){
+          if(on_hand >= payload.quantity){
+            inventory[payload.market] -= payload.quantity
+            result = {"status":"ok", payload: {trade:payload, inventory:inventory}}
+          } else {
+            result = {"status":"err", payload:""+on_hand+payload.market+" is in sufficient for "+payload.quantity}
+          }
+        } else {
+          result = {"status":"err", payload:"no "+payload.market+" in inventory"}
+        }
       }
     } else {
-      result = {"status":"err", payload:"no "+payload.currency+" in inventory"}
+      result = {"status":"err", payload:"price of "+payload.amount+" is more than 1% away from exchange "+payload.exchange+" price "+ticker.value}
     }
-  } else if (payload.buysell == 'sell') {
-    var on_hand = inventory[payload.market]
-    if(on_hand){
-      if(on_hand >= payload.quantity){
-        inventory[payload.market] -= payload.quantity
-        result = {"status":"ok", payload: {trade:payload, inventory:inventory}}
-      } else {
-        result = {"status":"err", payload:""+on_hand+payload.market+" is in sufficient for "+payload.quantity}
-      }
-    } else {
-      result = {"status":"err", payload:"no "+payload.market+" in inventory"}
-    }
+  } else {
+    result = {"status":"err", payload:"exchange "+payload.exchange+" price too old ("+age+" secs) validate this try. please try again."}
   }
 
   return result
