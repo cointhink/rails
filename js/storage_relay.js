@@ -43,17 +43,19 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
               } else if(payload.action == 'set'){
                 console.log(fullname+' set '+payload.key+' '+payload.value)
                 storage[payload.key] = payload.value
-                r.table('scripts').get(fullname).update({storage:storage}).run(conn, function(status){
+                r.table('scripts').get(fullname).
+                  update({storage:storage}).run(conn, function(status){
                   console.log(fullname+' set '+payload.key+' '+payload.value+' = '+status)
                   respond({"status":"ok", "payload":status})
                 })
               } else if(payload.action == 'load'){
-                console.log(fullname+' load storage '+JSON.stringify(storage))
+                console.log(fullname+' load storage, returning '+JSON.stringify(storage))
                 respond({"status":"ok", "payload":storage})
               } else if(payload.action == 'store'){
                 console.log(fullname+' store storage '+JSON.stringify(payload.storage))
-                r.table('scripts').get(fullname).update({storage:payload.storage}).run(conn, function(status){
-                  console.log(fullname+' store storage = '+status)
+                r.table('scripts').get(fullname).
+                  update({storage:payload.storage}).run(conn, function(status){
+                  console.log(fullname+' store storage result '+status)
                   respond({"status":"ok", "payload":status})
                 })
               } else if(payload.action == 'trade'){
@@ -65,10 +67,12 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
                   console.log('redis return '+JSON.stringify(ticker))
                   var response = trade(payload, doc.inventory, ticker)
                   if(response.status == 'ok'){
+                    console.log("prepending trades with "+JSON.stringify(response.payload.trade))
                     r.table('scripts').get(fullname)('trades').
-                    prepend(response.payload.trade).run(conn, function(err, doc){
-                      console.log('prepend trades done trade count '+doc.trades.length)
+                    prepend(response.payload.trade).run(conn, function(err, trades){
+                      console.log('prepend trades done. size '+trades.length)
                       if(err) { console.log('rethink prepend error: '+err) }
+                      console.log('updating inventory with doc '+JSON.stringify(doc))
                       r.table('scripts').get(fullname).
                       update({inventory:doc.inventory}).run(conn, function(err){
                         console.log('update inventory done')
