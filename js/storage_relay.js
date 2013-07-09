@@ -6,10 +6,17 @@ var r = require('rethinkdb'),
 
 r.connect({host:'localhost', port:28015, db:'cointhink'},
   function(err, conn) {
-  sock.bindSync('tcp://172.16.42.1:3003');
-  console.log('storage relay on 3003')
+
+  conn.addListener('error', function(e) {
+    console.log("rethinkdb error: "+e)
+  })
+
+  conn.addListener('close', function() {
+    console.log("rethinkdb closed")
+  })
 
   sock.on('message', function(data){
+    console.log("REQ: "+data)
     try {
       var message = JSON.parse(data)
       var payload = message.payload
@@ -27,37 +34,38 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
                 var value = storage[payload.key]
                 console.log(fullname+' get '+payload.key+' '+value)
                 respond({"status":"ok", "payload":value})
-              }
-              if(payload.action == 'set'){
+              } else if(payload.action == 'set'){
                 console.log(fullname+' set '+payload.key+' '+payload.value)
                 storage[payload.key] = payload.value
                 r.table('scripts').get(fullname).update({storage:storage}).run(conn, function(status){
+                  console.log(fullname+' set '+payload.key+' '+payload.value+' = '+status)
                   respond({"status":"ok", "payload":status})
                 })
-              }
-              if(payload.action == 'load'){
+              } else if(payload.action == 'load'){
                 console.log(fullname+' load storage '+JSON.stringify(storage))
                 respond({"status":"ok", "payload":storage})
-              }
-              if(payload.action == 'store'){
+              } else if(payload.action == 'store'){
                 console.log(fullname+' store storage '+JSON.stringify(payload.storage))
                 r.table('scripts').get(fullname).update({storage:payload.storage}).run(conn, function(status){
+                  console.log(fullname+' store storage = '+status)
                   respond({"status":"ok", "payload":status})
                 })
-              }
-              if(payload.action == 'trade'){
+              } else if(payload.action == 'trade'){
                 console.log(fullname+' trade '+payload.exchange+' '+payload.market+' '+payload.buysell)
                 var hashname = payload.exchange.toLowerCase()+"-ticker-"+
                                payload.market.toUpperCase()+
                                payload.currency.toUpperCase()
                 redis.hgetall(hashname, function(err,ticker){
+                  console.log('redis return '+ticker)
                   var response = trade(payload, doc.inventory, ticker)
                   if(response.status == 'ok'){
                     r.table('scripts').get(fullname)('trades').
                     prepend(response.payload.trade).run(conn, function(err){
-                      if(err) console.log(err)
+                      console.log('prepend trades done')
+                      if(err) { console.log(err) }
                       r.table('scripts').get(fullname).
                       update({inventory:doc.inventory}).run(conn, function(err){
+                        console.log('update inventory done')
                         if(err) console.log(err)
                         var trade_msg = "["+payload.exchange+"] "+payload.buysell+" "+payload.quantity+payload.market+"@"+payload.amount+payload.currency
                         r.table('signals').insert({name:fullname,
@@ -71,6 +79,8 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
                     respond(response)
                   }
                 })
+              } else {
+                respond({"status":"err", "msg":"unknown action "+payload.action})
               }
             } else {
               console.log(fullname+" bad key!")
@@ -86,11 +96,16 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
       console.log(ex+' ignoring "'+data+'"')
       respond({"status":"garbled"})
     }
+
   })
 
+  sock.bindSync('tcp://172.16.42.1:3003');
+  console.log('storage relay on 3003')
+
   function respond(payload){
-    console.dir(payload)
-    sock.send(JSON.stringify(payload))
+    var data = JSON.stringify(payload)
+    console.log('REP: '+data)
+    sock.send(data)
   }
 
   //trade('mtgox','btc',4,'buy','usd',92)

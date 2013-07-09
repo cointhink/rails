@@ -40,12 +40,17 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
               res.end(doc.body);
             }
             if(req.method == 'POST') {
-              req.on("data",function(data){
+              var body = ""
+              req.on("readable",function(){
+                var data = req.read()
+                body += data.toString()
+              })
+              req.on("end",function(){
                 var sig_doc = {}
                 sig_doc.name = username+'/'+scriptname
                 sig_doc.time = (new Date()).toISOString()
                 sig_doc.type = parts[4]
-                sig_doc.msg = data.toString('utf8')
+                sig_doc.msg = body
                 console.log('rethink insert '+JSON.stringify(sig_doc))
                 r.table('signals').insert(sig_doc).run(conn, function(err, doc){
                   if(err){
