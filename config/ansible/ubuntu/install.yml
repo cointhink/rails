@@ -8,6 +8,7 @@
     - action: apt_repository repo=ppa:chris-lea/node.js
     - action: apt update_cache=yes
 
+    - action: apt pkg=libprotobuf-dev state=present
     - action: apt pkg=rethinkdb state=present
     - command: cp /etc/rethinkdb/default.conf.sample /etc/rethinkdb/instances.d/default.conf creates=/etc/rethinkdb/instances.d/default.conf
     - action: apt pkg=lxc-docker state=present
