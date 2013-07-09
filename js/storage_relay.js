@@ -95,6 +95,7 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
 
   //trade('mtgox','btc',4,'buy','usd',92)
   //trade('mtgox','btc',4,'sell','usd',97)
+  //payload: exchange, market, quantity, buysell, currency, amount, cb
   function trade(payload, inventory, ticker){
     var result // return value
     var ticker_age_sec = ((new Date()) - new Date(ticker.now))/1000
@@ -107,6 +108,7 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
             var price = (payload.amount * payload.quantity)
             if(on_hand >= price) {
                 inventory[payload.currency] -= price
+                inventory[payload.market] += payload.quantity
                 result = {"status":"ok", payload: {trade:payload, inventory:inventory}}
             } else {
               result = {"status":"err", payload:""+on_hand+payload.currency+" is in sufficient for "+price}
@@ -119,6 +121,7 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
           if(on_hand){
             if(on_hand >= payload.quantity){
               inventory[payload.market] -= payload.quantity
+              inventory[payload.currency] += (payload.quantity * payload.amount)
               result = {"status":"ok", payload: {trade:payload, inventory:inventory}}
             } else {
               result = {"status":"err", payload:""+on_hand+payload.market+" is in sufficient for "+payload.quantity}
