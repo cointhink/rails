@@ -23,7 +23,7 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
     var key = parts[3]
 
     console.log(req.method+" "+req.url)
-   if((username == 'npm' || username == 'dist') && key == null) {
+    if((username == 'npm' || username == 'dist') && key == null) {
       console.log('fetching npm '+scriptname)
       res.statusCode = 200;
       res.end(fs.readFileSync('npm/'+path.basename(scriptname)));
@@ -31,6 +31,7 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
       var fullname = username+'/'+scriptname
       console.log((new Date())+' loading '+fullname)
       r.table('scripts').get(fullname).run(conn, function(err, doc){
+        console.log((new Date())+' loaded '+fullname)
         if(doc) {
           if(doc.key == key) {
             res.statusCode = 200;

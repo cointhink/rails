@@ -15,6 +15,10 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
     console.log("rethinkdb closed")
   })
 
+  redis.on("error", function (err) {
+        console.log("Redis Error " + err);
+  })
+
   sock.on('message', function(data){
     console.log("REQ: "+data)
     try {
@@ -22,11 +26,13 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
       var payload = message.payload
       var fullname = message.username+"/"+message.scriptname
 
+      console.log("rethink load called on "+fullname)
       r.table('scripts').get(fullname).run(conn, function(err, doc){
         if(err){
-          console.log(err)
+          console.log('rethink load error: '+err)
           respond({"status":"dberr"})
         } else {
+          console.log(fullname+' rethink doc loaded')
           if(doc){
             if(doc.key == message.key){
               var storage = doc.storage
@@ -56,17 +62,17 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
                                payload.market.toUpperCase()+
                                payload.currency.toUpperCase()
                 redis.hgetall(hashname, function(err,ticker){
-                  console.log('redis return '+ticker)
+                  console.log('redis return '+JSON.stringify(ticker))
                   var response = trade(payload, doc.inventory, ticker)
                   if(response.status == 'ok'){
                     r.table('scripts').get(fullname)('trades').
-                    prepend(response.payload.trade).run(conn, function(err){
-                      console.log('prepend trades done')
-                      if(err) { console.log(err) }
+                    prepend(response.payload.trade).run(conn, function(err, doc){
+                      console.log('prepend trades done trade count '+doc.trades.length)
+                      if(err) { console.log('rethink prepend error: '+err) }
                       r.table('scripts').get(fullname).
                       update({inventory:doc.inventory}).run(conn, function(err){
                         console.log('update inventory done')
-                        if(err) console.log(err)
+                        if(err) { console.log('rethink update inventory error: '+err) }
                         var trade_msg = "["+payload.exchange+"] "+payload.buysell+" "+payload.quantity+payload.market+"@"+payload.amount+payload.currency
                         r.table('signals').insert({name:fullname,
                                                    time:(new Date()).toISOString(),
@@ -93,14 +99,14 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
         }
       })
     } catch (ex) {
-      console.log(ex+' ignoring "'+data+'"')
+      console.log(ex+' bad JSON "'+data+'"')
       respond({"status":"garbled"})
     }
 
   })
 
-  sock.bindSync('tcp://172.16.42.1:3003');
-  console.log('storage relay on 3003')
+  sock.connect('tcp://127.0.0.1:3004');
+  console.log('storage relay connected to dealer on 3004')
 
   function respond(payload){
     var data = JSON.stringify(payload)
