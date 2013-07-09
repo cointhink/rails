@@ -72,7 +72,7 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
                     prepend(response.payload.trade).run(conn, function(err, trades){
                       console.log('prepend trades done. size '+trades.length)
                       if(err) { console.log('rethink prepend error: '+err) }
-                      console.log('updating inventory with doc '+JSON.stringify(doc))
+                      console.log('updating inventory with '+JSON.stringify(doc.inventory))
                       r.table('scripts').get(fullname).
                       update({inventory:doc.inventory}).run(conn, function(err){
                         console.log('update inventory done')
