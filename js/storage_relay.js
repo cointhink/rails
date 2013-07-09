@@ -146,6 +146,7 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
           if(on_hand){
             if(on_hand >= payload.quantity){
               inventory[payload.market] -= payload.quantity
+              if(typeof(inventory[payload.currency]) == "undefined") {  inventory[payload.currency] = 0}
               inventory[payload.currency] += (payload.quantity * payload.amount)
               result = {"status":"ok", payload: {trade:payload, inventory:inventory}}
             } else {
