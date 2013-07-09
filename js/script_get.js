@@ -1,11 +1,22 @@
-var bouncy = require('bouncy');
+var http = require('http');
 var r = require('rethinkdb');
 var fs = require('fs');
 var path = require('path');
 
 r.connect({host:'localhost', port:28015, db:'cointhink'},
   function(err, conn) {
-  var server = bouncy(function (req, res, bounce) {
+  conn.addListener('error', function(e) {
+    console.log("rethinkdb error: "+e)
+  })
+
+  conn.addListener('close', function() {
+    console.log("rethinkdb closed")
+  })
+
+  console.log("listening on 3002")
+  http.createServer(do_request).listen(3002);
+
+  function do_request(req, res){
     var parts = req.url.split('/');
     var username = parts[1]
     var scriptname = parts[2]
@@ -56,8 +67,6 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
         }
       })
     }
-  });
-  console.log("listening on 3002")
-  server.listen(3002);
+  }
 })
 
