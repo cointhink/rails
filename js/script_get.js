@@ -31,6 +31,7 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
       var fullname = username+'/'+scriptname
       console.log((new Date())+' loading '+fullname)
       r.table('scripts').get(fullname).run(conn, function(err, doc){
+        if(err){console.log(err)}
         console.log((new Date())+' loaded '+fullname)
         if(doc) {
           if(doc.key == key) {
