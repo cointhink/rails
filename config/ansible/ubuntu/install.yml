@@ -16,4 +16,3 @@
     - action: apt pkg=libzmq-dev state=present
     - action: get_url url=http://aphyr.com/riemann/riemann_0.2.2_all.deb dest=/tmp/
     - action: command dpkg -i /tmp/riemann_0.2.2_all.deb creates=/usr/bin/riemann
-    - action: shell wget https://github.com/downloads/ha/doozerd/doozerd-0.8-linux-amd64.tar.gz; tar zxvf doozerd-0.8-linux-amd64.tar.gz ; mv doozerd-0.8/doozerd /usr/local/bin/ chdir=/tmp creates=/usr/local/bin/doozerd
