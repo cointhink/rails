@@ -13,7 +13,7 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
     console.log("rethinkdb closed")
   })
 
-  console.log("listening on 3002")
+  console.log("rethink connected. http listening on 3002")
   http.createServer(do_request).listen(3002);
 
   function do_request(req, res){
@@ -23,57 +23,75 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
     var key = parts[3]
 
     console.log(req.method+" "+req.url)
-    if((username == 'npm' || username == 'dist') && key == null) {
-      console.log('fetching npm '+scriptname)
-      res.statusCode = 200;
-      res.end(fs.readFileSync('npm/'+path.basename(scriptname)));
-    } else {
-      var fullname = username+'/'+scriptname
-      console.log((new Date())+' loading '+fullname)
-      r.table('scripts').get(fullname).run(conn, function(err, doc){
-        if(err){console.log(err)}
-        console.log((new Date())+' loaded '+fullname)
-        if(doc) {
+
+    var body = ""
+
+    req.on("readable",function(){
+      var data = req.read()
+      body += data.toString()
+    })
+
+    req.on("close",function(){
+      console.log('http client closed early')
+    })
+
+    req.on("end",function(){
+      console.log(body)
+      if((username == 'npm' || username == 'dist') && key == null) {
+        console.log('fetching npm '+scriptname)
+        res.statusCode = 200;
+        respond(fs.readFileSync('npm/'+path.basename(scriptname)));
+      } else {
+        var fullname = username+'/'+scriptname
+        r.table('scripts').get(fullname).run(conn, doc_loaded)
+      }
+
+      function doc_loaded (err, doc){
+        if(err){
+          console.log(err)
+          res.statusCode = 403;
+          respond(JSON.stringify({error: "not found"}));
+        } else {
           if(doc.key == key) {
-            res.statusCode = 200;
             // Authorized
             if(req.method == 'GET') {
               console.log('serving script '+fullname)
-              res.end(doc.body);
+              respond(doc.body);
             }
             if(req.method == 'POST') {
-              var body = ""
-              req.on("readable",function(){
-                var data = req.read()
-                body += data.toString()
-              })
-              req.on("end",function(){
-                var sig_doc = {}
-                sig_doc.name = username+'/'+scriptname
-                sig_doc.time = (new Date()).toISOString()
-                sig_doc.type = parts[4]
-                sig_doc.msg = body
-                console.log('rethink insert '+JSON.stringify(sig_doc))
-                r.table('signals').insert(sig_doc).run(conn, function(err, doc){
-                  if(err){
-                    res.end({error: err});
-                  } else {
-                    res.end(JSON.stringify(doc));
-                  }
-                })
-              })
+              do_post()
             }
           } else {
-            res.statusCode = 403;
-            res.end(JSON.stringify({error: "bad key"}));
-
+            respond(403, JSON.stringify({error: "bad key"}));
           }
-        } else {
-          res.statusCode = 403;
-          res.end(JSON.stringify({error: "not found"}));
         }
-      })
-    }
+
+        function do_post(){
+          var sig_doc = {}
+          sig_doc.name = username+'/'+scriptname
+          sig_doc.time = (new Date()).toISOString()
+          sig_doc.type = parts[4]
+          sig_doc.msg = body
+          r.table('signals').insert(sig_doc).run(conn, function(err, doc){
+            if(err){
+              respond({error: err});
+            } else {
+              respond(JSON.stringify(doc));
+            }
+          })
+        }
+
+        function respond(status, doc) {
+          if(arguments.length == 1) {
+            doc = status
+          } else {
+            res.statusCode = status
+          }
+          res.end(doc)
+        }
+
+      }
+    })
   }
 })
 
