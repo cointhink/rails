@@ -1,20 +1,22 @@
 = render :partial => 'menu'
+script src="/ace/ace.js"
+
 .scripts-edit
   h2 Edit Script "#{@script.name}"
 
   = form_tag "/#{@script.user.slug}/#{@script.slug}/", {:method => :put} do
     fieldset
 
-      label
+      label style="display:none"
         ' Content from
         a.url href=""
           | URL
         '  |
         a.text href=""
           ' Text
-      input.url type="url" placeholder="URL of script body" name="script[body_url]" value="#{@script.body_url}"
       textarea style="display: none" rows="18" name="script[body]"
-        = @script.body
+      #editor
+       = @script.body
 
     div
       button type='submit' Update
@@ -32,4 +34,12 @@
       = button_tag "Reset", :confirm => "Reset stored variables for #{@script.name}?"
 
 javascript:
-  $(function(){scripts_edit_setup(#{{@script.to_json}})})
+  $(function(){
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/clouds");
+    editor.getSession().setMode("ace/mode/javascript");
+    scripts_edit_setup(#{{@script.to_json}})
+    editor.getSession().on('change', function(){
+      $('textarea').val(editor.getSession().getValue());
+    });
+  })

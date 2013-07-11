@@ -29,8 +29,6 @@ $(->
 )
 
 this.scripts_edit_setup = (o) ->
-  if o.url
-    $('.scripts-edit a.url').click()
-  else
-    $('.scripts-edit a.text').click()
-  console.log(o)
+  $('form').submit((f) ->
+    console.log(f)
+  )

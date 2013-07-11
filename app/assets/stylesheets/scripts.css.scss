@@ -16,6 +16,11 @@
   }
 
   fieldset textarea { width: 90% }
+  #editor {
+    width: 80em;
+    height: 300px;
+    font-size: 110%;
+  }
 }
 
 .scripts-lastrun {
@@ -73,3 +78,4 @@
     }
   }
 }
+
