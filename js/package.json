@@ -3,7 +3,7 @@
   "version":"0.0.1",
   "private": true,
   "dependencies": {
-    "rethinkdb":">=1.5.0",
+    "rethinkdb":">=1.7.0-2",
     "forever":"latest",
     "zmq":"*",
     "mtgox-orderbook":"*",
