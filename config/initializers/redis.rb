@@ -1,1 +1,0 @@
-REDIS = Redis.new(:host => SETTINGS["redis"]["host"])
