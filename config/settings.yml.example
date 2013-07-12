@@ -31,3 +31,5 @@ exceptions:
   to: 'sys@admin'
   from: 'exceptions@server'
   prefix: '[Site] '
+redis:
+  host: 'dockerhost'
