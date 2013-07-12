@@ -5,8 +5,9 @@ script src="/ace/ace.js"
   h2 Edit Script "#{@script.name}"
 
   = form_tag "/#{@script.user.slug}/#{@script.slug}/", {:method => :put} do
-    fieldset
+    button type='submit' Save
 
+    fieldset
       label style="display:none"
         ' Content from
         a.url href=""
@@ -19,12 +20,7 @@ script src="/ace/ace.js"
     #editor
      = @script.body
 
-    div
-      button type='submit' Update
 
-  div
-    = form_tag("/#{@script.user.slug}/#{@script.slug}",{:method=>:delete,:confirm=>"sure?"}) do
-      = button_tag "Delete", :confirm => "Delete #{@script.name}?"
 
   div
     h3 Storage
@@ -32,7 +28,12 @@ script src="/ace/ace.js"
 
   div
     = form_tag("/#{@script.user.slug}/#{@script.slug}/reset",{:confirm=>"sure?"}) do
-      = button_tag "Reset", :confirm => "Reset stored variables for #{@script.name}?"
+      = button_tag "Reset Values", :confirm => "Erase stored variables for #{@script.name}?"
+
+  div
+    h3 Delete Script
+    = form_tag("/#{@script.user.slug}/#{@script.slug}",{:method=>:delete,:confirm=>"sure?"}) do
+      = button_tag "Delete", :confirm => "Delete #{@script.name}?"
 
 javascript:
   $(function(){
