@@ -23,8 +23,9 @@ class ScriptsController < ApplicationController
     @last_price = last_price
     # whip up a total value
     @scripts.each do |script|
-      script.inventory["total"] = script.inventory["btc"] +
-                                  script.inventory["usd"] / @last_price["value"].to_f
+      script.inventory["total"] = script.inventory["btc"]
+      if script.inventory["usd"]
+        script.inventory["total"] += script.inventory["usd"] / @last_price["value"].to_f
     end
   end
 
