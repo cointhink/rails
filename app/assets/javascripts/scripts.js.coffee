@@ -28,7 +28,13 @@ $(->
   )
 )
 
-this.scripts_edit_setup = (o) ->
-  $('form').submit((f) ->
-    console.log(f)
+this.scripts_edit_setup = (script, body) ->
+  editor = ace.edit("editor");
+  editor.setTheme("ace/theme/clouds");
+  editor.getSession().setMode("ace/mode/javascript");
+  editor.getSession().setUseSoftTabs(true);
+  editor.getSession().setValue(body);
+  $('form').submit((evt) ->
+    $('textarea').val(editor.getSession().getValue())
   )
+  editor.focus()

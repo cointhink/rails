@@ -35,11 +35,5 @@ script src="/ace/ace.js"
 
 javascript:
   $(function(){
-    var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/clouds");
-    editor.getSession().setMode("ace/mode/javascript");
-    scripts_edit_setup(#{{@script.to_json}})
-    editor.getSession().on('change', function(){
-      $('textarea').val(editor.getSession().getValue());
-    });
+    scripts_edit_setup(#{{@script.to_json}}, #{{@script.body.to_json}})
   })
