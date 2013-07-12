@@ -19,6 +19,7 @@ gem 'rethinkdb'
 gem 'uuid'
 gem 'riemann-client'
 gem 'exception_notification'
+gem 'redis'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'

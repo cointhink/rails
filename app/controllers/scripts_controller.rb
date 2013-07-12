@@ -20,6 +20,12 @@ class ScriptsController < ApplicationController
   def leaderboard
     @scripts = Script.all
     @scripts.sort! {|a,b| b.inventory["btc"] <=> a.inventory["btc"]}
+    @last_price = last_price
+    # whip up a total value
+    @scripts.each do |script|
+      script.inventory["total"] = script.inventory["btc"] +
+                                  script.inventory["usd"] / @last_price["value"].to_f
+    end
   end
 
   def lastrun
@@ -89,5 +95,9 @@ class ScriptsController < ApplicationController
   private
   def owner_check(script)
     script.user == current_user
+  end
+
+  def last_price
+    REDIS.hgetall('mtgox-ticker-BTCUSD')
   end
 end
