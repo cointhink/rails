@@ -36,58 +36,38 @@ class ScriptsController < ApplicationController
   end
 
   def edit
-    @script = Script.find(params[:scriptname])
+    @script = current_user.scripts.find(params[:scriptname])
   end
 
   def update
-    @script = Script.find(params[:scriptname])
+    @script = current_user.scripts.find(params[:scriptname])
     @script.safe_update(params[:script])
     redirect_to :action => :lastrun, :scriptname => @script.slug
   end
 
   def delete
-    @script = Script.find(params[:scriptname])
-    if @script
-      @script.destroy
-      flash[:success]="Script #{@script.name} deleted."
-    end
+    @script = current_user.scripts.find(params[:scriptname])
+    @script.destroy
+    flash[:success]="Script #{@script.name} deleted."
     redirect_to :controller => :scripts, :action => :manage
   end
 
   def start
-    @script = Script.find(params[:scriptname])
-    if @script
-      if owner_check(@script)
-        @script.start!
-      else
-        flash[:error] = "No permission to start this script."
-      end
-    end
+    @script = current_user.scripts.find(params[:scriptname])
+    @script.start!
     redirect_to :action => :lastrun
   end
 
   def stop
-    @script = Script.find(params[:scriptname])
-    if @script
-      @script.stop!
-    end
+    @script = current_user.scripts.find(params[:scriptname])
+    @script.stop!
     redirect_to :action => :lastrun
   end
 
   def reset
-    @script = Script.find(params[:scriptname])
-    if @script
-      if owner_check(@script)
-        @script.reset!
-      else
-        flash[:error] = "No permission to reset this script."
-      end
-    end
+    @script = current_user.scripts.find(params[:scriptname])
+    @script.reset!
     redirect_to :action => :lastrun
   end
 
-  private
-  def owner_check(script)
-    script.user == current_user
-  end
 end
