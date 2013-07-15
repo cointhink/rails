@@ -53,11 +53,15 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
                 respond({"status":"ok", "payload":storage})
               } else if(payload.action == 'store'){
                 console.log(fullname+' store storage '+JSON.stringify(payload.storage))
-                r.table('scripts').get(fullname).
-                  update({storage:payload.storage}).run(conn, function(status){
-                  console.log(fullname+' store storage result '+status)
-                  respond({"status":"ok", "payload":status})
-                })
+                if(typeof(payload.storage) == 'object'){
+                  r.table('scripts').get(fullname).
+                    update({storage:payload.storage}).run(conn, function(status){
+                    console.log(fullname+' store storage result '+status)
+                    respond({"status":"ok", "payload":status})
+                  })
+                } else {
+                  respond({"status":"err", "msg":"storage must be an object"})
+                }
               } else if(payload.action == 'trade'){
                 console.log(fullname+' trade '+payload.exchange+' '+payload.market+' '+payload.buysell)
                 var hashname = payload.exchange.toLowerCase()+"-ticker-"+
@@ -160,7 +164,7 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
         result = {"status":"err", payload:"price of "+payload.amount+" is more than 1% away from exchange "+payload.exchange+" price "+ticker.value}
       }
     } else {
-      result = {"status":"err", payload:"exchange "+payload.exchange+" price too old ("+age+" secs) validate this try. please try again."}
+      result = {"status":"err", payload:"exchange "+payload.exchange+" price too old ("+ticker_age_sec+" secs). please try again."}
     }
 
     return result
