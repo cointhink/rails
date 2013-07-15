@@ -20,11 +20,11 @@ class SessionController < ApplicationController
         redirect_to({:action => :login, :username => params[:username]})
       end
     else
-      RIEMANN << {service:'cointhink user', username: params[:username]}
       if routes_match_count("/#{params[:username]}") == 1
         user = User.new
         user.apply_params(params)
         if user.valid?
+          RIEMANN << {service:'cointhink user', tags:['create']}
           user.save!
           user.setup_coin_accounts
           log_in(user)
