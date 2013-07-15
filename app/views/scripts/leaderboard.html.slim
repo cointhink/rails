@@ -2,20 +2,29 @@
 div.scripts-leaderboard
   h2 Leaderboard
 
-  ul.leaders
+  div.leaderboard
+    div.row
+      div.span2 Name
+      div.span2 BTC
+      div.span2 USD
+      div.span2 Total Value
     - @script_values.each do |sv|
-      - script = sv[0]
-      - value = sv[1]
-      li
-        span.name
-          a href="/#{script.user.slug}/#{script.slug}"
-            | #{script.user.slug}/#{script.slug}
-        span.invbtc
-          | #{"%0.5f"%value}btc
-
-        |  (
-        time datetime="#{script.created_at.iso8601}" data-format="yyyy-MMM-dd"
-        | )
+      div.row
+        - script = sv[0]
+        - value = sv[1]
+        div.span2
+          span.name
+            a href="/#{script.user.slug}/#{script.slug}"
+              | #{script.user.slug}/#{script.slug}
+        div.span2
+          span.invamt
+            | #{"%0.5f"%value}BTC
+        div.span2
+          span.invamt
+            | #{"%0.5f"%script.inventory['usd']}USD
+        div.span2
+          span.invamt
+            | #{"%0.5f"%value}BTC
 
   div.value
     | USD inventory converted with mtgox price of $#{@rates["BTCUSD"]}
