@@ -88,6 +88,11 @@ class Script < ActiveRecord::Base
     doc["key"]
   end
 
+  def inventory_value_in(currency, rates)
+    (inventory["btc"] / 1 )+
+    (inventory["usd"] / rates['BTCUSD'])
+  end
+
   def inventory
     doc["inventory"]
   end

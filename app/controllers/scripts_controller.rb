@@ -19,7 +19,11 @@ class ScriptsController < ApplicationController
 
   def leaderboard
     @scripts = Script.all
-    @scripts.sort! {|a,b| b.inventory["btc"] <=> a.inventory["btc"]}
+    @rates = {}
+    mtgox_price = REDIS.hgetall('mtgox-ticker-BTCUSD')
+    @rates["BTCUSD"] = mtgox_price["value"].to_f
+    @script_values = @scripts.map{|s| [s, s.inventory_value_in("btc", @rates)]}
+    @scrict_values = @script_values.sort_by {|s| s.last}
   end
 
   def lastrun
