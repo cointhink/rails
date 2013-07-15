@@ -81,15 +81,15 @@ r.connect({host:'localhost', port:28015, db:'cointhink'},
           })
         }
 
-        function respond(status, doc) {
-          if(arguments.length == 1) {
-            doc = status
-          } else {
-            res.statusCode = status
-          }
-          res.end(doc)
-        }
+      }
 
+      function respond(status, doc) {
+        if(arguments.length == 1) {
+          doc = status
+        } else {
+          res.statusCode = status
+        }
+        res.end(doc)
       }
     })
   }
