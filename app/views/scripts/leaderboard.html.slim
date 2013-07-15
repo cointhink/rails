@@ -21,7 +21,7 @@ div.scripts-leaderboard
             | #{"%0.5f"%value}BTC
         div.span2
           span.invamt
-            | #{"%0.5f"%script.inventory['usd']}USD
+            | #{"%0.5f"% (script.inventory['usd'] || 0)}USD
         div.span2
           span.invamt
             | #{"%0.5f"%value}BTC
