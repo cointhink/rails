@@ -93,6 +93,7 @@ class Script < ActiveRecord::Base
     if inventory["usd"]
      total += inventory["usd"] / rates['BTCUSD']
    end
+   total
   end
 
   def inventory
