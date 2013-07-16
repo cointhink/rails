@@ -24,7 +24,7 @@ class ScriptsController < ApplicationController
     @rates["BTCUSD"] = mtgox_price["value"].to_f
     @script_values = @scripts.map{|s| {script:s,
                                        value:s.inventory_value_in("btc", @rates)}
-                     }.sort_by! {|s| s[:value]}
+                     }.sort_by! {|s| s[:value]}.reverse
   end
 
   def lastrun
