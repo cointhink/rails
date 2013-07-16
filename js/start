@@ -1,5 +1,0 @@
-echo starting services
-forever start majordomo.js
-forever start script_get.js
-forever start storage_relay.js
-forever start mtgox_ws.js
