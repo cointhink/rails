@@ -198,15 +198,6 @@ class Script < ActiveRecord::Base
        order_by(r.desc('time')).
        filter(filter).
        limit(count).
-       run(R)
-  end
-
-  def last_signal(type)
-    cursor = r.table('signals').
-       get_all(script_name, {index:'name'}).
-       filter({type:type}).
-       limit(1).
-       run(R)
-    cursor.first
+       run(R, :use_outdated => true)
   end
 end
