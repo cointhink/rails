@@ -8,7 +8,6 @@ div.scripts-leaderboard
       div.span2 BTC
       div.span2 USD
       div.span2 Total Value
-      div.span4 Last Trade
     - @script_values.each do |sv|
       div.row
         div.span2
@@ -24,9 +23,6 @@ div.scripts-leaderboard
         div.span2
           span.invamt
             | #{"%0.5f" % sv[:value]}BTC
-        div.span4
-          span.lasttrade
-            | #{sv[:last_trade] ? sv[:last_trade]["msg"] : ""}
 
   div.value
     | USD inventory converted with last mtgox price of $#{@rates["BTCUSD"]}
