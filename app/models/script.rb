@@ -190,11 +190,23 @@ class Script < ActiveRecord::Base
     result["Id"]
   end
 
-  def last_signals(count)
+  def last_signals(count, type=nil)
+    filter = {}
+    filter.merge!({type:type}) if type
     r.table('signals').
        get_all(script_name, {index:'name'}).
        order_by(r.desc('time')).
+       filter(filter).
        limit(count).
        run(R)
+  end
+
+  def last_signal(type)
+    cursor = r.table('signals').
+       get_all(script_name, {index:'name'}).
+       filter({type:type}).
+       limit(1).
+       run(R)
+    cursor.first
   end
 end

@@ -8,23 +8,25 @@ div.scripts-leaderboard
       div.span2 BTC
       div.span2 USD
       div.span2 Total Value
+      div.span4 Last Trade
     - @script_values.each do |sv|
       div.row
-        - script = sv[0]
-        - value = sv[1]
         div.span2
           span.name
-            a href="/#{script.user.slug}/#{script.slug}"
-              | #{script.user.slug}/#{script.slug}
+            a href="/#{sv[:script].user.slug}/#{sv[:script].slug}"
+              | #{sv[:script].user.slug}/#{sv[:script].slug}
         div.span2
           span.invamt
-            | #{"%0.5f"%value}BTC
+            | #{"%0.5f" % sv[:value]}BTC
         div.span2
           span.invamt
-            | #{"%0.5f"% (script.inventory['usd'] || 0)}USD
+            | #{"%0.5f"% (sv[:script].inventory['usd'] || 0)}USD
         div.span2
           span.invamt
-            | #{"%0.5f"%value}BTC
+            | #{"%0.5f" % sv[:value]}BTC
+        div.span4
+          span.lasttrade
+            | #{sv[:last_trade]["msg"]}
 
   div.value
     | USD inventory converted with last mtgox price of $#{@rates["BTCUSD"]}

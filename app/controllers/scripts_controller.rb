@@ -22,8 +22,10 @@ class ScriptsController < ApplicationController
     @rates = {}
     mtgox_price = REDIS.hgetall('mtgox-ticker-BTCUSD')
     @rates["BTCUSD"] = mtgox_price["value"].to_f
-    @script_values = @scripts.map{|s| [s, s.inventory_value_in("btc", @rates)]}
-    @scrict_values = @script_values.sort_by {|s| s.last}
+    @script_values = @scripts.map{|s| {script:s,
+                                       value:s.inventory_value_in("btc", @rates),
+                                       last_trade: s.last_signals(1,'trade').first}}.
+                     sort_by! {|s| s[:value]}
   end
 
   def lastrun
