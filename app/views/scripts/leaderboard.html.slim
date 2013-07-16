@@ -26,7 +26,7 @@ div.scripts-leaderboard
             | #{"%0.5f" % sv[:value]}BTC
         div.span4
           span.lasttrade
-            | #{sv[:last_trade]["msg"]}
+            | #{sv[:last_trade] ? sv[:last_trade]["msg"] : ""}
 
   div.value
     | USD inventory converted with last mtgox price of $#{@rates["BTCUSD"]}
