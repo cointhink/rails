@@ -189,4 +189,12 @@ class Script < ActiveRecord::Base
     logger.info "Script#build_container "+result.inspect
     result["Id"]
   end
+
+  def last_signals(count)
+    r.table('signals').
+       get_all(script_name, {index:'name'}).
+       order_by(r.desc('time')).
+       limit(count).
+       run(R)
+  end
 end
