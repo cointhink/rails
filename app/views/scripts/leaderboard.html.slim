@@ -1,13 +1,13 @@
 = render :partial => 'menu'
 div.scripts-leaderboard
-  h2 Leaderboard
+  h2 Leaderboard Inventories
 
   div.leaderboard
     div.row
       div.span2 Name
+      div.span2 Total Value
       div.span2 BTC
       div.span2 USD
-      div.span2 Total Value
     - @script_values.each do |sv|
       div.row
         div.span2
@@ -16,13 +16,13 @@ div.scripts-leaderboard
               | #{sv[:script].user.slug}/#{sv[:script].slug}
         div.span2
           span.invamt
+            | #{"%0.5f" % sv[:value]}BTC
+        div.span2
+          span.invamt
             | #{"%0.5f" % sv[:script].inventory['btc']}BTC
         div.span2
           span.invamt
             | #{"%0.5f"% (sv[:script].inventory['usd'] || 0)}USD
-        div.span2
-          span.invamt
-            | #{"%0.5f" % sv[:value]}BTC
 
   div.value
-    | USD inventory converted with last mtgox price of $#{@rates["BTCUSD"]}
+    | USD inventory valued by last mtgox price of $#{@rates["BTCUSD"]}
