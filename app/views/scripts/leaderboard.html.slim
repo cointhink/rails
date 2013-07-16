@@ -16,7 +16,7 @@ div.scripts-leaderboard
               | #{sv[:script].user.slug}/#{sv[:script].slug}
         div.span2
           span.invamt
-            | #{"%0.5f" % sv[:value]}BTC
+            | #{"%0.5f" % sv[:script].inventory['btc']}BTC
         div.span2
           span.invamt
             | #{"%0.5f"% (sv[:script].inventory['usd'] || 0)}USD
