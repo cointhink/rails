@@ -194,10 +194,9 @@ class Script < ActiveRecord::Base
     filter = {}
     filter.merge!({type:type}) if type
     r.table('signals').
-       get_all(script_name, {index:'name'}).
-       order_by(r.desc('time')).
+       between(1.month.ago.utc.strftime('%Y-%m-%d'),'9999', :index => 'time').
        filter(filter).
        limit(count).
-       run(R, :use_outdated => true)
+       run(R)
   end
 end
