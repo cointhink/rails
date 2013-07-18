@@ -191,7 +191,7 @@ class Script < ActiveRecord::Base
   end
 
   def last_signals(count, type=nil)
-    filter = {}
+    filter = {name: script_name}
     filter.merge!({type:type}) if type
     r.table('signals').
        between(1.month.ago.utc.strftime('%Y-%m-%d'),'9999', :index => 'time').
