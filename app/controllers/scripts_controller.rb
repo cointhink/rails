@@ -1,11 +1,11 @@
 class ScriptsController < ApplicationController
-	before_filter :require_login, :except => [:lastrun, :leaderboard]
+  before_filter :require_login, :except => [:lastrun, :leaderboard]
 
-	def manage
+  def manage
     @scripts = current_user.scripts.valid
-	end
+  end
 
-	def create
+  def create
     script = Script.safe_create(params)
     script.user = current_user
     script.save
@@ -15,7 +15,7 @@ class ScriptsController < ApplicationController
       flash[:error] = script.errors.full_messages.join('. ')
     end
     redirect_to :action => :manage
-	end
+  end
 
   def leaderboard
     @scripts = Script.all
