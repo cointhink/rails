@@ -197,6 +197,7 @@ class Script < ActiveRecord::Base
        between(1.month.ago.utc.strftime('%Y-%m-%d'),'9999', :index => 'time').
        filter(filter).
        limit(count).
+       order_by(r.desc('time')).
        run(R)
   end
 end
