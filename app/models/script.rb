@@ -195,9 +195,9 @@ class Script < ActiveRecord::Base
     filter.merge!({type:type}) if type
     r.table('signals').
        between(1.month.ago.utc.strftime('%Y-%m-%d'),'9999', :index => 'time').
+       order_by(r.desc('time')).
        filter(filter).
        limit(count).
-       order_by(r.desc('time')).
        run(R)
   end
 end
