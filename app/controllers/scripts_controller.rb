@@ -31,7 +31,7 @@ class ScriptsController < ApplicationController
     @script = Script.find(params[:scriptname])
     if @script
       @run = @script.runs.latest.last
-      @signals = @script.last_signals(8)
+      @signals = @script.last_signals
     end
   end
 

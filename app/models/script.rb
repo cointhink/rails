@@ -190,14 +190,9 @@ class Script < ActiveRecord::Base
     result["Id"]
   end
 
-  def last_signals(count, type=nil)
-    filter = {name: script_name}
-    filter.merge!({type:type}) if type
-    r.table('signals').
-       between(7.days.ago.utc.strftime('%Y-%m-%d'),'9999', :index => 'time').
-       filter(filter).
-       order_by(r.desc('time')).
-       limit(count).
-       run(R)
+  def last_signals(count=10, type=nil)
+    REDIS.lrange("log:#{script_name}", 0, count).map do |s|
+      JSON.parse(s)
+    end
   end
 end
