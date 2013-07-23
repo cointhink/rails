@@ -77,7 +77,7 @@ class Script < ActiveRecord::Base
   end
 
   def doc
-    r.table('scripts').get(script_name).run(R)
+    @doc ||= r.table('scripts').get(script_name).run(R)
   end
 
   def body
