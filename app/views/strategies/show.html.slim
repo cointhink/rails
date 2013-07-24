@@ -29,10 +29,12 @@ div style="font-weight: bold; margin-top: 1em" Transactions
       div #{stage.balance_in} in => #{stage.balance_out} out. profit $#{stage.potential} #{"%0.3f"%stage.profit_percentage}%
     ul
       - stage.trades.each do |t|
+        - if t.offer
           li class="#{t.balance_in.btc? ? "bid" : ""}"
             | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out}
       - stage.children.each do |stage|
         - stage.trades.each do |t|
-          li class="#{t.balance_in.btc? ? "bid" : ""}"
-            | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out} #{"(profit #{"%0.3f"%stage.profit(t).amount})" if t.balance_in.btc?}
+          - if t.offer
+            li class="#{t.balance_in.btc? ? "bid" : ""}"
+              | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out} #{"(profit #{"%0.3f"%stage.profit(t).amount})" if t.balance_in.btc?}
 
