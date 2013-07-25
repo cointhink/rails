@@ -55,12 +55,13 @@ class Script < ActiveRecord::Base
     r.table('scripts').insert(id:script_name,
                               key:UUID.generate,
                               inventory: {btc:1},
-                              trades: [],
-                              storage: {}).run(R)
+                              trades: []).run(R)
+    r.table('storage').insert({_cointhink_id_:script_name}).run(R)
   end
 
   def rethink_delete
     r.table('scripts').get(script_name).delete.run(R)
+    r.table('storage').get(script_name).delete.run(R)
     r.db('cointhink').
       table('signals').
       get_all(script_name, {index:'name'}).
@@ -101,7 +102,11 @@ class Script < ActiveRecord::Base
   end
 
   def storage
-    doc["storage"]
+    unless @storage
+      @storage = r.table('storage').get(script_name).run(R)
+      @storage.delete('_cointhink_id_')
+    end
+    @storage
   end
 
   def trades
