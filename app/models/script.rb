@@ -70,7 +70,7 @@ class Script < ActiveRecord::Base
   end
 
   def reset!
-    r.table('scripts').get(script_name).update(storage:{}).run(R)
+    r.table('storage').get(script_name).update(storage:{}).run(R)
   end
 
   def script_name
