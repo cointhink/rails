@@ -70,7 +70,7 @@ class Script < ActiveRecord::Base
   end
 
   def reset!
-    r.table('storage').get(script_name).update({}).run(R)
+    r.table('storage').get(script_name).replace({'_cointhink_id_'=>script_name}).run(R)
   end
 
   def script_name
