@@ -62,11 +62,11 @@ class Script < ActiveRecord::Base
   def rethink_delete
     r.table('scripts').get(script_name).delete.run(R)
     r.table('storage').get(script_name).delete.run(R)
-    r.db('cointhink').
-      table('signals').
+    r.table('signals').
       get_all(script_name, {index:'name'}).
       delete.
       run(R)
+    REDIS.del("log:#{script_name}")
   end
 
   def reset!
