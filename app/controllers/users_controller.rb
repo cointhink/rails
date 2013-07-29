@@ -1,9 +1,8 @@
 class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
-    if logged_in? && 
-       current_user == @user && 
-       current_user.acl_flag?('account')
+    if logged_in? &&
+       current_user == @user
       @balances = {}
       COIND.each do |coinname, coind|
         begin
@@ -23,7 +22,7 @@ class UsersController < ApplicationController
         begin
           tx_resp = coind.transactions(current_user.username)
           if tx_resp["transactions"]
-            tx = tx_resp["transactions"].map{|t| 
+            tx = tx_resp["transactions"].map{|t|
                        t.merge({:currency => SETTINGS["cryptocoins"][coinname]["currency"]})}
             @transactions << tx
           end
