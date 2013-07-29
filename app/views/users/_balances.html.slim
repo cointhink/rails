@@ -1,0 +1,35 @@
+- if @balances
+  h2
+    | Balances
+
+  ul style="list-style-type: none"
+    - @balances.each do |coin, info|
+      li.coin-balance
+        div.title
+          = image_tag coin+".png"
+          | #{SETTINGS['cryptocoins'][coin]['display_name']}
+        div
+          span.indent
+            | Balance:
+          -if info["balance"]
+            span.amount
+              | #{info["balance"]["amount"]} #{info["balance"]["currency"].upcase}
+          -else
+            span.error
+              | #{info["error"]}
+        div.receiving_address
+          span.indent
+            | Address:
+          span.receiving_address
+            | #{info["receiving_address"]}
+
+
+  h2
+    | Transactions
+  ul.transactions
+    - if @transactions.size > 0
+      - @transactions.each do |tx|
+        li.tx
+          | #{tx.inspect}
+    - else
+      li None

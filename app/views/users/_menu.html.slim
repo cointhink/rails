@@ -2,6 +2,7 @@
   ul
     li #{@user.username}:
     li
-      a href="" Profile
-    li
-      a href="" Balances
+      a href="#{@user.username}" Profile
+    - if @balances
+      li
+        a href="?page=balances" Balances
