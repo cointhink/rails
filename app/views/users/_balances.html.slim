@@ -1,35 +1,43 @@
 - if @balances
   h2
-    | Balances
+    | CoinThink Credits
 
   ul style="list-style-type: none"
     - @balances.each do |coin, info|
       li.coin-balance
-        div.title
-          = image_tag coin+".png"
-          | #{SETTINGS['cryptocoins'][coin]['display_name']}
         div
           span.indent
-            | Balance:
+            | Available Credits:
           -if info["balance"]
             span.amount
-              | #{info["balance"]["amount"]} #{info["balance"]["currency"].upcase}
+              | #{info["balance"]["amount"]}
           -else
             span.error
               | #{info["error"]}
         div.receiving_address
           span.indent
-            | Address:
+            | Bitcoin Receiving Address:
           span.receiving_address
             | #{info["receiving_address"]}
 
+  p
+    | One BTC = One Cointhink Credit
+  p
+    | BTC Payments are for buying credits only and are non-refundable.
+
 
   h2
-    | Transactions
+    | Purchase History
   ul.transactions
     - if @transactions.size > 0
       - @transactions.each do |tx|
         li.tx
-          | #{tx.inspect}
+          time datetime="#{Time.at(tx['time']).iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
+          - if tx['category'] == 'receive'
+            |  #{tx['amount']}
+          - else
+            |  (#{tx['amount']})
+          | #{tx[:currency].upcase}
+          = image_tag "bitcoin.png"
     - else
       li None
