@@ -204,4 +204,12 @@ class Script < ActiveRecord::Base
       JSON.parse(s)
     end
   end
+
+  def enabled?
+    if enabled_until
+      enabled_until > Time.now
+    else
+      false
+    end
+  end
 end

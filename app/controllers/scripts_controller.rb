@@ -54,8 +54,13 @@ class ScriptsController < ApplicationController
 
   def start
     @script = current_user.scripts.find(params[:scriptname])
-    @script.start!
-    redirect_to :action => :lastrun
+    if @script.enabled?
+      @script.start!
+      flash[:success] = "Script "+@script.script_name+" started"
+      redirect_to :action => :lastrun
+    else
+      redirect_to :action => :showenable
+    end
   end
 
   def stop
@@ -70,4 +75,18 @@ class ScriptsController < ApplicationController
     redirect_to :action => :lastrun
   end
 
+  def showenable
+    @script = current_user.scripts.find(params[:scriptname])
+  end
+
+  def enable
+    if params[:button] == 'cancel'
+      flash[:notice] = "Action cancelled."
+      redirect_to :action => :lastrun
+    end
+    if params[:button] == 'enable'
+      flash[:notice] = "Script enabled."
+      redirect_to :action => :lastrun
+    end
+  end
 end

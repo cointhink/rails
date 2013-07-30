@@ -50,4 +50,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def balance(currency)
+    begin
+      COIND[currency].user(username)
+    rescue Jimson::Client::Error::ServerError,  Errno::ECONNREFUSED => e
+    end
+  end
 end

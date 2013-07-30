@@ -1,0 +1,14 @@
+.scripts-showenable
+  h3
+    | Enable #{@script.script_name}
+
+  p
+    | Enable this script until #{1.month.from_now} by spending 0.01 credits.
+
+  ul
+    li Your credit balance:
+    li Cost to enable this script: 0.01
+
+  = form_tag({action:"enable"}) do
+    = button_tag "Cancel", {value:"cancel"}
+    = button_tag "Enable", {value:"enable"}

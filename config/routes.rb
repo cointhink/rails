@@ -24,9 +24,11 @@ Btcmarketwatch::Application.routes.draw do
   delete '/:username/:scriptname' => 'scripts#delete'
   put '/:username/:scriptname' => 'scripts#update'
   get '/:username/:scriptname/edit' => 'scripts#edit'
+  get '/:username/:scriptname/enable' => 'scripts#showenable'
   post '/:username/:scriptname/start' => 'scripts#start'
   post '/:username/:scriptname/stop' => 'scripts#stop'
   post '/:username/:scriptname/reset' => 'scripts#reset'
+  post '/:username/:scriptname/enable' => 'scripts#enable'
 
   match '*nowhere' => 'dash#fourohfour'
 end
