@@ -117,7 +117,7 @@ class Script < ActiveRecord::Base
     inventory.keys
   end
 
-  def start
+  def verify_container_id
     if docker_container_id
       # container_id check
       begin
@@ -128,6 +128,10 @@ class Script < ActiveRecord::Base
         self.docker_container_id = nil
       end
     end
+  end
+
+  def start
+    verify_container_id
 
     unless docker_container_id
       begin
