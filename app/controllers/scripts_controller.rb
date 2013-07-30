@@ -80,12 +80,19 @@ class ScriptsController < ApplicationController
   end
 
   def enable
+    @script = current_user.scripts.find(params[:scriptname])
     if params[:button] == 'cancel'
       flash[:notice] = "Action cancelled."
       redirect_to :action => :lastrun
     end
+
     if params[:button] == 'enable'
-      flash[:notice] = "Script enabled."
+      if current_user.balance('bitcoin')['balance']['amount'] > 0.01
+        @script.add_time(1.month)
+        flash[:notice] = "Script enabled."
+      else
+        flash[:error] = 'A balance of 0.01 credits is necessary to start a script'
+      end
       redirect_to :action => :lastrun
     end
   end
