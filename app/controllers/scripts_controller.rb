@@ -87,7 +87,7 @@ class ScriptsController < ApplicationController
     end
 
     if params[:button] == 'enable'
-      if current_user.balance('bitcoin')['balance']['amount'] > 0.01
+      if current_user.balance('btc') > Balance.make_btc(0.01)
         @script.add_time(1.month)
         flash[:notice] = "Script enabled."
       else

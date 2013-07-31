@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130730185407) do
+ActiveRecord::Schema.define(:version => 20130731212024) do
 
   create_table "acl_flags", :force => true do |t|
     t.string   "name"
@@ -126,6 +126,15 @@ ActiveRecord::Schema.define(:version => 20130730185407) do
   add_index "offers", ["depth_run_id", "price"], :name => "index_offers_on_depth_run_id_and_price"
   add_index "offers", ["depth_run_id"], :name => "index_offers_on_depth_run_id"
   add_index "offers", ["market_id"], :name => "index_offers_on_market_id"
+
+  create_table "purchases", :force => true do |t|
+    t.string   "disbursement_tx"
+    t.integer  "balance_id"
+    t.integer  "purchaseable_id"
+    t.string   "purchaseable_type"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
 
   create_table "script_runs", :force => true do |t|
     t.integer  "script_id"

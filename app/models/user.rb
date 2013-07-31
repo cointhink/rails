@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
   has_many :authorizations
   has_many :acl_flags, :through => :authorizations
   has_many :scripts
+  has_many :purchases
 
   extend FriendlyId
   friendly_id :username, use: :slugged
@@ -52,8 +53,17 @@ class User < ActiveRecord::Base
 
   def balance(currency)
     begin
-      COIND[currency].user(username)
+      coinhash = COIND[currency].user(username)
+      my_balance = Balance.new(amount: coinhash['balance']['amount'],
+                               currency: coinhash['balance']['currency'])
+      my_balance - balance_on_hold(currency)
     rescue Jimson::Client::Error::ServerError,  Errno::ECONNREFUSED => e
+    end
+  end
+
+  def balance_on_hold(currency)
+    purchases.where({disbursement_tx:nil}).reduce(Balance.new({amount:0, currency:currency})) do |m,e|
+      m += e.amount
     end
   end
 end
