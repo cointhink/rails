@@ -9,12 +9,12 @@ google:
 net:
   timeout: 15
 cryptocoins:
-  bitcoin:
+  btc:
     url: "http://localhost:8080"
     key: "btckey"
     currency: "btc"
     display_name: "Bitcoin"
-  litecoin:
+  ltc:
     url: "http://localhost:8081"
     key: "ltckey"
     currency: "ltc"
