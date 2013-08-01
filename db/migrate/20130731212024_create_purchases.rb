@@ -4,8 +4,8 @@ class CreatePurchases < ActiveRecord::Migration
       t.string :disbursement_tx
       t.integer :user_id
       t.integer :balance_id
-      t.integer "purchaseable_id"
-      t.string  "purchaseable_type"
+      t.integer "purchasable_id"
+      t.string  "purchasable_type"
       t.timestamps
     end
   end

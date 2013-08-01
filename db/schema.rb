@@ -131,10 +131,10 @@ ActiveRecord::Schema.define(:version => 20130731212024) do
     t.string   "disbursement_tx"
     t.integer  "user_id"
     t.integer  "balance_id"
-    t.integer  "purchaseable_id"
-    t.string   "purchaseable_type"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.integer  "purchasable_id"
+    t.string   "purchasable_type"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
   create_table "script_runs", :force => true do |t|
