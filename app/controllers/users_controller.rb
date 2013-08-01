@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  before_filter :require_login, :except => [:show]
+
   def show
     @user = User.find(params[:id])
     if logged_in? &&
@@ -32,5 +34,17 @@ class UsersController < ApplicationController
       end
       @transactions.flatten!
     end
+  end
+
+  def update
+    unless params[:email].blank?
+      current_user.email = params[:email]
+      if current_user.save
+        flash[:success] = "Email updated"
+      else
+        flash[:error] = current_user.errors.full_messages.join('. ')
+      end
+    end
+    redirect_to :action => :show
   end
 end

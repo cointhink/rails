@@ -20,6 +20,7 @@ Btcmarketwatch::Application.routes.draw do
   match '/scripts/leaderboard' => 'scripts#leaderboard'
 
   get '/:id' => 'users#show'
+  post '/:id' => 'users#update'
   get '/:username/:scriptname' => 'scripts#lastrun'
   delete '/:username/:scriptname' => 'scripts#delete'
   put '/:username/:scriptname' => 'scripts#update'

@@ -5,6 +5,8 @@ class User < ActiveRecord::Base
   validates :username, :format => {:with => /^\w+$/,
                                    :message => "letter numbers and underscore only"}
   validates :email, :format => { :with => /@/ }
+  validates :email, :uniqueness => true
+  validates :email, :length => { :minimum => 3 }
   validates :encrypted_password, :presence => true
 
   has_many :authorizations

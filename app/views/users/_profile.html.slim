@@ -1,2 +1,19 @@
-p
-  | #{@user.username}
+ul
+  li username: #{@user.username}
+  li joined: #{@user.created_at}
+  - if logged_in?
+    li email: #{@user.email}
+
+- if logged_in?
+  = form_tag do
+    h3 Change Email
+    ul
+      li email: #{text_field_tag "email"}
+    = submit_tag "Update Email"
+
+  = form_tag do
+    h3 Change Password
+    ul
+      li Old: #{password_field_tag "old_password"}
+      li New: #{password_field_tag "old_password"}
+    = submit_tag "Update Password"
