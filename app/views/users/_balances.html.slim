@@ -45,5 +45,5 @@
       li
        time datetime="#{p.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
        '  #{p.amount.amount} credits for script
-       a href="#{p.purchasable.slug}"
+       a href="/#{p.purchasable.user.slug}/#{p.purchasable.slug}"
           | #{p.purchasable.name}
