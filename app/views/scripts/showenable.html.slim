@@ -13,6 +13,8 @@
     li Cost to enable this script: #{@script.price.amount}
 
 - if current_user.balance('btc') < @script.price.amount
+  h3 Not enough credits to enable this script.
+  p Please visit the credits page to make a deposit!
   a href="/#{current_user.slug}?page=balances"
     = button_tag "Credits"
 - else
