@@ -29,6 +29,20 @@ class User < ActiveRecord::Base
     end
   end
 
+  def change_password(oldp, newp)
+    if authentic?(oldp)
+      if newp && newp.length >= 6
+        self.encrypted_password = BCrypt::Password.create(newp)
+        return save
+      else
+        errors['password'] << 'is too short (6 characters minimum)'
+      end
+    else
+      errors['Old password'] << "is invalid"
+    end
+    return false
+  end
+
   def setup_coin_accounts
     begin
       COIND.keys.each do |coin|

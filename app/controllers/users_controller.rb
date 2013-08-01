@@ -45,6 +45,15 @@ class UsersController < ApplicationController
         flash[:error] = current_user.errors.full_messages.join('. ')
       end
     end
+
+    unless params[:old_password].blank?
+      if current_user.change_password(params[:old_password], params[:new_password])
+        flash[:success] = "Password updated"
+      else
+        flash[:error] = current_user.errors.full_messages.join('. ')
+      end
+    end
+
     redirect_to :action => :show
   end
 end
