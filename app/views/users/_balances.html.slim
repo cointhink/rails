@@ -37,7 +37,8 @@
             |  #{tx['amount']}
           - else
             |  (#{tx['amount']})
-          | #{tx[:currency].upcase}
+          - if tx[:currency]
+            | #{tx[:currency].upcase}
           = image_tag "bitcoin.png"
     - else
       li None
