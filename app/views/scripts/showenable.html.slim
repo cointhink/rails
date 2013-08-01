@@ -6,7 +6,7 @@
     | Enable this script until #{1.month.from_now} by spending #{@script.price.amount} credits.
 
   ul
-    li Your credit balance: #{current_user.balance('btc')}
+    li Your credit balance: #{current_user.balance('btc').amount}
     li Cost to enable this script: #{@script.price.amount}
 
 - if current_user.balance('btc') < @script.price.amount
