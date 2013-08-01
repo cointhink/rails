@@ -27,7 +27,7 @@
 
 
   h2
-    | Purchase History
+    | Credit Purchases
   ul.transactions
     - if @transactions.size > 0
       - @transactions.each do |tx|
@@ -42,3 +42,13 @@
           = image_tag "bitcoin.png"
     - else
       li None
+
+  h2
+    | Credits Redemtions
+  ul
+    - current_user.purchases.each do |p|
+      li
+       time datetime="#{p.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
+       '  #{p.amount.amount} credits for script
+       a href="#{p.purchasable.slug}"
+          | #{p.purchasable.name}
