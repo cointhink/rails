@@ -130,7 +130,7 @@ ActiveRecord::Schema.define(:version => 20130731212024) do
   create_table "purchases", :force => true do |t|
     t.string   "disbursement_tx"
     t.integer  "user_id"
-    t.integer  "balance_id"
+    t.integer  "amount_id"
     t.integer  "purchasable_id"
     t.string   "purchasable_type"
     t.datetime "created_at",       :null => false

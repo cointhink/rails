@@ -9,6 +9,7 @@ class Script < ActiveRecord::Base
 
   belongs_to :user
   has_many :runs, :class_name => 'ScriptRun'
+  has_one :purchase, :as => :purchasable
 
   after_destroy :rethink_delete
 
@@ -212,4 +213,14 @@ class Script < ActiveRecord::Base
       false
     end
   end
+
+  def add_time(duration)
+    start = enabled_until || Time.now
+    update_attribute :enabled_until, start+duration
+  end
+
+  def price
+    Balance.make_btc(0.001)
+  end
+
 end

@@ -62,8 +62,9 @@ class User < ActiveRecord::Base
   end
 
   def balance_on_hold(currency)
-    purchases.where({disbursement_tx:nil}).reduce(Balance.new({amount:0, currency:currency})) do |m,e|
-      m += e.amount
-    end
+    purchases.joins(:amount).where({disbursement_tx:nil, balances:{currency:currency}}).
+      reduce(Balance.new({amount:0, currency:currency})) do |m,e|
+        m += e.amount
+      end
   end
 end

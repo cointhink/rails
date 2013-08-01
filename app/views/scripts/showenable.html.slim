@@ -3,12 +3,16 @@
     | Enable #{@script.script_name}
 
   p
-    | Enable this script until #{1.month.from_now} by spending 0.01 credits.
+    | Enable this script until #{1.month.from_now} by spending #{@script.price.amount} credits.
 
   ul
     li Your credit balance: #{current_user.balance('btc')}
-    li Cost to enable this script: 0.01
+    li Cost to enable this script: #{@script.price.amount}
 
+- if current_user.balance('btc') < @script.price.amount
+  a href="/#{current_user.slug}?page=balances"
+    = button_tag "Credits"
+- else
   = form_tag({action:"enable"}) do
     = button_tag "Cancel", {value:"cancel"}
     = button_tag "Enable", {value:"enable"}
