@@ -68,6 +68,6 @@
     h3 Enabled until
     - if @script.enabled_until
       ' Enabled until
-      time datetime="@{@script.enabled_until.iso8601}" data-format="yyyy-MMM-dd"
+      time datetime="#{@script.enabled_until.iso8601}" data-format="yyyy-MMM-dd"
     - else
       | This script is not enabled
