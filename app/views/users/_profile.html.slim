@@ -1,6 +1,8 @@
 ul
   li username: #{@user.username}
-  li joined: #{@user.created_at}
+  li
+    ' joined:
+    time datetime="#{@user.created_at.iso8601}" data-format="yyyy-MMM-dd"
   - if logged_in?
     li email: #{@user.email}
 
