@@ -12,8 +12,15 @@
           span
             ' Created
           time datetime="#{script.created_at.iso8601}" data-format="MMM dd"
+          ' .
           - if script.runs.latest.size > 0
             ' Last run: #{script.runs.latest.last.created_at}
+          span
+            - if script.enabled?
+              ' enabled until
+              time datetime="#{script.enabled_until.iso8601}" data-format="MMM dd"
+            - else
+              ' Disabled.
 
   = form_tag({},{:id=>'new_script', :class=>'form-inline'}) do
     a#add

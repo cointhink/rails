@@ -3,7 +3,10 @@
     | Enable #{@script.script_name}
 
   p
-    | Enable this script until #{1.month.from_now} by spending #{@script.price.amount} credits.
+    ' Enable this script for 30 days,
+    ' until
+    time datetime="#{1.month.from_now.iso8601}" data-format='yyyy-MMM-dd'
+    | , by spending #{@script.price.amount} credits.
 
   ul
     li Your credit balance: #{current_user.balance('btc').amount}
