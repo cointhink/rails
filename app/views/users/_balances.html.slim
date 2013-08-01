@@ -3,22 +3,17 @@
     | CoinThink Credits
 
   ul style="list-style-type: none"
-    - @balances.each do |coin, info|
-      li.coin-balance
-        div
-          span.indent
-            | Available Credits:
-          -if info["balance"]
-            span.amount
-              | #{info["balance"]["amount"]}
-          -else
-            span.error
-              | #{info["error"]}
-        div.receiving_address
-          span.indent
-            | Bitcoin Receiving Address:
-          span.receiving_address
-            | #{info["receiving_address"]}
+    li.coin-balance
+      div
+        span.indent
+          | Available Credits:
+          span.amount
+            | #{current_user.balance('btc')}
+      div.receiving_address
+        span.indent
+          | Bitcoin Receiving Address:
+        span.receiving_address
+          | #{@balances['btc']["receiving_address"]}
 
   p
     | One Cointhink Credit costs 1 BTC
