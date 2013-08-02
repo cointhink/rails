@@ -18,7 +18,7 @@ class ScriptsController < ApplicationController
   end
 
   def leaderboard
-    @scripts = Script.all
+    @scripts = Script.enableds.all
     @rates = {}
     mtgox_price = REDIS.hgetall('mtgox-ticker-BTCUSD')
     @rates["BTCUSD"] = mtgox_price["value"].to_f

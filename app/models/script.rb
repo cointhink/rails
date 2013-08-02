@@ -6,6 +6,7 @@ class Script < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => {:scope => :user_id}
 
   scope :valid, lambda { where("deleted = ?", false) }
+  scope :enableds, lambda { where("enabled_until > ?", Time.now) }
 
   belongs_to :user
   has_many :runs, :class_name => 'ScriptRun'
