@@ -1,4 +1,6 @@
 ---
+prices:
+  script: 0.01
 google:
   analytics: 'UA-XXXXXX-X'
   adsense:
