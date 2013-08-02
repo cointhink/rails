@@ -1,5 +1,3 @@
 = render :partial => 'menu'
 .user-show
-  h2 #{@user.username}
-
   = render :partial => (params[:page] || 'profile')
