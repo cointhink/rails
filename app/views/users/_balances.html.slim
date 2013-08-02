@@ -6,9 +6,9 @@
     li.coin-balance
       div
         span.indent
-          | Available Credits:
+          ' Available Credits:
           span.amount
-            | #{current_user.balance('btc')}
+            | #{current_user.balance('btc').amount}
       div.receiving_address
         span.indent
           | Bitcoin Receiving Address:
@@ -16,8 +16,8 @@
           | #{@balances['btc']["receiving_address"]}
 
   p
-    | One Cointhink Credit costs 1 BTC
-  p
+    | 1 Cointhink Credit costs 1 BTC.
+    br
     | Payments are for buying credits only and are non-refundable.
 
 

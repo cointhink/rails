@@ -220,7 +220,7 @@ class Script < ActiveRecord::Base
   end
 
   def price
-    Balance.make_btc(0.001)
+    Balance.make_btc(SETTINGS['prices']['script'])
   end
 
 end
