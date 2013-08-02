@@ -33,6 +33,7 @@ this.scripts_edit_setup = (script, body) ->
   editor.setTheme("ace/theme/clouds");
   editor.getSession().setMode("ace/mode/javascript");
   editor.getSession().setUseSoftTabs(true);
+  editor.getSession().setTabSize(2);
   editor.getSession().setValue(body);
   $('form').submit((evt) ->
     $('textarea').val(editor.getSession().getValue())
