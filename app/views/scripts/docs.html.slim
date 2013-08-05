@@ -8,19 +8,27 @@
     li
       a href="#intro" API
       ol
-        li Setup
+        li cointhink
+        ol
+          li exchange
+          li log
+      ol
+        li cointhink.db
+        ol
+          li load
 
   H3 Cointhink Scripting
 
   a name="intro"
   h4 Intro
   p
-    | Cointhink has a powerful scripting platform for analysis of bitcoin markets.
+    ' Cointhink has a powerful scripting platform for analysis of bitcoin markets.
+    ' Scripts are written in javascript and executed on Node.js.
 
   a name="quickstart"
   h4 QuickStart
   p
-    | Below is a basic cointhink script to watch the ticker from mtgox. From the Script/Manager screen, use Add New Script to get started, then press the edit button.
+    | Below is a cointhink script to watch the ticker from mtgox. From the Script/Manager screen, use Add New Script to get started, then press the edit button.
 
   - example = File.read('app/views/scripts/example1.js')
   == CodeRay.scan(example, :javascript).div
