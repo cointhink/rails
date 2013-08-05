@@ -1,0 +1,35 @@
+= render :partial => 'menu'
+.scripts-docs
+  ol.toc
+    li
+      a href="#intro" Intro
+    li
+      a href="#quickstart" QuickStart
+    li
+      a href="#intro" API
+      ol
+        li Setup
+
+  H3 Cointhink Scripting
+
+  a name="intro"
+  h4 Intro
+  p
+    | Cointhink has a powerful scripting platform for analysis of bitcoin markets.
+
+  a name="quickstart"
+  h4 QuickStart
+  p
+    | Below is a basic cointhink script to watch the ticker from mtgox. From the Script/Manager screen, use Add New Script to get started, then press the edit button.
+
+  - example = File.read('app/views/scripts/example1.js')
+  == CodeRay.scan(example, :javascript).div
+
+  p
+    | Copy and paste the code into the editor and hit Save. Then press Start.
+
+  a name="api"
+  h4 API
+  .api-cointaner style="margin-left: 1em"
+    H4 cointhink.setup
+    p Stuff

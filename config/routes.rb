@@ -18,6 +18,7 @@ Btcmarketwatch::Application.routes.draw do
   post '/scripts' => 'scripts#create'
   match '/scripts' => 'scripts#manage'
   match '/scripts/leaderboard' => 'scripts#leaderboard'
+  match '/scripts/docs(/*path)' => 'scripts#docs'
 
   get '/:id' => 'users#show'
   post '/:id' => 'users#update'
