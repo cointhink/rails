@@ -6,15 +6,14 @@
     li
       a href="#quickstart" QuickStart
     li
-      a href="#intro" API
+      a href="#api" API
       ol
         li cointhink
-        ol
+        ol type='a'
           li exchange
           li log
-      ol
         li cointhink.db
-        ol
+        ol type='a'
           li load
 
   H3 Cointhink Scripting
@@ -40,5 +39,19 @@
   a name="api"
   h4 API
   .api-cointaner style="margin-left: 1em"
-    H4 cointhink.setup
-    p Stuff
+    H4 cointhink
+    ul
+      li style='list-style:none' exchange(exchange_name, callback)
+      p Receive ticker information from the named exchange.
+
+      li style='list-style:none' log(message)
+      p Write a message to the script log
+
+    H4 cointhink.db
+    ul
+      li style='list-style:none; font-style: italic' load(callback)
+      p
+        ' Load previous stored variables from permament storage.
+        ' The first callback parameter is an object where the keys are
+        ' the stored values.
+
