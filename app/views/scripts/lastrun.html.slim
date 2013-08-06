@@ -24,14 +24,6 @@
         - @script.inventory.each do |currency, amount|
           li #{"%0.5f" % amount} #{currency.upcase}
 
-
-  div.trades
-    h3 Trades
-    - if @script.trades
-      ul
-        - @script.trades.each do |trade|
-          li #{trade}
-
   div.runs
     - if @run
       pre
@@ -39,7 +31,7 @@
 
   - if @signals
     div.signals
-      h3 Output
+      h3 Logs
       ul.signals
         - @signals.each do |signal|
           li
@@ -52,6 +44,13 @@
                 pre #{signal["msg"]}
               - else
                 ' #{signal["msg"]}
+
+  div.trades
+    h3 Trades
+    - if @script.trades
+      ul
+        - @script.trades.each do |trade|
+          li #{trade}
 
   div.Storage
     h3 Storage
