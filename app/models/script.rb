@@ -207,6 +207,12 @@ class Script < ActiveRecord::Base
     end
   end
 
+  def last_trades(count=10)
+    REDIS.lrange("trade:#{script_name}", 0, count).map do |s|
+      JSON.parse(s)
+    end
+  end
+
   def enabled?
     if enabled_until
       enabled_until > Time.now

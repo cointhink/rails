@@ -47,10 +47,16 @@
 
   div.trades
     h3 Trades
-    - if @script.trades
+    - if @trades
       ul
-        - @script.trades.each do |trade|
-          li #{trade}
+        - @trades.each do |trade|
+          li
+            time datetime="#{trade["trade_date"]}" data-format="yyyy-MMM-dd h:mm:sstt"
+            span style="width: 5em"
+              '  #{trade['buysell'].upcase}
+            ' #{trade['exchange']} #{trade['market']}/#{trade['currency']}
+            ' #{trade['amount']}#{trade['market']} @ #{trade['quantity']}#{trade['currency']}
+
 
   div.Storage
     h3 Storage
