@@ -32,7 +32,7 @@ class ScriptsController < ApplicationController
     if @script
       @run = @script.runs.latest.last
       @signals = @script.last_signals
-      @trades = @script.last_trades
+      @trades = @script.last_trades(5)
     end
   end
 
