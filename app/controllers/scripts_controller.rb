@@ -92,7 +92,7 @@ class ScriptsController < ApplicationController
       if current_user.balance('btc') > price
         purchase = current_user.purchases.create({amount: price,
                                                   purchasable: @script})
-        @script.add_time(1.month)
+        @script.add_time(1.week)
         flash[:notice] = "Script enabled until #{@script.enabled_until}."
       else
         flash[:error] = 'A balance of 0.01 credits is necessary before starting this script'

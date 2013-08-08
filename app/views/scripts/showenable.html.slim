@@ -3,9 +3,9 @@
     | Enable #{@script.script_name}
 
   p
-    ' Enable this script for 30 days,
+    ' Enable this script for 7 days,
     ' until
-    time datetime="#{1.month.from_now.iso8601}" data-format='yyyy-MMM-dd'
+    time datetime="#{1.week.from_now.iso8601}" data-format='yyyy-MMM-dd'
     | , by redeeming #{@script.price.amount} credits.
 
   ul
