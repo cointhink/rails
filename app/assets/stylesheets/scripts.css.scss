@@ -55,6 +55,13 @@
       overflow: hidden;
       color: brown;
     }
+   }
+  .trades {
+    span.buysell {
+      display: inline-block;
+      color: blue;
+      padding-left: 0.5em;
+    }
   }
 
   ul.signals {

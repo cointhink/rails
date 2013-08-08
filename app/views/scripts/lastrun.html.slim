@@ -47,15 +47,15 @@
 
   div.trades
     h3 Trades
-    - if @trades
-      ul
-        - @trades.each do |trade|
-          li
-            time datetime="#{trade["trade_date"]}" data-format="yyyy-MMM-dd h:mm:sstt"
-            span style="width: 5em"
-              '  #{trade['buysell'].upcase}
-            ' #{trade['exchange']} #{trade['market']}/#{trade['currency']}
-            ' #{trade['amount']} @ #{trade['quantity']}#{trade['market']}
+    ul.trades
+      - @trades.each do |trade|
+        li
+          time datetime="#{trade["trade_date"]}" data-format="yyyy-MMM-dd h:mm:sstt"
+          - widest = @trades.map{|t| t['buysell'].length }.max
+          span.buysell style="width: #{widest*0.7}em"
+            ' #{trade['buysell'].upcase}
+          ' #{trade['exchange']} #{trade['market']}/#{trade['currency']}
+          ' #{trade['amount']} @ #{trade['quantity']}#{trade['market']}
 
 
   div.Storage
