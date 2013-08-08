@@ -9,13 +9,13 @@ html lang="en"
   body#cointhink
     = render partial: "layouts/navbar"
 
-    div.container-fluid
+    div.page.container-fluid
       = render partial: "layouts/flash_msg"
 
       = yield
 
-      = render partial: "layouts/footer"
-      = render partial: "layouts/analytics"
+    = render partial: "layouts/footer"
+    = render partial: "layouts/analytics"
 
   javascript:
     $(function() {
