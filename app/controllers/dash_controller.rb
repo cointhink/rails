@@ -59,9 +59,7 @@ class DashController < ApplicationController
         end
         e
       end
-      logger.info @exchanges.map{|e| [e[:name], e[:cost]]}
       @exchanges.sort_by!{|e| e[:cost]}.reverse!
-      logger.info @exchanges.map{|e| [e[:name], e[:cost]]}
     end
     @news = Note.order('created_at desc').limit(5)
   end
