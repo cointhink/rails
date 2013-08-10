@@ -20,7 +20,7 @@ class SessionController < ApplicationController
         redirect_to({:action => :login, :username => params[:username]})
       end
     else
-      if routes_match_count("/#{params[:username]}") == 1
+      if routes_match_count("/#{params[:username]}") == 2
         user = User.new
         user.apply_params(params)
         if user.valid?
