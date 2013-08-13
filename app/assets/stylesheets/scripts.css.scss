@@ -92,7 +92,7 @@
   #invtotal { color: black }
 }
 
-.scripts-docs {
+#scripts-docs {
   width: 80%;
   li { list-style: none }
   .toc {
@@ -100,5 +100,10 @@
     padding: 1em 2em;
     background: #ccc;
 
+  }
+  ol a { color: black }
+
+  .apimethod {
+    font-size: 110%;
   }
 }

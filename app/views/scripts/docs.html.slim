@@ -1,5 +1,5 @@
 = render :partial => 'menu'
-.scripts-docs
+#scripts-docs
   ol.toc
     li
       a href="#intro" Intro
@@ -8,13 +8,26 @@
     li
       a href="#api" API
       ol
-        li cointhink
-        ol type='a'
-          li exchange
-          li log
-        li cointhink.db
-        ol type='a'
-          li load
+        li
+          a href="#cointhink"
+            | cointhink
+        ol
+          li
+            a href="#cointhink.exchange"
+              | exchange
+          li
+            a href="#cointhink.log"
+              | log
+          li
+            a href="#cointhink.trade"
+              | trade
+        li
+          a href="#cointhink.db"
+            | cointhink.db
+        ol
+          li
+            a href="#cointhink.db.load"
+              | load
 
   H3 Cointhink Scripting
 
@@ -44,19 +57,36 @@
   a name="api"
   h4 API
   .api-cointaner style="margin-left: 1em"
+    a name="cointhink"
     H4 cointhink
     ul
-      li exchange(exchange_name, callback)
-      p Receive ticker information from the named exchange.
+      li
+        a name="cointhink.exchange"
+        span.apimethod exchange(exchange_name, funciton callback(ticker){})
+        p
+          ' Receive ticker information from the named exchange. The callback
+          ' is called every time a new trade is posted.
 
-      li log(message)
-      p Write a message to the script log
+      li
+        a name="cointhink.log"
+        span.apimethod log(message)
+        p Write a message to the script log.
 
+      li
+        a name="cointhink.trade"
+        span.apimethod trade(exchange, product, amount, buysell, currency, price, funciton callback(notice){})
+        p
+          ' Simulate a trade order on the exchange to buy or sell an amount of the product
+          ' at a price in a currency.
+
+    a name="cointhink.db"
     H4 cointhink.db
     ul
-      li style='list-style:none; font-style: italic' load(callback)
-      p
-        ' Load previous stored variables from permament storage.
-        ' The first callback parameter is an object where the keys are
-        ' the stored values.
+      li style='list-style:none; font-style: italic'
+        a name="cointhink.db.load"
+        span.apimethod load(callback)
+        p
+          ' Load previous stored variables from permament storage.
+          ' The callback receives an object containing the stored
+          ' values.
 
