@@ -1,33 +1,4 @@
 #menu
-  h2 Exchanges
-  table.exchanges style="margin-left: 1em"
-    thead
-      tr align="right"
-        td align="center" Orderbook Top 25%
-        td title="USD value of the orderbook within 10% of the best bid" Bid Value
-        td title="USD value of the orderbook within 10% of the best ask" Ask Value
-    - @exchanges.each do |e|
-      tr
-        td.exchange
-          a.btn href="#{exchange_path(e[:exchange])}"
-            ' #{e[:exchange].display_name}
-            | #{image_tag "/flags/#{e[:exchange].country_code}.png"}
-        - if e[:depth_runs]
-          - ['bid','ask'].each do |mkt|
-            - cost = e[:depth_runs][mkt]
-            td.obookvalue align="right"
-              - if cost
-                | $#{number_with_precision(cost.amount, :precision => 0, :delimiter => ',')}
-
-  h2 Arbitrage Report
-  ul.arbitrage
-    li
-      a.btn style="margin-right: 1em" href="/arbitrage/btcusd"
-        | BTC/USD Chart
-      - if @snapshot.strategy
-        - trade = @snapshot.strategy.stage.children.select{|s| s.name=="Trades"}.first
-        | $#{"%0.0f"%trade.potential.amount} available
-
   h2 News
   ul.news
     - @news.each do |news|
