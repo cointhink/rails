@@ -70,9 +70,11 @@
     == CodeRay.scan(@script.body, :javascript).div
 
   div.enabled_until
-    h3 Enabled until
+    h3 Active
     - if @script.enabled_until
-      ' Enabled until
-      time datetime="#{@script.enabled_until.iso8601}" data-format="yyyy-MMM-dd"
+      ' This script is enabled
+      - if logged_in? && current_user == @script.user
+        ' until
+        time datetime="#{@script.enabled_until.iso8601}" data-format="yyyy-MMM-dd"
     - else
-      | This script is not enabled
+      ' This script is not enabled
