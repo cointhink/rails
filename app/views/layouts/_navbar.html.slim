@@ -3,7 +3,7 @@ div.navbar
     a.brand href="/"
       img src="#{image_path "logo-256.png"}"
       span.text CoinThink
-    div.navbar-right
+    div.pull-right
       div.navbar-right-block
         - if logged_in?
           span class="user-detail"
@@ -23,11 +23,11 @@ div.navbar
         a href="https://twitter.com/cointhink" @cointhink
         '
         a href="https://github.com/cointhink" github
-      div.navbar-right-block
-        ul.main-menu
-          li
-            a href="/scripts/leaderboard" Scripts
-          li
-            a href="/arbitrage/btcusd" Arbitrage
-          li
-            a href="/exchanges" Exchanges
+    div.pull-left
+      ul.main-menu
+        li
+          a href="/scripts/leaderboard" Scripts
+        li
+          a href="/arbitrage/btcusd" Arbitrage
+        li
+          a href="/exchanges" Exchanges
