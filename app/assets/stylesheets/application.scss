@@ -66,6 +66,12 @@ body#cointhink {
       margin-right: 1em;
       list-style: none;
       font-size: 150%;
+      li {
+        display: inline;
+      }
+      li:not(:first-child) {
+        margin-left: 1em;
+      }
     }
   }
 
