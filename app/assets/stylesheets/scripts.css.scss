@@ -24,6 +24,11 @@
 }
 
 .scripts-lastrun {
+  ul {
+    margin: 0 0 0.8em 1em;
+    li { list-style: none; }
+  }
+
   .commands{
     margin-bottom: 1em;
     a {
@@ -64,10 +69,6 @@
     }
   }
 
-  ul.signals {
-    margin: 0 0 0.8em 1em;
-    li { list-style: none; }
-  }
   .inventory {
     li { display: inline;
          border-right: 1px solid;
