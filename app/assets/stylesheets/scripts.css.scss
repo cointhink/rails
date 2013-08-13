@@ -82,12 +82,9 @@
     font-size: 110%;
     color: black;
   }
-  li {
-    list-style-type: none;
-    span + span {
-      margin-left: 0.5em;
-    }
-  }
+
+  td { padding-right: 0.5em; }
+  td.invamt { text-align: right; }
 
   .leaderboard { margin-bottom: 1em}
   #invtotal { color: black }

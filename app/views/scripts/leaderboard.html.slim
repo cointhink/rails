@@ -3,26 +3,26 @@ div.scripts-leaderboard
   h2 Script Leaderboard
 
   div.leaderboard
-    div.row
-      div.span2 Name
-      div.span2 Total Value
-      div.span2 BTC
-      div.span2 USD
-    - @script_values.each do |sv|
-      div.row
-        div.span2
-          span.name
-            a href="/#{sv[:script].user.slug}/#{sv[:script].slug}"
-              | #{sv[:script].user.slug}/#{sv[:script].slug}
-        div.span2
-          span.invamt#invtotal
-            | #{"%0.5f" % sv[:value]}BTC
-        div.span2
-          span.invamt
-            | #{"%0.5f" % sv[:script].inventory['btc']}BTC
-        div.span2
-          span.invamt
-            | #{"%0.5f"% (sv[:script].inventory['usd'] || 0)}USD
+    table
+      thead
+        tr
+          td Name
+          td Total Value
+          td BTC
+          td USD
+      tbody
+        - @script_values.each do |sv|
+          tr
+            td
+              span.name
+                a href="/#{sv[:script].user.slug}/#{sv[:script].slug}"
+                  | #{sv[:script].user.slug}/#{sv[:script].slug}
+            td.invamt#invtotal
+                | #{"%0.5f" % sv[:value]}BTC
+            td.invamt
+                | #{"%0.5f" % sv[:script].inventory['btc']}BTC
+            td.invamt
+                | #{"%0.3f"% (sv[:script].inventory['usd'] || 0)}USD
 
   div.value
     | Scripts start with 1BTC and $0USD. Trade orders are simulated.
