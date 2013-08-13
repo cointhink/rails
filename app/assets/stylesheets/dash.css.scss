@@ -29,19 +29,9 @@ div#menu a {
   color: black
 }
 
-#menu {
-  table.exchanges {
-    a {
-      width: 100%
-    }
-  }
-  td.exchange {
-     padding-right: 1em;
-     text-align: center;
-  }
-  td.obookvalue {
-     padding-left: 2em;
-     text-align: right;
+#dash-menu {
+  p {
+    margin-left: 2em;
   }
 
   ul {
@@ -50,7 +40,9 @@ div#menu a {
 
   ul.news {
     time {
-      margin-right: 1em;
+      margin-right: 0.7em;
+      width: 6em;
+      display: inline-block;
     }
     .exchange {
       background: lightgrey;
