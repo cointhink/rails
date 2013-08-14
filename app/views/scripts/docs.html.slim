@@ -9,84 +9,87 @@
       a href="#api" API
       ol
         li
-          a href="#cointhink"
+          a href="#api.cointhink"
             | cointhink
         ol
           li
-            a href="#cointhink.exchange"
+            a href="#api.cointhink.exchange"
               | exchange
           li
-            a href="#cointhink.log"
+            a href="#api.cointhink.log"
               | log
           li
-            a href="#cointhink.trade"
+            a href="#api.cointhink.trade"
               | trade
         li
-          a href="#cointhink.db"
+          a href="#api.cointhink.db"
             | cointhink.db
         ol
           li
-            a href="#cointhink.db.load"
+            a href="#api.cointhink.db.load"
               | load
 
-  H3 Cointhink Scripting
+  .content
+    H3 Cointhink Scripting
 
-  a name="intro"
-  h4 Intro
-  p
-    ' Cointhink is a scripting platform for analysis of bitcoin markets.
-    ' Scripts are written in javascript and executed on Node.js. A data feed from
-    ' mtgox, and a simulated trading engine is provided. With this, automated
-    ' trading algorithms can be quickly implement and evaluated.
+    a name="intro"
+    h4 Intro
+    p
+      ' Cointhink is a scripting platform for analysis of bitcoin markets.
+      ' Scripts are written in javascript and executed on Node.js.
+      ' Automated
+      ' trading algorithms can be quickly implement and evaluated.
+      ' Real-world conditions are created with market data(currently MtGox)
+      ' and a simulated trading engine.
 
-  a name="quickstart"
-  h4 QuickStart
-  p
-    ' The cointhink script below will watch the ticker from mtgox.
-    ' To try it out, use the Add New Script button from the Script Manager screen,
-    ' then press the edit button.
+    a name="quickstart"
+    h4 QuickStart
+    p
+      ' The cointhink script below will watch the ticker from mtgox.
+      ' To try it out, use the Add New Script button from the Script Manager screen,
+      ' then press the edit button.
 
-  - example = File.read('app/views/scripts/example1.js')
-  == CodeRay.scan(example, :javascript).div
+    - example = File.read('app/views/scripts/example1.js')
+    == CodeRay.scan(example, :javascript).div
 
-  p
-    ' Copy and paste the code into the editor and hit Save, then press Start.
-  p
-    ' Messages from the script will show up in the Log section of the Script Detail page.
+    p
+      ' Copy and paste the code into the editor and hit Save, then press Start.
+    p
+      ' Messages from the script will show up in the Log section of the Script Detail page.
 
-  a name="api"
-  h4 API
-  .api-cointaner style="margin-left: 1em"
-    a name="cointhink"
-    H4 cointhink
-    ul
-      li
-        a name="cointhink.exchange"
-        span.apimethod exchange(exchange_name, funciton callback(ticker){})
-        p
-          ' Receive ticker information from the named exchange. The callback
-          ' is called every time a new trade is posted.
+    a name="api"
+    h4 API
+    .api-cointaner style="margin-left: 1em"
+      a name="api.cointhink"
+      H4 cointhink
+      ul
+        li
+          a name="api.cointhink.exchange"
+          span.apimethod exchange(exchange_name, funciton callback(ticker){})
+          p
+            ' Receive ticker information from the named exchange. The callback
+            ' is called every time a new trade is posted.
 
-      li
-        a name="cointhink.log"
-        span.apimethod log(message)
-        p Write a message to the script log.
+        li
+          a name="api.cointhink.log"
+          span.apimethod log(message)
+          p Write a message to the script log.
 
-      li
-        a name="cointhink.trade"
-        span.apimethod trade(exchange, product, amount, buysell, currency, price, funciton callback(notice){})
-        p
-          ' Simulate a trade order on the exchange to buy or sell an amount of the product
-          ' at a price in a currency.
+        li
+          a name="api.cointhink.trade"
+          span.apimethod trade(exchange, product, amount, buysell, currency, price, funciton callback(notice){})
+          p
+            ' Simulate a trade order on the exchange to buy or sell an amount of the product
+            ' at a price in a currency.
 
-    a name="cointhink.db"
-    H4 cointhink.db
-    ul
-      li style='list-style:none; font-style: italic'
-        a name="cointhink.db.load"
-        span.apimethod load(callback)
-        p
-          ' Load previous stored variables from permament storage.
-          ' The callback receives an object containing the stored
-          ' values.
+      a name="api.cointhink.db"
+      H4 cointhink.db
+      ul
+        li style='list-style:none; font-style: italic'
+          a name="api.cointhink.db.load"
+          span.apimethod load(callback)
+          p
+            ' Load previous stored variables from permament storage.
+            ' The callback receives an object containing the stored
+            ' values.
 
