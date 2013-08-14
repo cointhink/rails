@@ -30,8 +30,15 @@ div#menu a {
 }
 
 #dash-menu {
-  p {
-    margin-left: 2em;
+  .logostamp {
+    margin: 1em;
+    overflow: auto;
+    width: 90%;
+  }
+
+  .logotext {
+    font-size: 170%;
+    padding-top: 128px;
   }
 
   ul {
