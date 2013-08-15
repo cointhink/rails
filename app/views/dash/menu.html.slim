@@ -1,13 +1,13 @@
 #dash-menu
   .logostamp
     .pull-right
-      = image_tag "logo-256.png"
+      = image_tag "logo-256.png", :width => 200
     p.logotext
       ' Cointhink is a cryptocurrency exchange
       a href="/scripts/docs" quantitative analysis
       '  platform.
 
-  h2 News
+  h2 Notices
   ul.news
     - @news.each do |news|
       li
