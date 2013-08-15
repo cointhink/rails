@@ -8,6 +8,7 @@ namespace :btc do
 
     snapshot = Snapshot.create
     snapshot.poll(super_http, Exchange.with_markets('btc','usd'))
+    snapshot.poll(super_http, Exchange.with_markets('ltc','btc'))
   end
 
   desc 'Compute strategy'
