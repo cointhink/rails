@@ -9,4 +9,5 @@ unless r.db_list.run(R).include?(SETTINGS["rethinkdb"]["db"])
   r.table_create('storage', {primary_key:'_cointhink_id_'}).run(R)
   r.table_create('signals').run(R)
   r.table('signals').index_create('name').run(R)
+  r.table('signals').index_create('time').run(R)
 end
