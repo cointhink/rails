@@ -6,9 +6,10 @@ class ScriptsControllerTest < ActionController::TestCase
     user = User.new({username:'jill'})
     login(user)
     script = MiniTest::Mock.new
+    script.expect :script_name, 'jill/average'
+    script.expect :enabled?, true
     script.expect :start!, nil
-    script.expect :user, user
-    Script.stub :find, script do
+    user.scripts.stub :find, script do
       post :start, {scriptname:"average", username:"jill"}
       assert_nil flash[:error]
       assert_redirected_to :action => :lastrun
