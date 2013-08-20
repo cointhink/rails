@@ -35,8 +35,6 @@ class Market < ActiveRecord::Base
     case currency
     when from_currency then "ask"
     when to_currency then "bid"
-    else
-      raise "bidask(#{currency}) is not in [#{from_currency}, #{to_currency}]"
     end
   end
 
