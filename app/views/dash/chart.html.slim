@@ -3,30 +3,33 @@
       chart_data = {}
       @snapshots.each do |snapshot|
         snapshot.exchange_runs.each do |ex_run|
-          chart_data[ex_run.exchange] ||= [ ex_run.exchange.name, [], [] ]
-
-          depth_runs = ex_run.depth_runs.includes(:best_offer).all
+          depth_runs = ex_run.depth_runs.includes(:market).
+                       where("(markets.from_currency = ? and markets.to_currency = ?) or"+
+                             "(markets.from_currency = ? and markets.to_currency = ?)",
+                             @ac, @pc, @pc, @ac)
           if depth_runs.size == 2
-            o=depth_runs.first # tofix: bid/ask detection
+            chart_data[ex_run.exchange] ||= [ ex_run.exchange.name, [], [] ]
+
+            o=depth_runs.where('markets.from_currency = ?', @ac).first
             op = o.best_offer ? o.best_offer.price : nil
             chart_data[ex_run.exchange][1] << [o.created_at.to_i*1000, op]
-            o=depth_runs.last # tofix: bid/ask detection
+            o=depth_runs.where('markets.from_currency = ?', @pc).first
             op = o.best_offer ? o.best_offer.price : nil
             chart_data[ex_run.exchange][2] << [o.created_at.to_i*1000, op]
           end
         end
       end
       @chart_data = chart_data.map{|k,v| v}
-
-      @strategy_data = @snapshots.map do |s|
-        if s.strategy
-          trade_stage = s.strategy.stage.children.select{|s| s.name=="Trades"}.first
-          [s.created_at.to_i*1000, trade_stage.potential.amount.to_f]
+      strategies = @snapshots.map{|s| s.strategies.for(@ac, @pc).first}
+      @strategy_data = strategies.map do |strategy|
+        if strategy
+          trade_stage = strategy.stage.children.select{|s| s.name=="Trades"}.first
+          [strategy.snapshot.created_at.to_i*1000, trade_stage.potential.amount.to_f]
         end
       end
-      @strategy_ids = @snapshots.map{|s| s.strategy.id if s.strategy}
+      @strategy_ids = strategies.map{|strategy| strategy.id if strategy}
 
-  h2 Bitcoin/USD Arbitrage Strategy Report
+  h2 #{@ac.upcase}/#{@pc.upcase} Arbitrage Strategy Report
 
   section#strategy
     - if @strategy
@@ -40,7 +43,7 @@
       section#opportunity style="margin-bottom: 1em"
         div style="width: 45em"
           - trade_stage = @strategy.stage.children.select{|s| s.name=="Trades"}.first
-          ' For the #{Exchange.actives.count} exchanges being monitored, the total value of offers
+          ' For the monitored exchanges, the total value of offers
           ' that have immediate buyers is
           span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
             ' #{trade_stage.balance_in}.
@@ -107,7 +110,7 @@
   javascript:
     $(function() {
       setup(#{{JSON.pretty_generate(@chart_data)}},
-            #{{@strategy_percentages.to_json}},
+            [],
             #{{@strategy_data.to_json}},
             #{{@strategy_ids.to_json}})
 

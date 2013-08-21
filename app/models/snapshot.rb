@@ -1,6 +1,6 @@
 class Snapshot < ActiveRecord::Base
   has_many :exchange_runs, :dependent => :destroy
-  belongs_to :strategy
+  has_many :strategies
 
   attr_accessible :strategy
 

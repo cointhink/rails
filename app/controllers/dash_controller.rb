@@ -8,11 +8,15 @@ class DashController < ApplicationController
                     ['snapshots.created_at > ? and snapshots.created_at < ?', start, stop])
                  .order('created_at desc')
 
+    @ac = params[:pair][0,3]
+    @pc = params[:pair][3,3]
 
     if params[:strategy_id]
       @strategy = Strategy.find(params[:strategy_id])
     else
-      @strategy = @snapshots.first.strategy if @snapshots.size > 0
+      if @snapshots.size > 0
+        @strategy = @snapshots.first.strategies.for(@ac, @pc).first
+      end
     end
 
     respond_to do |format|

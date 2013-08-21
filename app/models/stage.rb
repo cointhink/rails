@@ -14,22 +14,30 @@ class Stage < ActiveRecord::Base
     buys.first
   end
 
-  def buys
-    trades.select{|t| t.balance_in.usd?}
+  def buys(currency)
+    trades.select{|t| t.balance_in.currency == currency}
   end
 
-  def sells
-    trades.select{|t| t.balance_in.btc?}
+  def sells(currency)
+    trades.select{|t| t.balance_in.currency == currency}
+  end
+
+  def asset_currency
+    root.strategy.asset_currency
+  end
+
+  def payment_currency
+    root.strategy.payment_currency
   end
 
   def balance_in_calc
-    buys.reduce(Balance.make_usd(0)) do |total, trade|
+    buys(payment_currency).reduce(Balance.new(amount:0,currency:payment_currency)) do |total, trade|
       total + trade.balance_in
     end
   end
 
   def balance_usd_out
-    sells.reduce(Balance.make_usd(0)) do |total, trade|
+    sells(asset_currency).reduce(Balance.new(amount:0,currency:payment_currency)) do |total, trade|
       total + trade.calculated_out
     end
   end

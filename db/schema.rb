@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130731212024) do
+ActiveRecord::Schema.define(:version => 20130820174437) do
 
   create_table "acl_flags", :force => true do |t|
     t.string   "name"
@@ -187,11 +187,14 @@ ActiveRecord::Schema.define(:version => 20130731212024) do
   add_index "stages", ["strategy_id"], :name => "index_stages_on_strategy_id"
 
   create_table "strategies", :force => true do |t|
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
     t.integer  "balance_in_id"
     t.integer  "balance_out_id"
     t.integer  "potential_id"
+    t.integer  "snapshot_id"
+    t.string   "asset_currency"
+    t.string   "payment_currency"
   end
 
   add_index "strategies", ["balance_in_id"], :name => "index_strategies_on_balance_in_id"

@@ -24,14 +24,6 @@ function setup(data, percentages, strategies, strategy_ids) {
              lines: {show: false},
              points: {radius: 0}})
 
-  dset.push({label: "profit %",
-             data: percentages,
-             yaxis: 3,
-             color: 'grey',
-             bars: {show: false, barWidth: 3},
-             lines: {show: false},
-             points: {radius: 5, fill: true, fillColor: 'grey'}})
-
   var color_index = 0;
   for(var market_id in data) {
     dset.push({label: data[market_id][0]+" ask",
@@ -79,7 +71,7 @@ function strategyClick(event, point, item, strategy_ids) {
 
 function formatter(val, axis) {
   if(axis.n == 1)
-    return "$"+val.toFixed(2);
+    return "$"+val.toFixed(4);
   if(axis.n == 2)
     return "$"+val.toFixed(2);
   if(axis.n == 3)

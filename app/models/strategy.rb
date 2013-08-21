@@ -1,18 +1,25 @@
 class Strategy < ActiveRecord::Base
+  attr_accessible :asset_currency, :payment_currency
+
   belongs_to :balance_in, :class_name => :Balance, :dependent => :destroy
   belongs_to :balance_out, :class_name => :Balance, :dependent => :destroy
   belongs_to :potential, :class_name => :Balance, :dependent => :destroy
+  belongs_to :snapshot
 
   has_one :stage, :dependent => :destroy
   has_many :exchange_balances, :dependent => :destroy
+
+  scope :for, lambda {|ac,pc| where(asset_currency:ac, payment_currency:pc)}
 
   # total opportunity
   def self.opportunity(left_currency, right_currency, snapshot)
     # find all asks less than bids, fee adjusted
     # assume unlimited buying funds
     depth_runs = snapshot.exchange_runs.map{|er| er.depth_runs}.flatten
-    bid_markets = depth_runs.select{|dr| dr.market.bidask(right_currency) == 'bid'}
-    ask_markets = depth_runs.select{|dr| dr.market.bidask(right_currency) == 'ask'}
+    bid_markets = depth_runs.select{|dr| dr.market.from_currency == left_currency &&
+                                         dr.market.to_currency == right_currency}
+    ask_markets = depth_runs.select{|dr| dr.market.from_currency == right_currency &&
+                                         dr.market.to_currency == left_currency}
 
     puts "Ask Markets: #{ask_markets.map{|dr| "#{dr.market.name}"}.join(', ')}"
     puts "Bid Markets: #{bid_markets.map{|dr| "#{dr.market.name}"}.join(', ')}"
@@ -21,19 +28,19 @@ class Strategy < ActiveRecord::Base
     asks = Offer.where(['depth_run_id in (?)', ask_markets]).order("price asc")
 
     if bids.count > 0 && asks.count > 0
-      actions = clearing_offers(bids, asks)
-      strategy = Strategy.analyze(actions)
-      snapshot.update_attribute :strategy, strategy
-      puts "Linked strategy ##{strategy.id} to snapshot ##{snapshot.id} #{snapshot.created_at}"
+      actions = clearing_offers(left_currency, right_currency, bids, asks)
+      strategy = Strategy.create(asset_currency: left_currency,
+                                 payment_currency: right_currency)
+      strategy.analyze(actions, left_currency, right_currency)
+      strategy
     else
       puts "#{bids.count} bids. #{asks.count} asks. Nothing actionable."
     end
   end
 
-  def self.analyze(actions)
-    strategy = Strategy.create
+  def analyze(actions, asset_currency, payment_currency)
     puts "Saving #{actions.size} trade groups"
-    parent = strategy.create_stage
+    parent = self.create_stage
     stage2 = parent.children.create(sequence: 2, name: "Trades",
                                    children_concurrent: true)
     market_totals = {}
@@ -47,7 +54,6 @@ class Strategy < ActiveRecord::Base
         substage.trades.create(balance_in: action[:buy].cost(action[:quantity])*(1+action[:buy].market.fee),
                                offer: action[:buy],
                                expected_fee: action[:buy].market.fee_percentage)
-
         # sell high
         action[:sells].each do |sell|
           market = market_totals[sell[:offer].market.exchange.name] ||= Hash.new(0)
@@ -55,7 +61,6 @@ class Strategy < ActiveRecord::Base
           substage.trades.create(balance_in: sell[:spent],
                                  offer: sell[:offer],
                                  expected_fee: sell[:offer].market.fee_percentage)
-
         end
         substage.balance_in = substage.balance_in_calc
         substage.balance_out = substage.balance_usd_out
@@ -63,15 +68,15 @@ class Strategy < ActiveRecord::Base
         substage.save
       end
     end
-    stage2.balance_in = stage2.children.reduce(Balance.make_usd(0)) do |total, trade|
+    stage2.balance_in = stage2.children.reduce(Balance.new(amount:0,currency:payment_currency)) do |total, trade|
       total + trade.balance_in
     end
-    stage2.balance_out = stage2.children.reduce(Balance.make_usd(0)) do |total, trade|
+    stage2.balance_out = stage2.children.reduce(Balance.new(amount:0,currency:payment_currency)) do |total, trade|
       total + trade.balance_usd_out
     end
     stage2.potential = stage2.balance_out - stage2.balance_in
     stage2.save
-    puts "Stage #{stage2.name} ##{stage2.id} #{stage2.children.count} actions. Investment #{stage2.balance_in} Profit #{stage2.potential} #{"%0.2f"%stage2.profit_percentage}%"
+    puts "Stage #{stage2.name} ##{stage2.id} #{stage2.children.count} actions. Investment #{stage2.balance_in} Return #{stage2.balance_out} Profit #{stage2.potential} #{"%0.2f"%stage2.profit_percentage}%"
 
     stage1 = parent.children.create(sequence: 1,
                                    name: "Moves",
@@ -79,7 +84,7 @@ class Strategy < ActiveRecord::Base
     puts "Finding changers for #{market_totals.keys.size} markets"
     market_totals.each do |k,v|
       exchange = Exchange.find_by_name(k)
-      puts "#{k} spends $#{"%0.2f"%v[:usd]} #{"%0.5f"%v[:btc]}btc"
+      puts "#{k} spends #{"%0.2f"%v[:usd]}#{payment_currency} #{"%0.5f"%v[:btc]}#{asset_currency}"
       if v[:usd] > 0
         changer = exchange.best_changer(Exchange.find_by_name('mtgox'), 'usd')
         v[:usd] *= (1+changer.fee)
@@ -91,9 +96,9 @@ class Strategy < ActiveRecord::Base
       if v[:btc] > 0
         puts "bitcoin changer fee unimplemented"
       end
-      strategy.exchange_balances.create(exchange: exchange,
-                                        balances: [Balance.make_usd(v[:usd]),
-                                                   Balance.make_btc(v[:btc])])
+      self.exchange_balances.create(exchange: exchange,
+                                        balances: [Balance.new(amount:v[:usd], currency: payment_currency),
+                                                   Balance.new(amount:v[:btc], currency: asset_currency)])
     end
     stage1.balance_in = stage1.balance_in_calc
     stage1.balance_out = stage1.balance_usd_out
@@ -107,25 +112,24 @@ class Strategy < ActiveRecord::Base
     parent.save
 
     # duplicate parent amounts into stage (remove?)
-    strategy.balance_in = parent.balance_in
-    strategy.balance_out = parent.balance_out
-    strategy.potential = strategy.balance_out - strategy.balance_in
-    strategy.save
+    self.balance_in = parent.balance_in
+    self.balance_out = parent.balance_out
+    self.potential = self.balance_out - self.balance_in
+    self.save
 
-    puts "#{strategy.stage.children.count} stages. Investment #{strategy.balance_in} Profit #{strategy.potential}"
-    strategy
+    puts "#{stage.children.count} stages. Investment #{balance_in} Profit #{potential}"
   end
 
-  def self.clearing_offers(bids, asks)
+  def self.clearing_offers(asset_currency, payment_currency, bids, asks)
     best_bid = bids.first
     best_ask = asks.first
-    usd_in_total = Balance.make_usd(0)
-    usd_out_total = Balance.make_usd(0)
-    profit_total = Balance.make_usd(0)
+    usd_in_total = Balance.new(amount:0, currency: payment_currency)
+    usd_out_total = Balance.new(amount:0, currency: payment_currency)
+    profit_total = Balance.new(amount:0, currency: payment_currency)
     actions = []
 
-    puts "Best of #{bids.size} bids: #{best_bid.market.name} #{best_bid.rate('usd')}"
-    puts "Best of #{asks.size} asks: #{best_ask.market.name} #{best_ask.rate('usd')}"
+    puts "Best of #{bids.size} bids: #{best_bid.market.name} #{best_bid.rate(payment_currency)}"
+    puts "Best of #{asks.size} asks: #{best_ask.market.name} #{best_ask.rate(payment_currency)}"
     good_bids = bids.where(["price > ?", best_ask.price]).all #in-memory copy
     puts "#{good_bids.size} bids above best ask $#{best_ask.price}"
     good_asks = asks.where(["price < ?", best_bid.price]).all #in-memory copy
@@ -137,9 +141,9 @@ class Strategy < ActiveRecord::Base
       left = ask.cost(ask.cost)
       bid_worksheet = consume_offers(good_bids, left, ask.rate*(1+ask.market.fee))
       break if bid_worksheet.empty?
-      usd_in = Balance.make_usd(0)
-      usd_out = Balance.make_usd(0)
-      btc_inout = Balance.make_btc(0)
+      usd_in = Balance.new(amount:0, currency: payment_currency)
+      usd_out = Balance.new(amount:0, currency: payment_currency)
+      btc_inout = Balance.new(amount:0, currency: asset_currency)
       bid_worksheet.each do |bw|
         btc_inout += bw[:spent].amount
         uout = bw[:offer].cost(bw[:spent])
@@ -147,7 +151,7 @@ class Strategy < ActiveRecord::Base
         uin = ask.cost(bw[:spent])
         usd_in += uin
         profit = uout - uin
-        puts "  #{bw[:offer].market.exchange.name} #{bw[:offer].bidask} ##{bw[:offer].id} $#{bw[:offer].rate('usd')} x#{"%0.5f"%bw[:offer].quantity}btc spent #{bw[:spent]} earned: #{profit}"
+        puts "  #{bw[:offer].market.exchange.name} #{bw[:offer].bidask} ##{bw[:offer].id} $#{bw[:offer].rate(payment_currency)} x#{"%0.5f"%bw[:offer].quantity}btc spent #{bw[:spent]} earned: #{profit}"
       end
       puts "  summary #{usd_in} => #{btc_inout} => #{usd_out}. profit #{usd_out-usd_in}"
       profit_total += usd_out-usd_in
@@ -155,7 +159,7 @@ class Strategy < ActiveRecord::Base
       usd_out_total += usd_out
       actions << {buy:ask, quantity: btc_inout, sells: bid_worksheet}
     end
-    puts "Total usd in: #{usd_in_total} usd out: #{usd_out_total} profit: #{profit_total}"
+    puts "Total in: #{usd_in_total} out: #{usd_out_total} profit: #{profit_total}"
     actions
   end
 
