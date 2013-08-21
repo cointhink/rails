@@ -11,6 +11,7 @@ class StageTest < ActiveSupport::TestCase
       :balance_in => Balance.make_usd(21),
       :potential => Balance.make_usd(0.5)
       })
+    @stage.create_strategy(asset_currency:'btc',payment_currency:'usd')
     @buy_trade = @stage.trades.create({
       :balance_in => Balance.make_usd(20)
       })

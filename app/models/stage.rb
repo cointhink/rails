@@ -14,12 +14,12 @@ class Stage < ActiveRecord::Base
     buys.first
   end
 
-  def buys(currency)
-    trades.select{|t| t.balance_in.currency == currency}
+  def buys
+    trades.select{|t| t.balance_in.currency == payment_currency}
   end
 
-  def sells(currency)
-    trades.select{|t| t.balance_in.currency == currency}
+  def sells
+    trades.select{|t| t.balance_in.currency == asset_currency}
   end
 
   def asset_currency
@@ -31,13 +31,13 @@ class Stage < ActiveRecord::Base
   end
 
   def balance_in_calc
-    buys(payment_currency).reduce(Balance.new(amount:0,currency:payment_currency)) do |total, trade|
+    buys.reduce(Balance.new(amount:0,currency:payment_currency)) do |total, trade|
       total + trade.balance_in
     end
   end
 
   def balance_usd_out
-    sells(asset_currency).reduce(Balance.new(amount:0,currency:payment_currency)) do |total, trade|
+    sells.reduce(Balance.new(amount:0,currency:payment_currency)) do |total, trade|
       total + trade.calculated_out
     end
   end
