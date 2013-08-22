@@ -70,10 +70,18 @@ function strategyClick(event, point, item, strategy_ids) {
 }
 
 function formatter(val, axis) {
+  var label
   if(axis.n == 1)
-    return "$"+val.toFixed(4);
+    if (val < 10){
+     label = val.toFixed(4);
+    } else {
+     label = val.toFixed(2);
+    }
   if(axis.n == 2)
-    return "$"+val.toFixed(2);
-  if(axis.n == 3)
-    return val.toFixed(2)+"%";
+    if (val < 10){
+     label = val.toFixed(4);
+    } else {
+     label = val.toFixed(2);
+    }
+  return label
 }
