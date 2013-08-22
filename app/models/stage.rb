@@ -54,8 +54,8 @@ class Stage < ActiveRecord::Base
     buyo = buy.offer
     sello = sell.offer
     amount = sell.balance_in
-    (sello.rate('usd')*sello.fee_factor('usd') -
-       buyo.rate('usd')*buyo.fee_factor('usd'))*
+    (sello.rate(payment_currency)*sello.fee_factor(payment_currency) -
+       buyo.rate(payment_currency)*buyo.fee_factor(payment_currency))*
     amount.amount
   end
 end
