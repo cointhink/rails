@@ -26,7 +26,7 @@ div style="font-weight: bold; margin-top: 1em" Transactions
     |#{stage.name}
 
     - unless stage.name == "Moves"
-      div #{stage.balance_in} in => #{stage.balance_out} out. profit $#{stage.potential} #{"%0.3f"%stage.profit_percentage}%
+      div #{stage.balance_in} in => #{stage.balance_out} out. profit #{stage.potential} #{"%0.3f"%stage.profit_percentage}%
     ul
       - stage.trades.each do |t|
         - if t.offer

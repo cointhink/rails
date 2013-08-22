@@ -33,8 +33,7 @@ class Exchange < ActiveRecord::Base
   end
 
   def best_changer(from_exchange, balance)
-    best = Market.transfers(from_exchange, self, balance).first
-    best ||  Exchange.find_by_name('btce').best_changer(Exchange.find_by_name('mtgox'), 'usd')
+    Market.transfers(from_exchange, self, balance).first
   end
 
 end
