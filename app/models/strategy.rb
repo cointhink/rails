@@ -89,7 +89,7 @@ class Strategy < ActiveRecord::Base
     stage1.save
     puts "Stage #{stage1.name} ##{stage1.id} Investment #{stage1.balance_in} Profit #{stage1.potential} #{"%0.2f"%stage1.profit_percentage}%"
 
-    parent.balance_in = stage1.balance_in
+    parent.balance_in = stage2.balance_in
     parent.balance_out = stage2.balance_out
     parent.potential = parent.balance_out - parent.balance_in
     parent.save
