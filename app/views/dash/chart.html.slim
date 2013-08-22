@@ -78,7 +78,7 @@
       section#trade_summary
         div style="float:left"
           i
-            | ---- transfer USD ---->&nbsp;
+            | ---- transfer #{@strategy.payment_currency.upcase} ---->&nbsp;
         table style="float:left"
           - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.usd? && b>0}.any?}.each do |eb|
             tr
@@ -90,7 +90,7 @@
                     | buy #{b}
         div style="float:left"
           i
-            | &nbsp;---- transfer BTC ---->&nbsp;
+            | &nbsp;---- transfer #{@strategy.asset_currency.upcase} ---->&nbsp;
         table style="float:left"
           - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.btc? && b>0}.any?}.each do |eb|
             tr
