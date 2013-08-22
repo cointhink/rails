@@ -83,7 +83,7 @@ class Strategy < ActiveRecord::Base
                                    children_concurrent: true)
     puts "Finding changers for #{market_totals.keys.size} markets"
     # reimplement later
-    stage1.balance_in = stage1.balance_in_calc
+    stage1.balance_in = stage2.balance_in
     stage1.balance_out = stage1.balance_usd_out
     stage1.potential = stage1.balance_out - stage1.balance_in
     stage1.save
