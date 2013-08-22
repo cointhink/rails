@@ -29,6 +29,14 @@
       end
       @strategy_ids = strategies.map{|strategy| strategy.id if strategy}
 
+  .submenu
+    ul
+      li Arbitrage:
+      li
+        a href="/arbitrage/btcusd" BTC/USD
+      li
+        a href="/arbitrage/ltcbtc" LTC/BTC
+
   h2 #{@ac.upcase}/#{@pc.upcase} Arbitrage Strategy Report
 
   section#strategy
