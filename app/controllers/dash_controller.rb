@@ -8,8 +8,13 @@ class DashController < ApplicationController
                     ['snapshots.created_at > ? and snapshots.created_at < ?', start, stop])
                  .order('created_at desc')
 
-    @ac = params[:pair][0,3]
-    @pc = params[:pair][3,3]
+    if params[:pair]
+      @ac = params[:pair][0,3]
+      @pc = params[:pair][3,3]
+    else
+      redirect_to '/arbitrage/btcusd'
+      return
+    end
 
     if params[:strategy_id]
       @strategy = Strategy.find(params[:strategy_id])
