@@ -82,7 +82,24 @@ class Strategy < ActiveRecord::Base
                                    name: "Moves",
                                    children_concurrent: true)
     puts "Finding changers for #{market_totals.keys.size} markets"
-    # reimplement later
+    market_totals.each do |k,v|
+      exchange = Exchange.find_by_name(k)
+      puts "#{k} spends #{"%0.2f"%v[:usd]}#{payment_currency} #{"%0.5f"%v[:btc]}#{asset_currency}"
+      if v[:usd] > 0
+        #changer = exchange.best_changer(Exchange.find_by_name('mtgox'), 'usd')
+        #v[:usd] *= (1+changer.fee)
+        #puts " -> #{changer.name} $#{"%0.2f"%v[:usd]} #{changer.fee_percentage}% fee"
+        #stage1.trades.create(balance_in: Balance.make_usd(v[:usd]),
+        #                     offer: changer.offers.first,
+        #                     expected_fee: changer.fee_percentage)
+      end
+      if v[:btc] > 0
+        puts "bitcoin changer fee unimplemented"
+      end
+      self.exchange_balances.create(exchange: exchange,
+                                        balances: [Balance.new(amount:v[:usd], currency: payment_currency),
+                                                   Balance.new(amount:v[:btc], currency: asset_currency)])
+    end
     stage1.balance_in = stage2.balance_in
     stage1.balance_out = stage1.balance_usd_out
     stage1.potential = stage1.balance_out - stage1.balance_in
