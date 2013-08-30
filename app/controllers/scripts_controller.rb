@@ -10,6 +10,8 @@ class ScriptsController < ApplicationController
     script.user = current_user
     script.save
     if script.valid?
+      RIEMANN << {service:'cointhink script', tags:['create'],
+                  description:"script: #{script.script_name}"}
       script.rethink_insert
     else
       flash[:error] = script.errors.full_messages.join('. ')
@@ -43,6 +45,8 @@ class ScriptsController < ApplicationController
   def update
     @script = current_user.scripts.find(params[:scriptname])
     @script.safe_update(params[:script])
+    RIEMANN << {service:'cointhink script', tags:['update'],
+                description:"script: #{script.script_name}"}
     redirect_to :action => :lastrun, :scriptname => @script.slug
   end
 
@@ -57,6 +61,8 @@ class ScriptsController < ApplicationController
     @script = current_user.scripts.find(params[:scriptname])
     if @script.enabled?
       @script.start!
+      RIEMANN << {service:'cointhink script', tags:['start'],
+                  description:"script: #{script.script_name}"}
       flash[:success] = "Script "+@script.script_name+" started"
       redirect_to :action => :lastrun
     else

@@ -24,7 +24,8 @@ class SessionController < ApplicationController
         user = User.new
         user.apply_params(params)
         if user.valid?
-          RIEMANN << {service:'cointhink user', tags:['create']}
+          RIEMANN << {service:'cointhink user', tags:['create'],
+                      description:"username: #{user.username}"}
           user.save!
           user.setup_coin_accounts
           log_in(user)
