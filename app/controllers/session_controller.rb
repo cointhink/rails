@@ -13,7 +13,7 @@ class SessionController < ApplicationController
     if user
       if user.authentic?(params[:password])
         RIEMANN << {service:'cointhink user', tags:['login'],
-                    description:"script: #{script.script_name}"}
+                    description:"user: #{user.username}"}
         log_in(user)
         flash[:success] = "Welcome back, #{user.username}"
         redirect_to root_url
