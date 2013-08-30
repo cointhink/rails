@@ -12,6 +12,8 @@ class SessionController < ApplicationController
     user = User.where(username:params[:username]).first
     if user
       if user.authentic?(params[:password])
+        RIEMANN << {service:'cointhink user', tags:['login'],
+                    description:"script: #{script.script_name}"}
         log_in(user)
         flash[:success] = "Welcome back, #{user.username}"
         redirect_to root_url
