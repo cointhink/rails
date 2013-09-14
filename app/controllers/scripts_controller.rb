@@ -46,7 +46,7 @@ class ScriptsController < ApplicationController
     @script = current_user.scripts.find(params[:scriptname])
     @script.safe_update(params[:script])
     RIEMANN << {service:'cointhink script', tags:['update'],
-                description:"script: #{script.script_name}"}
+                description:"script: #{@script.script_name}"}
     redirect_to :action => :lastrun, :scriptname => @script.slug
   end
 
@@ -62,7 +62,7 @@ class ScriptsController < ApplicationController
     if @script.enabled?
       @script.start!
       RIEMANN << {service:'cointhink script', tags:['start'],
-                  description:"script: #{script.script_name}"}
+                  description:"script: #{@script.script_name}"}
       flash[:success] = "Script "+@script.script_name+" started"
       redirect_to :action => :lastrun
     else
