@@ -39,11 +39,13 @@
       li None
 
   h2
-    | Credits Redemtions
+    | Credit Redemtions
   ul
     - current_user.purchases.each do |p|
       li
        time datetime="#{p.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
-       '  #{p.amount.amount} credits for script
-       a href="/#{p.purchasable.user.slug}/#{p.purchasable.slug}"
-          | #{p.purchasable.name}
+       '  #{p.amount.amount} credits
+       - if p.purchasable
+         ' for script
+         a href="/#{p.purchasable.user.slug}/#{p.purchasable.slug}"
+            | #{p.purchasable.name}
