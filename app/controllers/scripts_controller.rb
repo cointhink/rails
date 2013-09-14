@@ -20,7 +20,7 @@ class ScriptsController < ApplicationController
   end
 
   def leaderboard
-    @scripts = Script.enableds.all
+    @scripts = Script.valid.enableds.where(docker_status:"running").all
     @rates = {}
     mtgox_price = REDIS.hgetall('mtgox-ticker-BTCUSD')
     @rates["BTCUSD"] = mtgox_price["value"].to_f
