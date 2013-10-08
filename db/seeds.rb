@@ -5,7 +5,7 @@
   [{name:'intersango', display_name:'InterSango', country_code: 'gb', active: false}, 0.65],
   [{name:'btce', display_name:'BTC-E', country_code: 'bg', active: true},        0.2],
   [{name:'cryptoxchange', display_name:'CryptoXchange', country_code: 'au', active: false}, 0.4],
-  [{name:'bitfloor', display_name:'BitFloor', country_code: 'us', active: true},    0.4],
+  [{name:'bitfloor', display_name:'BitFloor', country_code: 'us', active: false},    0.4],
   [{name:'bitcoin24', display_name:'Bitcoin-24', country_code: 'de', active: true},    0.0],
   [{name:'campbx', display_name:'CampBX', country_code: 'us', active: true},    0.55]
 ].each do |info|
