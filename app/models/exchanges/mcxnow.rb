@@ -5,12 +5,12 @@ class Exchanges::Mcxnow < Exchanges::Base
     url = "https://mcxnow.com/orders?cur=#{from_currency.upcase}"
     xml = REXML::Document.new(conn.get(url).body)
     depth = {'asks' => [], 'bids' => []}
-    xml.elements['/doc/buy'].each do |bid|
-      offer = price_quantity(bid)
+    xml.elements['/doc/buy'].each do |ofr|
+      offer = price_quantity(ofr)
       depth['bids'] << offer if offer
     end
-    xml.elements['/doc/sell'].each do |ask|
-      offer = price_quantity(ask)
+    xml.elements['/doc/sell'].each do |ofr|
+      offer = price_quantity(ofr)
       depth['asks'] << offer if offer
     end
     depth
