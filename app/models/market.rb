@@ -79,7 +79,7 @@ class Market < ActiveRecord::Base
     end
 
     cost = Balance.create({currency:currency, amount:ten_percent_offers.sum{|o| o.price*o.quantity}})
-    puts "#{self.from_currency}/#{self.to_currency} Best offer: #{"%0.5f"%best_offer.price} Cost: #{cost}"
+    puts "#{self.from_currency}/#{self.to_currency} Best offer: #{"%0.5f"%best_offer.price} Size: #{cost}"
     depth_run.update_attributes!({:best_offer => best_offer,
                                   :cost => cost})
     depth_run
