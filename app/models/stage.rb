@@ -4,7 +4,7 @@ class Stage < ActiveRecord::Base
   belongs_to :potential, :class_name => :Balance, :dependent => :destroy
   belongs_to :strategy
 
-  has_many :trades
+  has_many :trades, :dependent => :destroy
 
   attr_accessible :name, :sequence, :children_concurrent, :potential, :balance_in
 
