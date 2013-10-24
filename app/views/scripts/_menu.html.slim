@@ -7,6 +7,12 @@
       - if logged_in?
         a href="/scripts" Manager
       - else
-        span title="Log in first" onclick="$('input[name=\'username\']').focus()" Manager
+        a title="Log in first" onclick="login_notice()" Manager
     li
       a href="/scripts/docs" Documentation
+
+javascript:
+  function login_notice(){
+    $('div.page').prepend("<div class='alert alert-notice'>Please Login to manage your scripts</div>")
+    $('input[name=\'username\']').focus()
+  }
