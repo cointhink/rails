@@ -36,7 +36,7 @@ class DashController < ApplicationController
                           created_at: @strategy.created_at,
                           strategy_id: @strategy.id}
         else
-         render :json => {}
+         render :json => {error: "not available"}
         end
       end
     end
