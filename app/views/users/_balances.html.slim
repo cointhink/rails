@@ -32,7 +32,7 @@
             |  #{tx['amount']}
           - else
             |  (#{tx['amount']})
-            | #{tx[:currency_code]}
+          | #{tx['currency_code']}
           = image_tag "bitcoin.png"
     - else
       li None
