@@ -99,7 +99,7 @@ class ScriptsController < ApplicationController
         purchase = current_user.purchases.create({amount: price,
                                                   purchasable: @script})
         @script.add_time(1.week)
-        flash[:notice] = "Script enabled until #{@script.enabled_until}."
+        flash[:notice] = "Script enabled until #{@script.enabled_until}. Press start to begin."
       else
         flash[:error] = 'A balance of 0.01 credits is necessary before starting this script'
       end
