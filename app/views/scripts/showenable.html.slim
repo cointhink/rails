@@ -6,11 +6,11 @@
     ' Enable this script for 7 days,
     ' until
     time datetime="#{1.week.from_now.iso8601}" data-format='yyyy-MMM-dd'
-    | , by redeeming #{@script.price.amount} credits.
+    | , by redeeming #{@script.price.amount*1000} credits.
 
   ul
-    li Your credit balance: #{current_user.balance('btc').amount}
-    li Cost to enable this script: #{@script.price.amount}
+    li Your credit balance: #{current_user.balance('btc').amount*1000}
+    li Cost to enable this script: #{@script.price.amount*1000}
 
 - if current_user.balance('btc') < @script.price.amount
   h3 Not enough credits to enable this script.
