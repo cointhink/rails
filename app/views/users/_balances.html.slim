@@ -28,10 +28,11 @@
       - @transactions.each do |tx|
         li.tx
           time datetime="#{Time.at(tx['time']).iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
+          - mbtc = tx['amount'].to_f*1000
           - if tx['category'] == 'receive'
-            |  #{tx['amount']*1000}
+            |  #{mbtc}
           - else
-            |  (#{tx['amount']*1000})
+            |  (#{mbtc})
           | m#{tx['currency_code'].upcase}
           = image_tag "bitcoin.png"
     - else
