@@ -8,7 +8,7 @@
         span.indent
           ' Available Credits:
           span.amount
-            | #{current_user.balance('btc').amount}
+            | #{current_user.balance('btc').amount*1000}
       div.receiving_address
         span.indent
           | Bitcoin Receiving Address:
@@ -16,7 +16,7 @@
           | #{@balances['btc']["receiving_address"]}
 
   p
-    | 1 BTC buys 1 Cointhink Credit.
+    | 1 mBTC buys 1 Cointhink Credit.
     br
     | Credit purchases are non-refundable.
 
@@ -32,8 +32,7 @@
             |  #{tx['amount']}
           - else
             |  (#{tx['amount']})
-          - if tx[:currency]
-            | #{tx[:currency].upcase}
+            | #{tx[:currency_code]}
           = image_tag "bitcoin.png"
     - else
       li None
