@@ -29,10 +29,10 @@
         li.tx
           time datetime="#{Time.at(tx['time']).iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
           - if tx['category'] == 'receive'
-            |  #{tx['amount']}
+            |  #{tx['amount']*1000}
           - else
-            |  (#{tx['amount']})
-          | #{tx['currency_code']}
+            |  (#{tx['amount']*1000})
+          | m#{tx['currency_code'].upcase}
           = image_tag "bitcoin.png"
     - else
       li None
@@ -43,7 +43,7 @@
     - current_user.purchases.each do |p|
       li
        time datetime="#{p.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
-       '  #{p.amount.amount} credits
+       '  #{p.amount.amount*1000} credits
        - if p.purchasable
          ' for script
          a href="/#{p.purchasable.user.slug}/#{p.purchasable.slug}"
