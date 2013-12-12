@@ -223,7 +223,7 @@ class Script < ActiveRecord::Base
 
   def add_time(duration)
     start = Time.now
-    if enabled_until > start
+    if enabled_until && enabled_until > start
       start = enabled_until
     end
     update_attribute :enabled_until, start+duration
