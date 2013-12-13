@@ -1,3 +1,5 @@
 = render :partial => 'menu'
 .user-show
-  = render :partial => (params[:page] || 'profile')
+  - page = 'profile'
+  - page = params[:page] if ['balances'].include?(params[:page])
+    = render :partial => page
