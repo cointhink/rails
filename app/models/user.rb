@@ -74,6 +74,7 @@ class User < ActiveRecord::Base
                                currency: coinhash['balance']['currency'])
       my_balance - balance_on_hold(currency)
     rescue Jimson::Client::Error::ServerError,  Errno::ECONNREFUSED => e
+      logger.error e
     end
   end
 
