@@ -2,4 +2,4 @@
 .user-show
   - page = 'profile'
   - page = params[:page] if ['balances'].include?(params[:page])
-    = render :partial => page
+  = render :partial => page
