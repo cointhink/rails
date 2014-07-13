@@ -2,7 +2,7 @@ class Exchanges::Cryptsy < Exchanges::Base
   def depth_poll(conn, from_currency, to_currency)
     # public api: /ticker /trades /depth
     # covers two markets, from/to and to/from
-    if from_currency == "usd" && to_currency == "btc"
+    if from_currency == "btc" && to_currency == "usd"
         market_id = "2"
     end
     if from_currency == "ltc" && to_currency == "btc"
