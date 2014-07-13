@@ -9,8 +9,12 @@ class DashController < ApplicationController
                  .order('created_at desc')
 
     if params[:pair]
-      @ac = params[:pair][0,3]
-      @pc = params[:pair][3,3]
+      if params[:pair].include?(':')
+        @ac, @pc = params[:pair].split(':')
+      else
+        @ac = params[:pair][0,3]
+        @pc = params[:pair][3,3]
+      end
     else
       redirect_to '/arbitrage/btcusd'
       return
