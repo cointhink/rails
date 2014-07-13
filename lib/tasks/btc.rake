@@ -9,6 +9,7 @@ namespace :btc do
     snapshot = Snapshot.create
     snapshot.poll(super_http, Exchange.with_markets('btc','usd'))
     snapshot.poll(super_http, Exchange.with_markets('ltc','btc'))
+    snapshot.poll(super_http, Exchange.with_markets('doge','btc'))
   end
 
   desc 'Compute strategy'
@@ -18,6 +19,7 @@ namespace :btc do
       puts "Snapshot ##{snapshot.id} #{snapshot.created_at} #{snapshot.exchange_runs.map{|er|er.exchange.name}}"
       snapshot.strategies << Strategy.opportunity('btc', 'usd', snapshot)
       snapshot.strategies << Strategy.opportunity('ltc', 'btc', snapshot)
+      snapshot.strategies << Strategy.opportunity('doge', 'btc', snapshot)
     else
       puts "No snapshots in system"
     end
