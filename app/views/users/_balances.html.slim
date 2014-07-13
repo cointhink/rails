@@ -2,6 +2,7 @@
   h2
     | CoinThink Credits
 
+  h2 Balance
   ul style="list-style-type: none"
     li.coin-balance
       div
@@ -22,8 +23,7 @@
     | Credit purchases are non-refundable.
 
 
-  h2
-    | Credit Purchases
+  h2 History
   ul.transactions
     - if @transactions.size > 0
       - @transactions.each do |tx|
