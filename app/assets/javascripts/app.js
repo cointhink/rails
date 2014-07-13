@@ -24,7 +24,7 @@ function setup(data, percentages, strategies, strategy_ids) {
              lines: {show: false},
              points: {radius: 0}})
 
-  var color_index = 0;
+  var color_index = 1;
   for(var market_id in data) {
     dset.push({label: data[market_id][0]+" ask",
                data: data[market_id][2],
