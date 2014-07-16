@@ -43,16 +43,19 @@
       li None
 
   h2
-    | Credit Redemtions
-  ul
-    - current_user.purchases.each do |p|
-      li
-       time datetime="#{p.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
-       '  #{p.amount.amount*1000} credits
-       - if p.purchasable
-         ' for script
-         a href="/#{p.purchasable.user.slug}/#{p.purchasable.slug}"
-            | #{p.purchasable.name}
+    | Credit Redemptions
+  ul.redemptions
+    - current_user.purchases.group_by{|p| p.created_at.year}.each do |year, yearps|
+      li.year
+        | -- #{year} --
+      - yearps.each do |p|
+        li
+         time datetime="#{p.created_at.iso8601}" data-format="MMM-dd hh:mmtt"
+         '  #{p.amount.amount*1000} credits
+         - if p.purchasable
+           ' for script
+           a href="/#{p.purchasable.user.slug}/#{p.purchasable.slug}"
+              | #{p.purchasable.name}
 
 javascript:
   $(function() {

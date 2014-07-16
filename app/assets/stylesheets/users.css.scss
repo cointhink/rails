@@ -48,4 +48,13 @@
       margin-left: 0.3em;
     }
   }
+
+  ul.redemptions {
+    li {
+      list-style: none;
+    }
+    li.year {
+      font-weight: bold;
+    }
+  }
 }
