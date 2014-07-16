@@ -10,6 +10,15 @@
       font-weight: bold;
       margin-bottom: 0px
     }
+    .qrcodetiny {
+      padding-left: 0.5em;
+      img {
+        width: 15px;
+      }
+    }
+    #qrcode {
+      margin-left: 2em;
+    }
 	  img {
 	    width: 1.5em;
 	    margin-right: 0.3em;

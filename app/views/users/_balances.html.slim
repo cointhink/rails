@@ -16,6 +16,9 @@
         span.receiving_address
           /| (deposits temporarily suspended)
           | #{@balances['btc']["receiving_address"]}
+        span.qrcodetiny
+          | #{image_tag "qrtiny.png"}
+      div#qrcode
 
   p
     | 1 mBTC buys 1 Cointhink Credit.
@@ -50,3 +53,8 @@
          ' for script
          a href="/#{p.purchasable.user.slug}/#{p.purchasable.slug}"
             | #{p.purchasable.name}
+
+javascript:
+  $(function() {
+    $('span.qrcodetiny').click(function(e){$('#qrcode').qrcode(#{{@balances['btc']["receiving_address"].to_json}})})
+  })
