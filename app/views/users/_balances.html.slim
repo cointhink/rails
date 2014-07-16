@@ -26,24 +26,27 @@
     | Credit purchases are non-refundable.
 
 
-  h2 History
+  h2 Purchases
   ul.transactions
     - if @transactions.size > 0
-      - @transactions.each do |tx|
-        li.tx
-          time datetime="#{Time.at(tx['time']).iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
-          - mbtc = tx['amount'].to_f*1000
-          - if tx['category'] == 'receive'
-            |  #{mbtc}
-          - else
-            |  (#{mbtc})
-          | m#{tx['currency_code'].upcase}
-          = image_tag "bitcoin.png"
+      - @transactions.group_by{|t| Time.at(t['time']).year}.each do |year, yeartx|
+        li.year
+          | -- #{year} --
+        - yeartx.each do |tx|
+          li.tx
+            time datetime="#{Time.at(tx['time']).iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
+            - mbtc = tx['amount'].to_f*1000
+            - if tx['category'] == 'receive'
+              |  #{mbtc}
+            - else
+              |  (#{mbtc})
+            | m#{tx['currency_code'].upcase}
+            = image_tag "bitcoin.png"
     - else
       li None
 
   h2
-    | Credit Redemptions
+    | Redemptions
   ul.redemptions
     - current_user.purchases.group_by{|p| p.created_at.year}.each do |year, yearps|
       li.year
