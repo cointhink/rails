@@ -74,7 +74,7 @@ class DashController < ApplicationController
       end
       @exchanges.sort_by!{|e| e[:cost]}.reverse!
     end
-    @news = Note.order('created_at desc').limit(5)
+    @news = Note.order('created_at desc').limit(7)
   end
 
   def fourohfour
