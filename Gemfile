@@ -18,7 +18,7 @@ gem 'workflow'
 gem 'rethinkdb'
 gem 'uuid'
 gem 'riemann-client'
-gem 'exception_notification'
+gem 'exception_notification', '~>3.0.1'
 gem 'redis'
 
 group :assets do
