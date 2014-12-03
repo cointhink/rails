@@ -3,10 +3,22 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 #chart {
-  width: 900px;
+  width: 800px;
   height: 370px;
   float: left;
   font-family: Calibri, Candara, Arial, sans-serif;
+}
+
+.bighalf {
+  display: inline-block;
+  vertical-align: top;
+  width: 100%;
+}
+
+#adsense {
+  position: absolute;
+  right: 0;
+  width: 160px;
 }
 
 .clearboth {

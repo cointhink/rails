@@ -39,81 +39,85 @@
       li
         a href="/arbitrage/doge:btc" DOGE/BTC
 
-  h2 #{@ac.upcase}/#{@pc.upcase} Arbitrage Strategy Report
+  div.bighalf
+    h2 #{@ac.upcase}/#{@pc.upcase} Arbitrage Strategy Report
 
-  section#strategy
-    - if @strategy
-      h4
-        | Strategy
-        '  #{link_to "##{@strategy.id}", @strategy}
-        time datetime="#{@strategy.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
-        '
-        span.local_timezone
+    section#strategy
+      - if @strategy
+        h4
+          | Strategy
+          '  #{link_to "##{@strategy.id}", @strategy}
+          time datetime="#{@strategy.created_at.iso8601}" data-format="yyyy-MMM-dd hh:mmtt"
+          '
+          span.local_timezone
 
-      section#opportunity style="margin-bottom: 1em"
-        div style="width: 45em"
-          - trade_stage = @strategy.stage.children.select{|s| s.name=="Trades"}.first
-          ' For the monitored exchanges, the total value of offers
-          ' that have immediate buyers is
-          span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
-            ' #{trade_stage.balance_in}.
-          - if trade_stage.balance_in > 0.01
-            ' Selling immediately,
-            ' including market fees, earns
+        section#opportunity style="margin-bottom: 1em"
+          div style="width: 45em"
+            - trade_stage = @strategy.stage.children.select{|s| s.name=="Trades"}.first
+            ' For the monitored exchanges, the total value of offers
+            ' that have immediate buyers is
             span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
-              '  #{trade_stage.balance_out}
+              ' #{trade_stage.balance_in}.
+            - if trade_stage.balance_in > 0.01
+              ' Selling immediately,
+              ' including market fees, earns
+              span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
+                '  #{trade_stage.balance_out}
 
-            ' for a profit of
-            span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
-              ' #{trade_stage.potential} (#{"%0.3f"%trade_stage.profit_percentage}%).
-            - trade_stage_moves = @strategy.stage.children.select{|s| s.name=="Moves"}.first
-            /!
-              ' Estimated transfer fees of
-              span style="font-size: 110%; font-weight:bold"
-                ' #{trade_stage_moves.balance_in - trade_stage.balance_in}
-              ' adjust total profit to
-              span style="font-size: 110%; font-weight:bold; color:#{@strategy.potential < 0 ? "#e00" : "black"}"
-                ' #{@strategy.potential} (#{"%0.3f"%@strategy.profit_percentage}%)
-          - else
-            ' The different
-            ' exchanges are close enough that no opportunity is currently available.
-      section#trade_summary
-        div style="float:left"
-          i
-            | ---- transfer #{@strategy.payment_currency.upcase} ---->&nbsp;
-        table style="float:left"
-          - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.currency == @strategy.payment_currency && b>0}.any?}.each do |eb|
-            tr
-              td
-                a href="#{exchange_path(eb.exchange)}" style="color: black" #{eb.exchange.name}
-              - eb.balances.each do |b|
+              ' for a profit of
+              span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
+                ' #{trade_stage.potential} (#{"%0.3f"%trade_stage.profit_percentage}%).
+              - trade_stage_moves = @strategy.stage.children.select{|s| s.name=="Moves"}.first
+              /!
+                ' Estimated transfer fees of
+                span style="font-size: 110%; font-weight:bold"
+                  ' #{trade_stage_moves.balance_in - trade_stage.balance_in}
+                ' adjust total profit to
+                span style="font-size: 110%; font-weight:bold; color:#{@strategy.potential < 0 ? "#e00" : "black"}"
+                  ' #{@strategy.potential} (#{"%0.3f"%@strategy.profit_percentage}%)
+            - else
+              ' The different
+              ' exchanges are close enough that no opportunity is currently available.
+        section#trade_summary
+          div style="float:left"
+            i
+              | ---- transfer #{@strategy.payment_currency.upcase} ---->&nbsp;
+          table style="float:left"
+            - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.currency == @strategy.payment_currency && b>0}.any?}.each do |eb|
+              tr
                 td
-                  - if b > 0
-                    | buy #{b}
-        div style="float:left"
-          i
-            | &nbsp;---- transfer #{@strategy.asset_currency.upcase} ---->&nbsp;
-        table style="float:left"
-          - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.currency == @strategy.asset_currency && b>0}.any?}.each do |eb|
-            tr
-              td
-                a href="#{exchange_path(eb.exchange)}" style="color: black" #{eb.exchange.name}
-              - eb.balances.each do |b|
+                  a href="#{exchange_path(eb.exchange)}" style="color: black" #{eb.exchange.name}
+                - eb.balances.each do |b|
+                  td
+                    - if b > 0
+                      | buy #{b}
+          div style="float:left"
+            i
+              | &nbsp;---- transfer #{@strategy.asset_currency.upcase} ---->&nbsp;
+          table style="float:left"
+            - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.currency == @strategy.asset_currency && b>0}.any?}.each do |eb|
+              tr
                 td
-                  - if b > 0
-                    | sell #{b}
+                  a href="#{exchange_path(eb.exchange)}" style="color: black" #{eb.exchange.name}
+                - eb.balances.each do |b|
+                  td
+                    - if b > 0
+                      | sell #{b}
 
-        br style="clear: both"
-    - else
-      | No strategy available
-  div.clearboth
+          br style="clear: both"
+      - else
+        | No strategy available
+    div.clearboth
 
-  section#history
-    h4 Strategy History (#{@hours} hours)
+    section#history
+      h4 Strategy History (#{@hours} hours)
 
-    div#chart
+      div#chart
 
-    div#legend
+      div#legend
+
+  div.bighalf#adsense
+    = render partial: "layouts/adsense"
 
   div.clearboth
 
