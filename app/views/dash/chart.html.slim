@@ -128,7 +128,7 @@ div.bighalf#adsense
   - if logged_in?
     - if current_user.balance('btc') > 1
     - else
-      a href="#{current_user.username}/?page=balances" 1 credit removes ads
+      a href="/#{current_user.username}/?page=balances" 1 credit removes ads
       = render partial: "layouts/adsense"
   - else
     a href="/session/signup" 1 credit removes ads
