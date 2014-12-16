@@ -13,5 +13,11 @@ div.signup
 
 javascript:
   $(document).ready(function(){
-    $("div.signup input[name='email']").focus()
+    var username = #{params[:username].to_json}
+    if(username) {
+      $("div.signup input[name='email']").focus()
+    } else {
+      $("div.signup input[name='username']").focus()
+    }
+
   });
