@@ -107,6 +107,14 @@
           br style="clear: both"
       - else
         | No strategy available
+    javascript:
+      $(function() {
+        setup(#{{JSON.pretty_generate(@chart_data)}},
+              [],
+              #{{@strategy_data.to_json}},
+              #{{@strategy_ids.to_json}})
+
+      })
     div.clearboth
 
     section#history
@@ -128,12 +136,4 @@ div.bighalf#adsense
 
 div.clearboth
 
-javascript:
-  $(function() {
-    setup(#{{JSON.pretty_generate(@chart_data)}},
-          [],
-          #{{@strategy_data.to_json}},
-          #{{@strategy_ids.to_json}})
-
-  })
 
