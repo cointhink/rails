@@ -41,25 +41,6 @@ function setup(data, percentages, strategies, strategy_ids) {
   $("#chart").bind('plotclick', function(e,p,i){strategyClick(e,p,i,strategy_ids)})
 }
 
-function chart_setup(data) {
-
-  var options = {
-    series: {
-        lines: { show: true },
-        points: { show: true },
-    },
-  };
-
-  var dset = []
-  for(var id in data) {
-    dset.push({label: data[id][0],
-               data: data[id][1],
-               })
-  }
-
-  console.log(dset)
-  $.plot($("#chart"), dset, options);
-}
 
 function strategyClick(event, point, item, strategy_ids) {
       console.log(item.dataIndex);

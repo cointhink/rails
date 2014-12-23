@@ -52,12 +52,6 @@ class DashController < ApplicationController
     @exchanges = Exchange.with_markets(from_market, to_market)
   end
 
-  def pairs
-    @data = [ ["mtgox/abc", [[1, 4]]]]
-    @pairs = Strategy.pair_spreads
-
-  end
-
   def menu
     @snapshot = Snapshot.last || Snapshot.new
     @exchanges = []

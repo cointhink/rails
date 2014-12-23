@@ -7,7 +7,6 @@ Btcmarketwatch::Application.routes.draw do
   match '/arbitrage/:pair' => 'dash#chart'
   match '/arbitrage' => 'dash#chart'
   match '/markets/:pair' => 'dash#slider'
-  match '/pairs' => 'dash#pairs'
   get '/site/tos' => 'dash#tos'
   get '/site/fees' => 'dash#fees'
 
