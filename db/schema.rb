@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130820174437) do
+ActiveRecord::Schema.define(:version => 20141229191731) do
 
   create_table "acl_flags", :force => true do |t|
     t.string   "name"
@@ -184,6 +184,7 @@ ActiveRecord::Schema.define(:version => 20130820174437) do
   add_index "stages", ["balance_in_id"], :name => "index_stages_on_balance_in_id"
   add_index "stages", ["balance_out_id"], :name => "index_stages_on_balance_out_id"
   add_index "stages", ["potential_id"], :name => "index_stages_on_potential_id"
+  add_index "stages", ["sequence"], :name => "index_stages_on_sequence"
   add_index "stages", ["strategy_id"], :name => "index_stages_on_strategy_id"
 
   create_table "strategies", :force => true do |t|
