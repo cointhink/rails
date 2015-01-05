@@ -35,7 +35,7 @@ div.exchanges-show
           - orders.limit(5).each do |bid|
             tr
               - precisionq = bid.quantity > 1000 ? 0 : 3
-              td style="text-align:right" #{"%0.#{precisionq}f"%bid.quantity}
+              td style="text-align:right" #{number_to_currency(bid.quantity, {precision: precisionq, unit: nil})}
               td @
               - precision = bid.price < 0.01 ? 4 : 2
               td #{number_to_currency(bid.price, {precision: precision})}
