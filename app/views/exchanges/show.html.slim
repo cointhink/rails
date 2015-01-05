@@ -6,7 +6,7 @@ div.exchanges-show
 
   - if @exchange.active
     .notes
-      - @exchange.notes.last(3).each do |note|
+      - @exchange.notes.last(1).each do |note|
         = render :partial => "layouts/note", :locals => {note: note}
   - else
     div.alert Not being monitored
