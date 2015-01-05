@@ -40,7 +40,8 @@ div.exchanges-show
               - precision = 2
               - precision = 4 if bid.price < 0.01
               - precision = 6 if bid.price < 0.0001
-              td #{number_to_currency(bid.price, {precision: precision})}
+              - unit = (bidask == 'ask' ? market.from_currency : market.to_currency) == 'usd' ? "$" : ""
+              td #{number_to_currency(bid.price, {precision: precision, unit: unit})}
 
   div style="clear:both"
 
