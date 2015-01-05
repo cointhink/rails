@@ -25,7 +25,7 @@ div.exchanges-show
   div
   - @exchange.markets.select{|m| m.from_currency != m.to_currency}.each do |market|
     section.pull-left style="margin-left: 1em"
-      div  #{market.bidask('usd') == 'bid' ? 'Buying' : 'Selling'} (fee #{market.fee_percentage}%)
+      div  #{market.bidask('usd') == 'bid' ? 'Buying '+market.from_currency.upcase : 'Selling '+market.to_currency.upcase} (fee #{market.fee_percentage}%)
 
       - if exchange_run
         - orders = market.offers.order("price #{market.bidask('usd') == 'ask' ? 'asc' : 'desc'}")
@@ -35,7 +35,8 @@ div.exchanges-show
             tr
               td style="text-align:right" #{"%0.3f"%bid.quantity}
               td @
-              td #{number_to_currency(bid.price)}
+              - precision = bid.price < 0.01 ? 4 : 2
+              td #{number_to_currency(bid.price, {precision: precision})}
 
   div style="clear:both"
 
