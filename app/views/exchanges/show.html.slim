@@ -37,7 +37,9 @@ div.exchanges-show
               - precisionq = bid.quantity > 1000 ? 0 : 3
               td style="text-align:right" #{number_to_currency(bid.quantity, {precision: precisionq, unit: nil})}
               td @
-              - precision = bid.price < 0.01 ? 4 : 2
+              - precision = 2
+              - precision = 4 if bid.price < 0.01
+              - precision = 6 if bid.price < 0.0001
               td #{number_to_currency(bid.price, {precision: precision})}
 
   div style="clear:both"
