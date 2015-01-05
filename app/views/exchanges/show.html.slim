@@ -25,10 +25,11 @@ div.exchanges-show
   div
   - @exchange.markets.select{|m| m.from_currency != m.to_currency}.each do |market|
     section.pull-left style="margin-left: 1em"
-      div  #{market.bidask('usd') == 'bid' ? 'Buying '+market.from_currency.upcase : 'Selling '+market.to_currency.upcase} (fee #{market.fee_percentage}%)
+      - bidask = market.offers.last.bidask #hack
+      div  #{bidask == 'bid' ? 'Buying '+market.from_currency.upcase : 'Selling '+market.to_currency.upcase} (fee #{market.fee_percentage}%)
 
       - if exchange_run
-        - orders = market.offers.order("price #{market.bidask('usd') == 'ask' ? 'asc' : 'desc'}")
+        - orders = market.offers.order("price #{bidask == 'ask' ? 'asc' : 'desc'}")
         div Top 5 of #{orders.count} offers
         table
           - orders.limit(5).each do |bid|
