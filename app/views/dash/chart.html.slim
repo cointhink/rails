@@ -57,16 +57,16 @@
             ' For the monitored exchanges, the total value of offers
             ' that have immediate buyers is
             span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
-              ' #{trade_stage.balance_in}.
+              ' #{number_to_currency(trade_stage.balance_in.amount, {unit:''})}#{trade_stage.balance_in.currency}.
             - if trade_stage.balance_in > 0.01
               ' Selling immediately,
               ' including market fees, earns
               span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
-                '  #{trade_stage.balance_out}
+                ' #{number_to_currency(trade_stage.balance_out.amount, {unit:''})}#{trade_stage.balance_out.currency}
 
               ' for a profit of
               span style="font-size: 110%; font-weight:bold; color:#{trade_stage.potential < 0 ? "#e00" : "black"}"
-                ' #{trade_stage.potential} (#{"%0.3f"%trade_stage.profit_percentage}%).
+                ' #{number_to_currency(trade_stage.potential.amount, {unit:''})}#{trade_stage.potential.currency} (#{"%0.3f"%trade_stage.profit_percentage}%).
               - trade_stage_moves = @strategy.stage.children.select{|s| s.name=="Moves"}.first
               /!
                 ' Estimated transfer fees of
