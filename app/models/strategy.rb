@@ -151,7 +151,7 @@ class Strategy < ActiveRecord::Base
         uin = ask.cost(bw[:spent])
         usd_in += uin
         profit = uout - uin
-        puts "  #{bw[:offer].market.exchange.name} #{bw[:offer].bidask} ##{bw[:offer].id} $#{bw[:offer].rate(payment_currency)} x#{"%0.5f"%bw[:offer].quantity}btc spent #{bw[:spent]} earned: #{profit}"
+        puts "  #{bw[:offer].market.exchange.name} #{bw[:offer].bidask} ##{bw[:offer].id} $#{bw[:offer].rate(payment_currency)} x#{"%0.5f"%bw[:offer].quantity}#{bw[:offer].market.from_currency} left. spent #{bw[:spent]} earned: #{profit}"
       end
       puts "  summary #{usd_in} => #{btc_inout} => #{usd_out}. profit #{usd_out-usd_in}"
       profit_total += usd_out-usd_in
@@ -169,10 +169,13 @@ class Strategy < ActiveRecord::Base
     actions = []
     offers.each do |offer|
       if remaining > 0.00001 #floatingpoint
+        puts "check current offer ##{offer.id} #{offer.rate(price_limit.currency)*(1-offer.market.fee)} > #{price_limit} price_limit"
         break if offer.rate(price_limit.currency)*(1-offer.market.fee) < price_limit
+        puts "buying from #{offer.bidask} ##{offer.id} #{offer.price}#{offer.currency} x#{offer.quantity}"
         spent = offer.spend!(remaining)
         remaining -= spent
         if spent > 0.00001
+          puts "bought #{offer.id} $#{offer.price} x#{"%0.5f"%offer.quantity}left. #{spent} spent. #{remaining} remaining."
           actions << {offer: offer, spent: spent}
         end
       end
