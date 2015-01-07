@@ -30,10 +30,9 @@ class Offer < ActiveRecord::Base
 
   def spend!(amount)
     raise "Invalid currency " if amount.currency != market.from_currency
-    least = amount.min(cost)
-    spent = Balance.new(amount: (least / rate).amount, currency: market.to_currency)
-    self.quantity -= spent.amount
-    least
+    spend = amount.min(quantity)
+    self.quantity -= spend.amount
+    spend
   end
 
   def market_fee
