@@ -16,10 +16,16 @@ namespace :btc do
   task :strategy, [:markets] => :environment do |task, args|
     snapshot = Snapshot.order('created_at desc').first
     if snapshot
-      puts "Snapshot ##{snapshot.id} #{snapshot.created_at} #{snapshot.exchange_runs.map{|er|er.exchange.name}}"
-      snapshot.strategies << Strategy.opportunity('btc', 'usd', snapshot)
-      snapshot.strategies << Strategy.opportunity('ltc', 'btc', snapshot)
-      snapshot.strategies << Strategy.opportunity('doge', 'btc', snapshot)
+      puts "** Snapshot ##{snapshot.id} #{snapshot.created_at} #{snapshot.exchange_runs.map{|er|er.exchange.name}}"
+      puts "** BTC/USD run"
+      btc_strategy = Strategy.opportunity('btc', 'usd', snapshot)
+      snapshot.strategies << btc_strategy if btc_strategy
+      puts "** LTC/BTC run"
+      ltc_strategy = Strategy.opportunity('ltc', 'btc', snapshot)
+      snapshot.strategies <<  ltc_strategy if ltc_strategy
+      puts "** DOGE/BTC run"
+      doge_strategy = Strategy.opportunity('doge', 'btc', snapshot)
+      snapshot.strategies << doge_strategy if doge_strategy
     else
       puts "No snapshots in system"
     end
