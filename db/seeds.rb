@@ -1,13 +1,14 @@
 # Exchanges
 [ [{name:'cointhink', display_name:'CoinThink',country_code: 'us', active: false},       0.5],
-  [{name:'mtgox', display_name:'Mt. Gox',country_code: 'jp', active: true},       0.6],
+  [{name:'mtgox', display_name:'Mt. Gox',country_code: 'jp', active: false},       0.6],
   [{name:'bitstamp', display_name:'Bitstamp', country_code: 'si', active: true},    0.5],
   [{name:'intersango', display_name:'InterSango', country_code: 'gb', active: false}, 0.65],
   [{name:'btce', display_name:'BTC-E', country_code: 'bg', active: true},        0.2],
   [{name:'cryptoxchange', display_name:'CryptoXchange', country_code: 'au', active: false}, 0.4],
   [{name:'bitfloor', display_name:'BitFloor', country_code: 'us', active: false},    0.4],
-  [{name:'bitcoin24', display_name:'Bitcoin-24', country_code: 'de', active: true},    0.0],
-  [{name:'campbx', display_name:'CampBX', country_code: 'us', active: true},    0.55]
+  [{name:'bitcoin24', display_name:'Bitcoin-24', country_code: 'de', active: false},    0.0],
+  [{name:'campbx', display_name:'CampBX', country_code: 'us', active: false},    0.55],
+  [{name:'bitfinex', display_name:'Bitfinex', country_code: 'vg', active: true},    0.2]
 ].each do |info|
   e = Exchange.create(info.first)
   e.markets.create(from_exchange: e, from_currency:'btc',
