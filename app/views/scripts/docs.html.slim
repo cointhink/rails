@@ -65,7 +65,7 @@
       ul
         li
           a name="api.cointhink.exchange"
-          span.apimethod exchange(exchange_name, funciton callback(ticker){})
+          span.apimethod exchange(exchange_name, function callback(ticker){})
           p
             ' Receive ticker information from the named exchange. The callback
             ' is called every time a new trade is posted.
@@ -77,7 +77,7 @@
 
         li
           a name="api.cointhink.trade"
-          span.apimethod trade(exchange, product, amount, buysell, currency, price, funciton callback(notice){})
+          span.apimethod trade(exchange, product, amount, buysell, currency, price, function callback(notice){})
           p
             ' Simulate a trade order on the exchange to buy or sell an amount of the product
             ' at a price in a currency.
