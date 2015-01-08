@@ -15,7 +15,7 @@ gem 'rest-client'
 gem 'coderay'
 gem 'docker-client', :git => "git://github.com/donpdonp/docker-client.git", :require => "docker"
 gem 'workflow'
-gem 'rethinkdb'
+gem 'rethinkdb', '~>1.7.0'
 gem 'uuid'
 gem 'riemann-client'
 gem 'exception_notification', '~>3.0.1'
