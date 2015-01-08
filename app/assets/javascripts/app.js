@@ -22,7 +22,7 @@ function setup(data, percentages, strategies, strategy_ids) {
              color: 'grey',
              bars: {show: true, lineWidth: 3},
              lines: {show: false},
-             points: {radius: 0}})
+             points: {radius: 4}})
 
   var color_index = 1;
   for(var market_id in data) {
