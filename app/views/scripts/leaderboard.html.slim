@@ -2,6 +2,17 @@
 div.scripts-leaderboard
   h2 Script Leaderboard
 
+  div style='font-size: 200%; font-weight: bold; line-height: 1em; margin: 1em; color: blue'
+    | Market Scripting is currently offline (Dec 2014) while it is being rebuilt into a new and better system! Check back here for updates.
+
+  div style='font-size: 200%; font-weight: bold; line-height: 1em; margin: 1em; color: blue'
+    | To get an idea of a market script, read this swing-trade script in javascript.
+
+  div style='font-size: 120%; font-weight: bold; line-height: 1em; margin: 1em; color: blue'
+    a href='/donpdonp/swing-trade' style="color: blue; text-decoration: underline"
+      ' /donpdonp/swing-trade script
+
+
   div.leaderboard
     table
       thead
@@ -26,5 +37,3 @@ div.scripts-leaderboard
 
   div.value
     | Scripts start with 1BTC and $0USD. Trade orders are simulated.
-    br
-    | Total value in BTC includes USD inventory converted with last mtgox price of $#{@rates["BTCUSD"]}
