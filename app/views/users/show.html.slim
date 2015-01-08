@@ -1,4 +1,5 @@
-= render :partial => 'menu'
+- if logged_in?
+  = render :partial => 'menu'
 .user-show
   - page = 'profile'
   - page = params[:page] if ['balances'].include?(params[:page])
