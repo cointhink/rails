@@ -8,7 +8,7 @@
                              "(markets.from_currency = ? and markets.to_currency = ?)",
                              @ac, @pc, @pc, @ac)
           if depth_runs.size == 2
-            chart_data[ex_run.exchange] ||= [ ex_run.exchange.name, [], [] ]
+            chart_data[ex_run.exchange] ||= [ ex_run.exchange.display_name, [], [] ]
 
             o=depth_runs.where('markets.from_currency = ?', @ac).first
             op = o.best_offer ? o.best_offer.price : nil
