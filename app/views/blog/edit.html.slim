@@ -1,0 +1,12 @@
+.blog
+  .edit
+    = form_tag "/blog"
+      - if @post.slug
+        span.slug
+          | /blog/#{@post.slug}
+        input type="hidden" name="slug" value="#{@post.slug}"
+      input type="submit" value="post"
+      textarea.title name="title"
+        = @post.title
+      textarea.body name="body"
+        = @post.body

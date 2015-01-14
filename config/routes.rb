@@ -5,8 +5,9 @@ Btcmarketwatch::Application.routes.draw do
   resources :strategies
 
   get '/blog/' => 'blog#index'
-  get '/blog/post' => 'blog#create'
+  get '/blog/post' => 'blog#edit'
   get '/blog/:slug' => 'blog#show'
+  get '/blog/:slug/edit' => 'blog#edit'
   post '/blog' => 'blog#create'
   match '/arbitrage/:pair' => 'dash#chart'
   match '/arbitrage' => 'dash#chart'
