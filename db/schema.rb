@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150105194307) do
+ActiveRecord::Schema.define(:version => 20150114224825) do
 
   create_table "acl_flags", :force => true do |t|
     t.string   "name"
@@ -37,6 +37,13 @@ ActiveRecord::Schema.define(:version => 20150105194307) do
 
   add_index "balances", ["balanceable_id"], :name => "index_balances_on_balanceable_id"
   add_index "balances", ["balanceable_type"], :name => "index_balances_on_balanceable_type"
+
+  create_table "blogposts", :force => true do |t|
+    t.string   "title"
+    t.string   "body"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "depth_runs", :force => true do |t|
     t.integer  "market_id"
@@ -101,6 +108,51 @@ ActiveRecord::Schema.define(:version => 20150105194307) do
   add_index "markets", ["exchange_id"], :name => "index_markets_on_exchange_id"
   add_index "markets", ["from_exchange_id"], :name => "index_markets_on_from_exchange_id"
   add_index "markets", ["to_exchange_id"], :name => "index_markets_on_to_exchange_id"
+
+  create_table "monologue_posts", :force => true do |t|
+    t.integer  "posts_revision_id"
+    t.boolean  "published"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
+  create_table "monologue_posts_revisions", :force => true do |t|
+    t.string   "title"
+    t.text     "content"
+    t.string   "url"
+    t.integer  "user_id"
+    t.integer  "post_id"
+    t.datetime "published_at"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "monologue_posts_revisions", ["id"], :name => "index_monologue_posts_revisions_on_id", :unique => true
+  add_index "monologue_posts_revisions", ["post_id"], :name => "index_monologue_posts_revisions_on_post_id"
+  add_index "monologue_posts_revisions", ["published_at"], :name => "index_monologue_posts_revisions_on_published_at"
+  add_index "monologue_posts_revisions", ["url"], :name => "index_monologue_posts_revisions_on_url"
+
+  create_table "monologue_taggings", :force => true do |t|
+    t.integer "post_id"
+    t.integer "tag_id"
+  end
+
+  add_index "monologue_taggings", ["post_id"], :name => "index_monologue_taggings_on_post_id"
+  add_index "monologue_taggings", ["tag_id"], :name => "index_monologue_taggings_on_tag_id"
+
+  create_table "monologue_tags", :force => true do |t|
+    t.string "name"
+  end
+
+  add_index "monologue_tags", ["name"], :name => "index_monologue_tags_on_name"
+
+  create_table "monologue_users", :force => true do |t|
+    t.string   "name"
+    t.string   "email"
+    t.string   "password_digest"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
 
   create_table "notes", :force => true do |t|
     t.string   "text"
