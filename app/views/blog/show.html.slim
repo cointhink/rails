@@ -1,4 +1,10 @@
 .blog
   .post
-    .title #{@blogpost.title}
-    .body #{@blogpost.body}
+    .header
+      .title #{@blogpost.title}
+      - if @blogpost.published
+        .date #{@blogpost.created_at.to_date}
+      - else
+        | UNPUBLISHED
+    - markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
+    .body #{{markdown.render(@blogpost.body)}}

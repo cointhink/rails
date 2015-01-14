@@ -1,3 +1,17 @@
 // Place all the styles related to the Blog controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.blog {
+  .post {
+    .header {
+    }
+    .title {
+      font-size: 110%;
+    }
+    .date {
+      font-size: 80%;
+    }
+    .body {
+
+    }
+  }
+}

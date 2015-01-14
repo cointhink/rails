@@ -4,6 +4,7 @@ class CreateBlogposts < ActiveRecord::Migration
       t.string :title
       t.string :slug
       t.string :body
+      t.boolean :published
 
       t.timestamps
     end
