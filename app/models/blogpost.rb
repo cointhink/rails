@@ -1,3 +1,6 @@
 class Blogpost < ActiveRecord::Base
-  # attr_accessible :title, :body
+  extend FriendlyId
+  attr_accessible :title, :body
+
+  friendly_id :title, use: :slugged
 end

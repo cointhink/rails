@@ -4,6 +4,10 @@ class BlogController < ApplicationController
   end
 
   def show
-    @post = Blogpost.where(slug:params[:slug])
+    @blogpost = Blogpost.where(slug:params[:slug]).first
+    unless @blogpost
+      flash[:error] = "Sorry, that blog post does not exist"
+      redirect_to :root
+    end
   end
 end
