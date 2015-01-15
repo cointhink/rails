@@ -3,7 +3,7 @@ class CreateBlogposts < ActiveRecord::Migration
     create_table :blogposts do |t|
       t.string :title
       t.string :slug
-      t.string :body
+      t.text :body
       t.boolean :published
 
       t.timestamps
