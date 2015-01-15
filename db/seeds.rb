@@ -1,3 +1,6 @@
+# Access Control
+AclFlag.create({name:"blog"})
+
 # Exchanges
 [ [{name:'cointhink', display_name:'CoinThink',country_code: 'us', active: false},       0.5],
   [{name:'mtgox', display_name:'Mt. Gox',country_code: 'jp', active: false},       0.6],
