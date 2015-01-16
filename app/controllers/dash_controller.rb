@@ -14,7 +14,7 @@ class DashController < ApplicationController
         @pc = params[:pair][3,3]
       end
     else
-      redirect_to '/arbitrage/btcusd'
+      redirect_to '/arbitrage/btc:usd'
       return
     end
 
