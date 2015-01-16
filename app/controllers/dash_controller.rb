@@ -4,9 +4,7 @@ class DashController < ApplicationController
     start = params[:start] ? Time.parse(params[:start]) : Time.now - @hours.hours
     stop = start + @hours.hours
 
-    @snapshots = Snapshot.includes(:exchange_runs => [:exchange, :depth_runs]).where(
-                    ['snapshots.created_at > ? and snapshots.created_at < ?', start, stop])
-                 .order('created_at desc')
+    @snapshots = Snapshot.between(start, stop)
 
     if params[:pair]
       if params[:pair].include?(':')
