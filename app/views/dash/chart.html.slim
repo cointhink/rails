@@ -1,4 +1,5 @@
 - cache start: params['start'], hours: @hours do
+  /! ChartCache #{Time.now} p:#{{params.inspect}} h:#{@hours} s:#{@snapshots.size}
   ruby:
     chart_data = {}
     @snapshots.each do |snapshot|
