@@ -256,4 +256,16 @@ class Strategy < ActiveRecord::Base
       0
     end
   end
+
+  def to_json(opts)
+    {balance_in: {amount:balance_in.amount.round(2),
+                  currency:balance_in.currency},
+                  potential: {amount:potential.amount.round(2),
+                              currency:potential.currency},
+                  profit_percentage: profit_percentage.round(1),
+                  created_at: created_at,
+                  strategy_id: id
+    }.to_json(opts)
+  end
+
 end

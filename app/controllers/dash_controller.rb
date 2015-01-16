@@ -30,13 +30,7 @@ class DashController < ApplicationController
       format.html # index.html.erb
       format.json do
         if @strategy
-         render :json => {balance_in: {amount:@strategy.balance_in.amount.round(2),
-                                       currency:@strategy.balance_in.currency},
-                          potential: {amount:@strategy.potential.amount.round(2),
-                                      currency:@strategy.potential.currency},
-                          profit_percentage: @strategy.profit_percentage.round(1),
-                          created_at: @strategy.created_at,
-                          strategy_id: @strategy.id}
+         render :json => @strategy
         else
          render :json => {error: "not available"}
         end
