@@ -1,6 +1,4 @@
 class DashController < ApplicationController
-  caches_action :chart, :cache_path => Proc.new { |c| c.params }
-
   def chart
     @hours = (params[:hours] || 8).to_i
     start = params[:start] ? Time.parse(params[:start]) : Time.now - @hours.hours
