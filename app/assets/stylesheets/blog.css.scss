@@ -1,12 +1,19 @@
 // Place all the styles related to the Blog controller here.
 
 .blog {
+  color: black;
+  font-size: 120%;
+
   .post {
+    margin: 2em 5em;
+
     .header {
+      .title {
+        font-size: 110%;
+      }
+      margin-bottom: 1em;
     }
-    .title {
-      font-size: 110%;
-    }
+
     .date {
       font-size: 80%;
     }
