@@ -1,7 +1,9 @@
 .blog
+  | Blog Posts
   ul
     - @posts.each do |post|
       li
-        .title
+        span.created_at
           | #{post.created_at.to_date}
+        span.title
           a href="/blog/#{post.slug}" #{post.title}
