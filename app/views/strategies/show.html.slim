@@ -21,20 +21,30 @@ div
 
 div style="font-weight: bold; margin-top: 1em" Transactions
 
-- @strategy.stage.children.each do |stage|
-  div
-    |#{stage.name}
+section#trade_summary
+  div style="float:left"
+    i
+      | ---- transfer #{@strategy.payment_currency.upcase} ---->&nbsp;
+  table style="float:left"
+    - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.currency == @strategy.payment_currency && b>0}.any?}.each do |eb|
+      tr
+        td
+          a href="#{exchange_path(eb.exchange)}" style="color: black" #{eb.exchange.name}
+        - eb.balances.each do |b|
+          td
+            - if b > 0
+              | buy #{b}
+  div style="float:left"
+    i
+      | &nbsp;---- transfer #{@strategy.asset_currency.upcase} ---->&nbsp;
+  table style="float:left"
+    - @strategy.exchange_balances.select{|eb| eb.balances.select{|b|b.currency == @strategy.asset_currency && b>0}.any?}.each do |eb|
+      tr
+        td
+          a href="#{exchange_path(eb.exchange)}" style="color: black" #{eb.exchange.name}
+        - eb.balances.each do |b|
+          td
+            - if b > 0
+              | sell #{b}
 
-    - unless stage.name == "Moves"
-      div #{stage.balance_in} in => #{stage.balance_out} out. profit #{stage.potential} #{"%0.3f"%stage.profit_percentage}%
-    ul
-      - stage.trades.each do |t|
-        - if t.offer
-          li class="#{t.balance_in.btc? ? "bid" : ""}"
-            | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out}
-      - stage.children.each do |stage|
-        - stage.trades.each do |t|
-          - if t.offer
-            li class="#{t.balance_in.btc? ? "bid" : ""}"
-              | #{t.offer.market.name} #{t.balance_in.btc? ? "sell" : "buy"} #{t.balance_in}@$#{"%0.3f"%t.offer.price} fee #{"%0.1f%"%t.expected_fee} out #{t.calculated_out} #{"(profit #{"%0.3f"%stage.profit(t).amount})" if t.balance_in.btc?}
 
