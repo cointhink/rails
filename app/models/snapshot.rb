@@ -36,7 +36,7 @@ class Snapshot < ActiveRecord::Base
             puts "!! #{erun[:exchange].name} returned bad data: #{data.class.name}"
           end
         rescue Faraday::Error::TimeoutError,Errno::EHOSTUNREACH,JSON::ParserError,
-               Errno::ECONNREFUSED => e
+               Errno::ECONNREFUSED, Faraday::ConnectionFailed => e
           STDERR.puts "!! #{erun[:exchange].name} #{e}"
         end
       end
