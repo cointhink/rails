@@ -36,6 +36,19 @@ end
   e.balances.create({currency:"doge", amount: 0})
 end
 
+[
+  [{name:'kraken', display_name:'Kraken', country_code: 'us', active: true},    0.2],
+  [{name:'poloniex', display_name:'Poloniex', country_code: 'us', active: true},    0.2]
+].each do |info|
+  e = Exchange.create(info.first)
+  e.markets.create(from_exchange: e, from_currency:'eth',
+                   to_exchange: e, to_currency:'btc', fee_percentage: info.last, delay_ms: 500)
+  e.markets.create(from_exchange: e, from_currency:'btc',
+                   to_exchange: e, to_currency:'eth', fee_percentage: info.last, delay_ms: 500)
+  e.balances.create({currency:"btc", amount: 0})
+  e.balances.create({currency:"eth", amount: 0})
+end
+
 # bitcoin client
 e = Exchange.create(name:'bitcoin')
 e.balances.create({currency:"btc", amount: 0})

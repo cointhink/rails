@@ -10,6 +10,7 @@ namespace :btc do
     snapshot.poll(super_http, Exchange.with_markets('btc','usd'))
     snapshot.poll(super_http, Exchange.with_markets('ltc','btc'))
     snapshot.poll(super_http, Exchange.with_markets('doge','btc'))
+    snapshot.poll(super_http, Exchange.with_markets('eth','btc'))
   end
 
   desc 'Compute strategy'
@@ -25,6 +26,9 @@ namespace :btc do
       snapshot.strategies <<  ltc_strategy if ltc_strategy
       puts "** DOGE/BTC run"
       doge_strategy = Strategy.opportunity('doge', 'btc', snapshot)
+      snapshot.strategies << doge_strategy if doge_strategy
+      puts "** ETH/BTC run"
+      doge_strategy = Strategy.opportunity('eth', 'btc', snapshot)
       snapshot.strategies << doge_strategy if doge_strategy
     else
       puts "No snapshots in system"
