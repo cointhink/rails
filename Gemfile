@@ -9,11 +9,10 @@ gem 'pry-rails'
 gem 'slim'
 gem 'acts_as_tree'
 gem 'friendly_id'
-gem 'bcrypt-ruby', :require => "bcrypt"
+gem 'bcrypt'
 gem 'jimson'
 gem 'rest-client'
 gem 'coderay'
-gem 'docker-client', :git => "git://github.com/donpdonp/docker-client.git", :require => "docker"
 gem 'workflow'
 gem 'rethinkdb', '~>1.7.0'
 gem 'uuid'
@@ -21,6 +20,7 @@ gem 'riemann-client'
 gem 'exception_notification', '~>3.0.1'
 gem 'redis'
 gem 'redcarpet'
+gem 'test-unit'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'
