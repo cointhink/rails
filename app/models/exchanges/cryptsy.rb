@@ -11,6 +11,9 @@ class Exchanges::Cryptsy < Exchanges::Base
     if from_currency == "doge" && to_currency == "btc"
         market_id = "132"
     end
+    if from_currency == "eth" && to_currency == "btc"
+        market_id = "497"
+    end
     url = "http://pubapi.cryptsy.com/api.php?method=singleorderdata&marketid=#{market_id}"
     orderbook = JSON.parse(conn.get(url).body)["return"]
     market = orderbook[from_currency.upcase]

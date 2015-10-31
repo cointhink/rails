@@ -13,6 +13,7 @@ AclFlag.create({name:"blog"})
   [{name:'campbx', display_name:'CampBX', country_code: 'us', active: false},    0.55],
   [{name:'bitfinex', display_name:'Bitfinex', country_code: 'vg', active: true},    0.2],
   [{name:'coinbase', display_name:'Coinbase', country_code: 'us', active: true},    0.0],
+  [{name:'cryptsy', display_name:'Cryptsy', country_code: 'us', active: true},    0.3],
 ].each do |info|
   e = Exchange.create(info.first)
   e.markets.create(from_exchange: e, from_currency:'btc',
