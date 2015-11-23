@@ -75,6 +75,7 @@ class User < ActiveRecord::Base
       my_balance - balance_on_hold(currency)
     rescue Jimson::Client::Error::ServerError,  Errno::ECONNREFUSED => e
       logger.error e
+      nil
     end
   end
 

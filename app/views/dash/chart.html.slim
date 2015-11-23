@@ -131,7 +131,8 @@
 
 div.bighalf#adsense
   - if logged_in?
-    - if current_user.balance('btc').amount*1000 > 1
+    - balance = current_user.balance('btc')
+    - if balance && balance.amount*1000 > 1
     - else
       a href="/#{current_user.username}/?page=balances" 1 mBTC removes ads
       = render partial: "layouts/adsense"
