@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150114224825) do
+ActiveRecord::Schema.define(:version => 20151221175547) do
 
   create_table "acl_flags", :force => true do |t|
     t.string   "name"
@@ -220,6 +220,7 @@ ActiveRecord::Schema.define(:version => 20150114224825) do
     t.datetime "updated_at",  :null => false
   end
 
+  add_index "snapshots", ["created_at"], :name => "index_snapshots_on_created_at"
   add_index "snapshots", ["strategy_id"], :name => "index_snapshots_on_strategy_id"
 
   create_table "stages", :force => true do |t|
