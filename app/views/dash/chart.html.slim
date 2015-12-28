@@ -82,6 +82,13 @@
         | No strategy available
     javascript:
       $(function() {
+        $("#chart").width($(window).width()-300)
+        console.log($(window).height(),
+                           $('#strategy').height(),
+                           $('.navbar').height() )
+        $("#chart").height($(window).height() -
+                           $('#strategy').height()*2 -
+                           $('.navbar').height()*2 )
         setup(#{{JSON.pretty_generate(@chart_data)}},
               [],
               #{{@strategy_data.to_json}},
