@@ -121,8 +121,9 @@
     div.clearboth
 
     section#history
-      a href="?hours=24&start=#{(@start-1.day).strftime("%Y-%m-%d")}"
-        <- Prev day
+      - if @start > @epoch
+        a href="?hours=24&start=#{(@start-1.day).strftime("%Y-%m-%d")}"
+          <- Prev day
       h4 Strategy History (#{@hours} hours)
 
       div#chart

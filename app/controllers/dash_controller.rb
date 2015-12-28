@@ -1,5 +1,6 @@
 class DashController < ApplicationController
   def chart
+    @epoch = Time.parse("2012-12-07")
     @hours = (params[:hours] || 8).to_i
     @start = params[:start] ? Time.parse(params[:start]) : Time.now - @hours.hours
     @stop = @start + @hours.hours
