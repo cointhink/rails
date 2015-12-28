@@ -1,35 +1,5 @@
 - cache start: params['start'], hours: @hours do
-  /! ChartCache #{Time.now} p:#{{params.inspect}} h:#{@hours} s:#{@snapshots.size}
-  ruby:
-    chart_data = {}
-    @snapshots.each do |snapshot|
-      snapshot.exchange_runs.each do |ex_run|
-        depth_runs = ex_run.depth_runs.includes(:market).
-                     where("(markets.from_currency = ? and markets.to_currency = ?) or"+
-                           "(markets.from_currency = ? and markets.to_currency = ?)",
-                           @ac, @pc, @pc, @ac)
-        if depth_runs.size == 2
-          chart_data[ex_run.exchange] ||= [ ex_run.exchange.display_name, [], [] ]
-
-          o=depth_runs.where('markets.from_currency = ?', @ac).first
-          op = o.best_offer ? o.best_offer.price : nil
-          chart_data[ex_run.exchange][1] << [o.created_at.to_i*1000, op]
-          o=depth_runs.where('markets.from_currency = ?', @pc).first
-          op = o.best_offer ? o.best_offer.price : nil
-          chart_data[ex_run.exchange][2] << [o.created_at.to_i*1000, op]
-        end
-      end
-    end
-    @chart_data = chart_data.map{|k,v| v}
-
-    strategies = @snapshots.map{|s| s.strategies.for(@ac, @pc).first}
-    @strategy_data = strategies.map do |strategy|
-      if strategy
-        trade_stage = strategy.stage.children.select{|s| s.name=="Trades"}.first
-        [strategy.snapshot.created_at.to_i*1000, trade_stage.potential.amount.to_f]
-      end
-    end
-    @strategy_ids = strategies.map{|strategy| strategy.id if strategy}
+  /! ChartCache buildtime:#{Time.now.utc.iso8601} params:#{{params.inspect}} snapshots_count:#{@snapshots.size}
 
   .submenu
     ul
