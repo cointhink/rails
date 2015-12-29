@@ -20,7 +20,7 @@
         end
       end
     end
-    @chart_data = chart_data.map{|k,v| v}
+    @chart_data = chart_data.map{|k,v| v}.sort_by{|d| d[0]}
 
     strategies = @snapshots.map{|s| s.strategies.for(@ac, @pc).first}
     @strategy_data = strategies.map do |strategy|
