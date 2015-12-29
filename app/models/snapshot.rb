@@ -4,7 +4,7 @@ class Snapshot < ActiveRecord::Base
 
   attr_accessible :strategy
 
-  scope :between, lambda { |start, stop|  includes(:exchange_runs => [:exchange, :depth_runs]).where(
+  scope :between, lambda { |start, stop| where(
                     ['snapshots.created_at > ? and snapshots.created_at < ?', start, stop])
                  .order('created_at desc') }
 

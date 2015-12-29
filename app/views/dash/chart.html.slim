@@ -2,23 +2,22 @@
   /! ChartCache #{Time.now} p:#{{params.inspect}} h:#{@hours} s:#{@snapshots.size}
   ruby:
     chart_data = {}
-    @snapshots.each do |snapshot|
-      snapshot.exchange_runs.each do |ex_run|
-        depth_runs = ex_run.depth_runs.includes(:market).
-                     where("(markets.from_currency = ? and markets.to_currency = ?) or"+
-                           "(markets.from_currency = ? and markets.to_currency = ?)",
-                           @ac, @pc, @pc, @ac)
-        if depth_runs.size == 2
-          chart_data[ex_run.exchange] ||= [ ex_run.exchange.display_name, [], [] ]
+    depth_runs = DepthRun.includes(:market, :exchange_run => :snapshot).
+                 where("(markets.from_currency = ? and markets.to_currency = ?) or"+
+                       "(markets.from_currency = ? and markets.to_currency = ?)",
+                       @ac, @pc, @pc, @ac).
+                 where("snapshots.id in (?)", @snapshots.map(&:id))
+    depth_groups = depth_runs.group_by(&:exchange_run)
+    puts depth_groups.inspect
+    depth_groups.each do |ex_run, depth_runs|
+      chart_data[ex_run.exchange] ||= [ ex_run.exchange.display_name, [], [] ]
 
-          o=depth_runs.where('markets.from_currency = ?', @ac).first
-          op = o.best_offer ? o.best_offer.price : nil
-          chart_data[ex_run.exchange][1] << [o.created_at.to_i*1000, op]
-          o=depth_runs.where('markets.from_currency = ?', @pc).first
-          op = o.best_offer ? o.best_offer.price : nil
-          chart_data[ex_run.exchange][2] << [o.created_at.to_i*1000, op]
-        end
-      end
+      o=depth_runs.select{|dr| dr.market.from_currency = @ac}.first
+      op = o.best_offer ? o.best_offer.price : nil
+      chart_data[ex_run.exchange][1] << [o.created_at.to_i*1000, op]
+      o=depth_runs.select{|dr| dr.market.from_currency = @pc}.first
+      op = o.best_offer ? o.best_offer.price : nil
+      chart_data[ex_run.exchange][2] << [o.created_at.to_i*1000, op]
     end
     @chart_data = chart_data.map{|k,v| v}
 
