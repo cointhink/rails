@@ -8,19 +8,16 @@
                        @ac, @pc, @pc, @ac).
                  where("snapshots.id in (?)", @snapshots.map(&:id))
     depth_groups = depth_runs.group_by(&:exchange_run)
+    puts depth_groups.inspect
     depth_groups.each do |ex_run, depth_runs|
       chart_data[ex_run.exchange] ||= [ ex_run.exchange.display_name, [], [] ]
 
-      if depth_runs.size == 2
-        o=depth_runs.select{|dr| dr.market.from_currency == @ac}.first
-        op = o.best_offer ? o.best_offer.price : nil
-        chart_data[ex_run.exchange][1] << [o.created_at.to_i*1000, op]
-        o=depth_runs.select{|dr| dr.market.from_currency == @pc}.first
-        op = o.best_offer ? o.best_offer.price : nil
-        chart_data[ex_run.exchange][2] << [o.created_at.to_i*1000, op]
-      else
-        puts "WARNING: exchange #{ex_run.exchange.name} has market group #{depth_runs.size}"
-      end
+      o=depth_runs.select{|dr| dr.market.from_currency = @ac}.first
+      op = o.best_offer ? o.best_offer.price : nil
+      chart_data[ex_run.exchange][1] << [o.created_at.to_i*1000, op]
+      o=depth_runs.select{|dr| dr.market.from_currency = @pc}.first
+      op = o.best_offer ? o.best_offer.price : nil
+      chart_data[ex_run.exchange][2] << [o.created_at.to_i*1000, op]
     end
     @chart_data = chart_data.map{|k,v| v}
 
