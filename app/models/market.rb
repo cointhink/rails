@@ -5,7 +5,6 @@ class Market < ActiveRecord::Base
   belongs_to :to_exchange, :class_name => :Exchange
   belongs_to :exchange
   has_many :tickers
-  has_many :trades
   has_many :depth_runs
 
   scope :internal, where("to_exchange_id = from_exchange_id")

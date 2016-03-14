@@ -14,7 +14,7 @@ class Exchange < ActiveRecord::Base
   def self.with_markets(from_currency, to_currency)
     actives.map do |exchange|
       bid_market = exchange.markets.internal.trading(from_currency, to_currency).first
-      if bid_market
+      if bid_market && bid_market.active?
         { exchange:exchange, bid_market:bid_market, ask_market: bid_market.pair}
       end
     end.select{|t| t}

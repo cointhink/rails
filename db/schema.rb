@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151221175547) do
+ActiveRecord::Schema.define(:version => 20160314172813) do
 
   create_table "acl_flags", :force => true do |t|
     t.string   "name"
@@ -105,6 +105,7 @@ ActiveRecord::Schema.define(:version => 20151221175547) do
     t.string   "to_currency"
     t.decimal  "fee_percentage"
     t.integer  "delay_ms"
+    t.boolean  "active"
   end
 
   add_index "markets", ["exchange_id"], :name => "index_markets_on_exchange_id"
