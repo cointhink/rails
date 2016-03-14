@@ -20,7 +20,7 @@ gem 'riemann-client'
 gem 'exception_notification', '~>3.0.1'
 gem 'redis'
 gem 'redcarpet'
-gem 'test-unit'
+gem 'test-unit', '~>3.0.9'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.5'
