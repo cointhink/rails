@@ -1,6 +1,7 @@
 class Market < ActiveRecord::Base
   attr_accessible :from_exchange, :from_currency,
-                  :to_exchange, :to_currency, :fee_percentage, :delay_ms
+                  :to_exchange, :to_currency, :fee_percentage,
+                  :delay_ms, :active
   belongs_to :from_exchange, :class_name => :Exchange
   belongs_to :to_exchange, :class_name => :Exchange
   belongs_to :exchange
