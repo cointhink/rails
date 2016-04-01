@@ -44,9 +44,11 @@ end
 ].each do |info|
   e = Exchange.create(info.first)
   e.markets.create(from_exchange: e, from_currency:'eth',
-                   to_exchange: e, to_currency:'btc', fee_percentage: info.last, delay_ms: 500)
+                   to_exchange: e, to_currency:'btc', fee_percentage: info.last,
+                   delay_ms: 500, active: true)
   e.markets.create(from_exchange: e, from_currency:'btc',
-                   to_exchange: e, to_currency:'eth', fee_percentage: info.last, delay_ms: 500)
+                   to_exchange: e, to_currency:'eth', fee_percentage: info.last,
+                   delay_ms: 500, active: true)
   e.balances.create({currency:"btc", amount: 0})
   e.balances.create({currency:"eth", amount: 0})
 end
