@@ -21,10 +21,10 @@ Btcmarketwatch::Application.routes.draw do
   match '/session/logout' => 'session#logout'
   match '/session/signup' => 'session#signup'
 
-  post '/scripts' => 'scripts#create'
-  match '/scripts' => 'scripts#manage'
-  match '/scripts/leaderboard' => 'scripts#leaderboard'
-  match '/scripts/docs(/*path)' => 'scripts#docs'
+  #post '/scripts' => 'scripts#create'
+  #match '/scripts' => 'scripts#manage'
+  #match '/scripts/leaderboard' => 'scripts#leaderboard'
+  #match '/scripts/docs(/*path)' => 'scripts#docs'
 
   match '/data/orderbook' => 'exchanges#orderbook'
 
