@@ -31,3 +31,7 @@ end
 group :production do
   gem 'unicorn'
 end
+
+group :development do
+  gem 'minitest'
+end
