@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~>3.2.14'
+gem 'rails', '~>3.2.22.2'
 gem 'sqlite3'
 gem 'pg'
 gem 'faraday'
