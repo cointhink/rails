@@ -59,13 +59,18 @@ class ScriptsController < ApplicationController
 
   def start
     @script = current_user.scripts.find(params[:scriptname])
-    if @script.enabled?
-      @script.start!
-      RIEMANN << {service:'cointhink script', tags:['start'],
-                  description:"script: #{@script.script_name}"}
-      flash[:success] = "Script "+@script.script_name+" started"
-      redirect_to :action => :lastrun
-    else
+    if @script
+      if @script.enabled?
+        @script.start!
+        name = @script.script_name
+        RIEMANN << {service:'cointhink script', tags:['start'],
+                    description:"script: #{name}"}
+        flash[:success] = "Script "+name+" started"
+        redirect_to :action => :lastrun
+        return
+      else
+        flash[:success] = "Missing script"
+      end
       redirect_to :action => :showenable
     end
   end

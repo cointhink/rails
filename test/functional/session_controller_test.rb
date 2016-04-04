@@ -22,7 +22,7 @@ class SessionControllerTest < ActionController::TestCase
   test "login user" do
     login_params = {:username => "existinguser",
                     :password => "password6"}
-    user = MiniTest::Mock.new
+    user = Minitest::Mock.new
     user.expect :authentic?, true, [login_params[:password]]
     user_id = 110
     user.expect :id, user_id

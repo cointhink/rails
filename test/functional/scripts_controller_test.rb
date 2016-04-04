@@ -5,7 +5,7 @@ class ScriptsControllerTest < ActionController::TestCase
   test "start" do
     user = User.new({username:'jill'})
     login(user)
-    script = MiniTest::Mock.new
+    script = Minitest::Mock.new
     script.expect :script_name, 'jill/average'
     script.expect :enabled?, true
     script.expect :start!, nil

@@ -12,10 +12,11 @@ class SessionController < ApplicationController
     user = User.where(username:params[:username]).first
     if user
       if user.authentic?(params[:password])
+        username = user.username
         RIEMANN << {service:'cointhink user', tags:['login'],
-                    description:"user: #{user.username}"}
+                    description:"user: #{username}"}
         log_in(user)
-        flash[:success] = "Welcome back, #{user.username}"
+        flash[:success] = "Welcome back, #{username}"
         redirect_to root_url
       else
         flash[:error] = "Bad password"
