@@ -31,9 +31,11 @@ end
 ].each do |info|
   e = Exchange.create(info.first)
   e.markets.create(from_exchange: e, from_currency:'doge',
-                   to_exchange: e, to_currency:'btc', fee_percentage: info.last, delay_ms: 500)
+                   to_exchange: e, to_currency:'btc', fee_percentage: info.last,
+                   delay_ms: 500, active: true)
   e.markets.create(from_exchange: e, from_currency:'btc',
-                   to_exchange: e, to_currency:'doge', fee_percentage: info.last, delay_ms: 500)
+                   to_exchange: e, to_currency:'doge', fee_percentage: info.last,
+                   delay_ms: 500, active: true)
   e.balances.create({currency:"btc", amount: 0})
   e.balances.create({currency:"doge", amount: 0})
 end
@@ -41,6 +43,7 @@ end
 [
   [{name:'kraken', display_name:'Kraken', country_code: 'us', active: true},    0.2],
   [{name:'poloniex', display_name:'Poloniex', country_code: 'us', active: true},    0.2]
+  [{name:'bittrex', display_name:'Bittrex', country_code: 'us', active: true},    0.2]
 ].each do |info|
   e = Exchange.create(info.first)
   e.markets.create(from_exchange: e, from_currency:'eth',
